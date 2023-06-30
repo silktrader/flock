@@ -66,6 +66,9 @@ const destination = computed(() => rs.rideParameters.Destination)
 <style scoped>
 
 .results-container {
+  display: flex;
+  flex-direction: column;
+  height: 93vh;
   margin: 0;
 }
 
@@ -118,10 +121,9 @@ const destination = computed(() => rs.rideParameters.Destination)
 .ride-cards {
   display: flex;
   flex-direction: column;
-  margin-top: 1rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
+  padding: 1rem;
   gap: 1rem;
+  overflow: auto;
 }
 
 .ride-details-header em {
