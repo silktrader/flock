@@ -1,30 +1,29 @@
 <template>
 
-  <q-card v-for='ride in rs.rides' :key='ride.Id'>
+  <q-card>
 
     <q-card-section class="ride-card">
 
       <section class="driver">
         <div class="driver-avatar">
           <q-avatar size="100px">
-            <img :src="ride.Driver.AvatarUrl"/>
+            <img :src="r.Driver.AvatarUrl"/>
           </q-avatar>
-          <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
+          <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
         </div>
-        <span class="driver-name">{{ ride.Driver.Name }}</span>
+        <span class="driver-name">{{ r.Driver.Name }}</span>
       </section>
 
       <section class="ride-details">
 
         <section class="ride-details-header">
           <div class="ride-details-header-time">
-            <span>Leave at <em>{{ ExtractTime(ride.Departure) }}</em></span>
-            <span>Arrive at <em>{{ ExtractTime(ride.Arrival) }}</em></span>
+            <span>Leave at <em>{{ ExtractTime(r.Departure) }}</em></span>
+            <span>Arrive at <em>{{ ExtractTime(r.Arrival) }}</em></span>
           </div>
           <aside class="ride-details-header-duration">
-            <!--              <img src="src/assets/arrow.png" height="32" width="32">-->
             <q-icon name="update" size="xs"></q-icon>
-            <span>{{ FormatDuration(ride.Departure, ride.Arrival) }}</span>
+            <span>{{ FormatDuration(r.Departure, r.Arrival) }}</span>
           </aside>
         </section>
 
@@ -35,14 +34,14 @@
             <div class="ride-detail">
               <q-icon name="airline_seat_recline_normal" size="sm"></q-icon>
               <div>
-                <span>{{ ride.Passengers.length }}</span>
-                <sub class="seats-total">/{{ ride.Car.Seats }}</sub>
+                <span>{{ freeSeats }}</span>
+                <sub class="seats-total">/{{ r.Car.Seats }}</sub>
               </div>
             </div>
 
             <div class="ride-detail">
               <q-icon name="euro" size="sm"></q-icon>
-              <span>{{ ride.Expense }}</span>
+              <span>{{ r.Expense }}</span>
             </div>
 
             <div class="ride-detail">
@@ -91,7 +90,7 @@
 
     <q-card-actions align="right">
       <q-btn flat>Request</q-btn>
-      <q-btn flat @click="reviewRide(ride)">View</q-btn>
+      <q-btn flat @click="reviewRide()">View</q-btn>
     </q-card-actions>
 
   </q-card>
@@ -103,16 +102,19 @@
 import { Ride, useRideStore } from 'stores/ride-store'
 import { useRouter } from 'vue-router'
 import { ExtractTime, FormatDuration } from 'src/tools/date-tools'
+import { computed } from 'vue'
 
 const rs = useRideStore()
 const router = useRouter()
 
-defineProps<{
-  ride: Ride
+const props = defineProps<{
+  r: Ride // webstorm will complain if the instance is named after the interface (bug)
 }>()
 
-function reviewRide (ride: Ride): void {
-  rs.selectRide(ride)
+const freeSeats = computed<number>(() => props.r.Car.Seats - props.r.Passengers.length)
+
+function reviewRide (): void {
+  rs.selectRide(props.r)
   router.push('/ride-details')
 }
 

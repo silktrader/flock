@@ -117,7 +117,7 @@ export const useRideStore = defineStore('ride',
     const rideParameters = ref<RideParameters>(defaultParameters)
 
     function reset (): void {
-      rides.value = []
+      rides.value.splice(0)
       rideParameters.value = defaultParameters
       ride.value = undefined
     }

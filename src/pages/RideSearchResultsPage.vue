@@ -32,7 +32,7 @@
     <q-separator/>
 
     <div class="ride-cards">
-      <search-result-v1 v-for='ride in rs.rides' :key='ride.Id' :ride="ride"/>
+      <search-result-v1 v-for='ride in rs.rides' :key='ride.Id' :r="ride"/>
     </div>
 
   </main>

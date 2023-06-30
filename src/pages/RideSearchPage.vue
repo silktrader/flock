@@ -217,7 +217,7 @@ const maxPickupTime = ref(5)
 
 function search (): void {
   // prevent submission when missing fields
-  if (origin.value === undefined) {
+  if (origin.value?.Address === undefined) {
     q.notify({
       type: 'warning',
       message: 'Please enter an origin address',
