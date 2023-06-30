@@ -194,7 +194,7 @@
 import { LeftButton, useNavigationStore } from 'stores/navigation-store'
 import { Ride, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
-import { ExtractTime } from 'src/tools/date-tools'
+import { ExtractDate, ExtractTime } from 'src/tools/date-tools'
 
 const ns = useNavigationStore()
 const rs = useRideStore()
@@ -206,13 +206,17 @@ const ride = computed<Ride>(() => {
   return rs.ride
 })
 
-ns.setButton(LeftButton.Back)
-ns.setTitle('From Via Archimede to Sapienza')
-
 const freeSeats = computed<number>(() => ride.value.Car.Seats - ride.value.Passengers.length)
 const departureTime = computed<string>(() => ExtractTime(ride.value.Departure))
 const arrivalTime = computed<string>(() => ExtractTime(ride.value.Arrival))
 const pickupTime = computed<string>(() => ExtractTime(ride.value.Pickup.Date))
+const departureDate = computed<string>(() => ExtractDate(ride.value.Departure))
+
+ns.setButton(LeftButton.Back)
+ns.setTitle(`${ride.value.Origin.Label ?? ride.value.Origin.Address} to ${ride.value.Destination.Label ?? ride.value.Destination.Address}`)
+ns.setSubtitle(departureDate.value)
+
+console.log(ride.value.Destination)
 
 </script>
 

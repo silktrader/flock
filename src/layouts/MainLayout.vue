@@ -3,12 +3,17 @@
 
     <q-header class="bg-primary text-white" elevated>
       <q-toolbar>
-        <q-btn v-if="ns.leftButton === LeftButton.Menu" aria-label="Menu" flat icon="menu"
+        <q-btn v-if="ns.leftButton === LeftButton.Menu" aria-label="Menu" flat icon="menu" size="lg"
                @click="toggleLeftDrawer"/>
-        <q-btn v-else-if="ns.leftButton === LeftButton.Back" aria-label="Back" flat icon="arrow_back"
+        <q-btn v-else-if="ns.leftButton === LeftButton.Back" aria-label="Back" flat icon="arrow_back" size="lg"
                @click="goBack"/>
 
-        <q-toolbar-title>{{ ns.title }}</q-toolbar-title>
+        <q-toolbar-title>
+          <section class="toolbar-title">
+            <span>{{ ns.title }}</span>
+            <span class="subtitle">{{ ns.subtitle }}</span>
+          </section>
+        </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -55,5 +60,24 @@ function goBack (): void {
 </script>
 
 <style scoped>
+
+.toolbar-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 64px;
+}
+
+.toolbar-title span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.subtitle {
+  font-size: small;
+  color: black;
+  opacity: 0.8;
+}
 
 </style>

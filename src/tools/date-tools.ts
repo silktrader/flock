@@ -1,7 +1,9 @@
 import { date } from 'quasar'
 
-export const ExtractTime = (d: Date) => date.formatDate(d, 'H:mm')
 const today = new Date()
+
+export const ExtractTime = (d: Date) => date.formatDate(d, 'H:mm')
+export const ExtractDate = (d: Date) => date.formatDate(d, 'dddd, D MMMM ')
 
 export function FormatFriendlyDate (d: Date): string {
   if (today.getFullYear() === d.getFullYear() || today.getMonth() === d.getMonth()) {

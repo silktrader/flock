@@ -166,6 +166,7 @@ const router = useRouter()
 const q = useQuasar()
 
 ns.setTitle('Ride Search')
+ns.setSubtitle('')
 ns.setButton(LeftButton.Menu)
 rs.reset()
 

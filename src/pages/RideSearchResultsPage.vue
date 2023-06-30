@@ -50,7 +50,8 @@ import SearchResultV1 from 'components/search-result-v1.vue'
 const ns = useNavigationStore()
 const rs = useRideStore()
 
-ns.setTitle('Search Results')
+ns.setTitle('Ride Search')
+ns.setSubtitle('Results')
 ns.setButton(LeftButton.Back)
 
 rs.generateNewRides(rs.rideParameters.Origin, rs.rideParameters.Destination)
