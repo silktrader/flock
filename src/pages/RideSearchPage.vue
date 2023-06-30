@@ -69,7 +69,7 @@
           </template>
         </q-input>
 
-        <span>at</span>
+        <span>by</span>
 
         <q-input v-model="arrivalTime" :rules="['time']" autogrow class="trip-time" dense mask="time">
           <template v-slot:append>
