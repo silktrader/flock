@@ -17,6 +17,12 @@ export interface User {
 
 export const Badges = ['punctual', 'veteran', 'cordial']
 
+export enum Transport {
+  None = 'None',
+  Bus = 'Bus',
+  Subway = 'Subway'
+}
+
 export const Degrees = [
   {
     Label: 'ACSAI',
@@ -71,6 +77,8 @@ export interface Car {
 export interface Pickup {
   Address: string;
   Date: Date;
+  Transport: Transport
+  TransportId?: string
 }
 
 export interface Drop {
@@ -97,6 +105,8 @@ export interface RideParameters {
   Destination: Location;
   ArriveBy: Date;
   ReachTime: number;
+  BusAllowed: boolean;
+  SubwayAllowed: boolean;
 }
 
 export const useRideStore = defineStore('ride',
@@ -111,7 +121,9 @@ export const useRideStore = defineStore('ride',
       Origin: ls.GetDefaultHomeLocation(),
       ArriveBy: new Date(),
       Destination: ls.GetDefaultSapienzaLocation(),
-      ReachTime: 10
+      ReachTime: 15,
+      BusAllowed: false,
+      SubwayAllowed: true
     }
 
     const rideParameters = ref<RideParameters>(defaultParameters)
@@ -130,7 +142,10 @@ export const useRideStore = defineStore('ride',
       if (rideParameters.value === undefined) throw new Error('Missing search parameters')
 
       // needs not track variable through changes
-      const { ArriveBy: arriveBy } = rideParameters.value
+      let {
+        ArriveBy: arriveBy,
+        ReachTime: commuteBudget
+      } = rideParameters.value
 
       // signal which addresses should be removed from newly randomly generated ones
       const avoidAddresses = [rideParameters.value.Origin.Address, rideParameters.value.Destination.Address]
@@ -138,17 +153,30 @@ export const useRideStore = defineStore('ride',
       // generate an arrival time, then a departure time, then a pickup time and finally a drop-off time
       for (let results = RandomInt(0, 5); results > 0; results--) {
         // determine a random arrival time close to the user's specified limit
-        const arrival = subtractFromDate(arriveBy, { minutes: RandomInt(3, 20) })
+        const arrival = subtractFromDate(arriveBy, { minutes: RandomInt(3, 17) })
 
         // determine a random departure time
         const departure = subtractFromDate(arrival, { minutes: RandomInt(18, 59) })
 
-        // determine a random drop-off time close to the actual arrival time
-        const commuteBudget = rideParameters.value.ReachTime
-        const dropDate = subtractFromDate(arrival, { minutes: RandomInt(1, commuteBudget) })
+        // determine a random pickup time, close to the departure time, but allow some time for the drop
+        const pickupDelay = RandomInt(1, commuteBudget - 3)
+        commuteBudget -= pickupDelay
 
-        // determine a random pickup time, closer to the departure time
-        const pickupDate = addToDate(departure, { minutes: RandomInt(0, commuteBudget) })
+        // determine which means of transport the user can rely on to get to a pickup
+        const eligibleTransports = [Transport.None]
+        if (rideParameters.value.BusAllowed && commuteBudget > 10) {
+          eligibleTransports.push(Transport.Bus)
+        }
+        if (rideParameters.value.SubwayAllowed && commuteBudget > 10) {
+          eligibleTransports.push(Transport.Subway)
+        }
+
+        const chosenTransport: Transport = eligibleTransports[RandomInt(0, eligibleTransports.length)]
+        const chosenTransportId: string =
+          chosenTransport === Transport.Bus ? RandomInt(10, 900).toString() : ['Metro A', 'Metro B'][RandomInt(0, 2)]
+
+        // determine a random drop-off time close to the actual arrival time
+        const dropDate = subtractFromDate(arrival, { minutes: RandomInt(1, commuteBudget) })
 
         // determine random number of total and available seats
         const passengers = []
@@ -159,13 +187,18 @@ export const useRideStore = defineStore('ride',
 
         rides.value.push({
           Id: RandomId(),
-          Departure: subtractFromDate(arrival, { minutes: RandomInt(16, 59) }),
+          Departure: departure,
           Arrival: arrival,
           Origin: origin,
           Destination: destination,
           Driver: generateDriver(),
           Car: car,
-          Pickup: newPickup(pickupDate, avoidAddresses),
+          Pickup: {
+            Address: getRandomAddress(avoidAddresses),
+            Date: addToDate(departure, { minutes: pickupDelay }),
+            Transport: chosenTransport,
+            TransportId: chosenTransportId
+          },
           Drop: newDrop(dropDate, avoidAddresses),
           Expense: RandomInt(0, 3),
           Passengers: passengers
@@ -209,11 +242,6 @@ export const useRideStore = defineStore('ride',
         Electric: electric
       }
     }
-
-    const newPickup = (time: Date, avoidAddresses: string[]): Pickup => ({
-      Address: getRandomAddress(avoidAddresses),
-      Date: time
-    })
 
     const newDrop = (date: Date, avoidAddresses: string[]): Drop => ({
       Address: getRandomAddress(avoidAddresses),

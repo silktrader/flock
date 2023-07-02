@@ -4,6 +4,7 @@ const today = new Date()
 
 export const ExtractTime = (d: Date) => date.formatDate(d, 'H:mm')
 export const ExtractDate = (d: Date) => date.formatDate(d, 'dddd, D MMMM ')
+export const MinutesDiff = (first: Date, second: Date) => date.getDateDiff(first, second, 'minutes')
 
 export function FormatFriendlyDate (d: Date): string {
   if (today.getFullYear() === d.getFullYear() || today.getMonth() === d.getMonth()) {

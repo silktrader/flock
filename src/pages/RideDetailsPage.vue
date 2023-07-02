@@ -2,7 +2,7 @@
 
   <q-page>
 
-    <section class="pickup">
+    <section class="route">
 
       <q-img class="route-image shadow-7" spinner-color="white" src="src/assets/route.jpg"/>
 
@@ -18,8 +18,18 @@
           </template>
 
           <div class="timeline-instruction">
-            <q-icon name="directions_walk" size="sm"/>
-            <span>Walk for 3 min.</span>
+            <template v-if="ride.Pickup.Transport === Transport.None">
+              <q-icon name="directions_walk" size="sm"/>
+              <span>Walk for {{ pickupDuration }} min.</span>
+            </template>
+            <template v-if="ride.Pickup.Transport === Transport.Subway">
+              <q-icon name="subway" size="sm"/>
+              <span>Ride {{ ride.Pickup.TransportId }} for {{ pickupDuration }} min.</span>
+            </template>
+            <template v-if="ride.Pickup.Transport === Transport.Bus">
+              <q-icon name="directions_bus" size="sm"/>
+              <span>Ride bus #{{ ride.Pickup.TransportId }} for {{ pickupDuration }} min.</span>
+            </template>
           </div>
 
         </q-timeline-entry>
@@ -37,7 +47,26 @@
             <q-btn color="secondary" label="Change" outline/>
             <div class="timeline-instruction">
               <q-icon name="directions_car" size="sm"/>
-              <span>Carpool for 10 min.</span>
+              <span>Carpool for {{ carpoolDuration }} min.</span>
+            </div>
+          </div>
+
+        </q-timeline-entry>
+
+        <!--        Drop off-->
+        <q-timeline-entry icon="local_parking">
+          <template v-slot:title>
+            <div class="timeline-header">
+              <span>{{ ride.Driver.Name }} drops you</span>
+              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{ dropTime }}</span>
+            </div>
+          </template>
+
+          <div class="timeline-pickup">
+            <span>{{ ride.Drop.Address }}</span>
+            <div class="timeline-instruction">
+              <q-icon name="directions_walk" size="sm"/>
+              <span>Walk for {{ dropDuration }} min.</span>
             </div>
           </div>
 
@@ -59,11 +88,11 @@
 
       </q-timeline>
 
-      <q-separator inset spaced></q-separator>
+      <q-separator spaced></q-separator>
 
       <q-list padding>
 
-        <q-item-label header><span class="section-header">Details</span></q-item-label>
+        <!--        <q-item-label header><span class="section-header">Details</span></q-item-label>-->
         <q-item-label header>Driver</q-item-label>
         <q-item>
 
@@ -192,9 +221,9 @@
 <script lang="ts" setup>
 
 import { LeftButton, useNavigationStore } from 'stores/navigation-store'
-import { Ride, useRideStore } from 'stores/ride-store'
+import { Ride, Transport, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
-import { ExtractDate, ExtractTime } from 'src/tools/date-tools'
+import { ExtractDate, ExtractTime, MinutesDiff } from 'src/tools/date-tools'
 
 const ns = useNavigationStore()
 const rs = useRideStore()
@@ -210,19 +239,22 @@ const freeSeats = computed<number>(() => ride.value.Car.Seats - ride.value.Passe
 const departureTime = computed<string>(() => ExtractTime(ride.value.Departure))
 const arrivalTime = computed<string>(() => ExtractTime(ride.value.Arrival))
 const pickupTime = computed<string>(() => ExtractTime(ride.value.Pickup.Date))
+const dropTime = computed<string>(() => ExtractTime(ride.value.Drop.Date))
 const departureDate = computed<string>(() => ExtractDate(ride.value.Departure))
+
+const carpoolDuration = computed<number>(() => MinutesDiff(ride.value.Drop.Date, ride.value.Pickup.Date))
+const dropDuration = computed<number>(() => MinutesDiff(ride.value.Arrival, ride.value.Drop.Date))
+const pickupDuration = computed<number>(() => MinutesDiff(ride.value.Pickup.Date, ride.value.Departure))
 
 ns.setButton(LeftButton.Back)
 ns.setTitle(`${ride.value.Origin.Label ?? ride.value.Origin.Address} to ${ride.value.Destination.Label ?? ride.value.Destination.Address}`)
 ns.setSubtitle(departureDate.value)
 
-console.log(ride.value.Destination)
-
 </script>
 
 <style>
 
-.pickup {
+.route {
   display: flex;
   flex-direction: column;
 }
