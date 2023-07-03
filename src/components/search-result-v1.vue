@@ -34,7 +34,7 @@
             <div class="ride-detail">
               <q-icon name="airline_seat_recline_normal" size="sm"></q-icon>
               <div>
-                <span>{{ freeSeats }}</span>
+                <span>{{ r.FreeSeats }}</span>
                 <sub class="seats-total">/{{ r.Car.Seats }}</sub>
               </div>
             </div>
@@ -68,14 +68,21 @@
 
           <div class="ride-details-commute">
 
-            <div class="ride-detail">
+            <div v-if="r.Pickup.Transport === Transport.Subway" class="ride-detail">
               <q-icon name="directions_subway" size="sm"></q-icon>
-              <span>9 min</span>
+              <span>{{ r.PickupDuration }} <small>min</small></span>
+            </div>
+
+            <div v-else-if="r.Pickup.Transport === Transport.Bus" class="ride-detail">
+              <q-icon name="directions_bus" size="sm"></q-icon>
+              <span>{{ r.PickupDuration }} <small>min</small></span>
             </div>
 
             <div class="ride-detail">
               <q-icon name="directions_walk" size="sm"></q-icon>
-              <span>3 min</span>
+              <span>{{
+                  r.Pickup.Transport === Transport.None ? r.PickupDuration + r.DropDuration : r.DropDuration
+                }} <small>min</small></span>
             </div>
 
           </div>
@@ -99,10 +106,9 @@
 
 <script lang="ts" setup>
 
-import { useRideStore } from 'stores/ride-store'
+import { Transport, useRideStore } from 'stores/ride-store'
 import { useRouter } from 'vue-router'
 import { ExtractTime, FormatDuration } from 'src/tools/date-tools'
-import { computed } from 'vue'
 import { Ride } from 'src/models/ride'
 
 const rs = useRideStore()
@@ -111,8 +117,6 @@ const router = useRouter()
 const props = defineProps<{
   r: Ride // webstorm will complain if the instance is named after the interface (bug)
 }>()
-
-const freeSeats = computed<number>(() => props.r.Car.Seats - props.r.Passengers.length)
 
 function reviewRide (): void {
   rs.selectRide(props.r)
@@ -215,6 +219,10 @@ function reviewRide (): void {
   gap: 4px;
   padding: 5px;
   border-radius: 10px;
+}
+
+.ride-detail small {
+  font-size: xx-small;
 }
 
 .seats-total {

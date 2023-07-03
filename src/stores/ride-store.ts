@@ -141,8 +141,8 @@ export const useRideStore = defineStore('ride',
         const departure = subtractFromDate(arrival, { minutes: RandomInt(25, 90) })
 
         // determine how long it takes to reach the pickup point
-        // allow some time for the drop; 2 minutes at least
-        const pickupTime = RandomInt(Math.max(1, reachTime * 0.6), reachTime - 2)
+        // allow some time for the drop; 3 minutes at least
+        const pickupTime = RandomInt(Math.max(1, reachTime * 0.5), reachTime - 3)
         const pickup = generatePickup(departure, pickupTime, searchAddresses)
 
         // determine random number of total and available seats
@@ -217,7 +217,7 @@ export const useRideStore = defineStore('ride',
     function generatePickup (departure: Date, pickupDelay: number, avoidAddresses: ReadonlyArray<string>): Pickup {
       // determine which means of transport the user can rely on to get to a pickup
       const eligibleTransports = [Transport.None]
-      if (rideParameters.value.BusAllowed && pickupDelay > 10) {
+      if (rideParameters.value.BusAllowed && pickupDelay > 5) {
         eligibleTransports.push(Transport.Bus)
       }
       if (rideParameters.value.SubwayAllowed && pickupDelay > 10) {

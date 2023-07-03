@@ -205,7 +205,7 @@ const friendlyDate = computed(() => {
 const bus = ref(true)
 const subway = ref(true)
 const pickupTimeLimit = 30
-const maxPickupTime = ref(5)
+const maxPickupTime = ref(15)
 
 function search (): void {
   // prevent submission when missing fields
