@@ -10,35 +10,39 @@
 
         <q-timeline-entry icon="location_on">
 
+          <!-- Departure -->
           <template v-slot:title>
             <div class="timeline-header">
               <span>{{ ride.Origin.Address }}</span>
-              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{ departureTime }}</span>
+              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
+                  ExtractTime(ride.Departure)
+                }}</span>
             </div>
           </template>
 
           <div class="timeline-instruction">
             <template v-if="ride.Pickup.Transport === Transport.None">
               <q-icon name="directions_walk" size="sm"/>
-              <span>Walk for {{ pickupDuration }} min.</span>
+              <span>Walk for {{ ride.PickupDuration }} min.</span>
             </template>
             <template v-if="ride.Pickup.Transport === Transport.Subway">
               <q-icon name="subway" size="sm"/>
-              <span>Ride {{ ride.Pickup.TransportId }} for {{ pickupDuration }} min.</span>
+              <span>Ride {{ ride.Pickup.TransportId }} for {{ ride.PickupDuration }} min.</span>
             </template>
             <template v-if="ride.Pickup.Transport === Transport.Bus">
               <q-icon name="directions_bus" size="sm"/>
-              <span>Ride bus #{{ ride.Pickup.TransportId }} for {{ pickupDuration }} min.</span>
+              <span>Ride bus #{{ ride.Pickup.TransportId }} for {{ ride.PickupDuration }} min.</span>
             </template>
           </div>
 
         </q-timeline-entry>
 
+        <!-- Pickup -->
         <q-timeline-entry :avatar="ride.Driver.AvatarUrl">
           <template v-slot:title>
             <div class="timeline-header">
               <span>Meet {{ ride.Driver.Name }}</span>
-              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{ pickupTime }}</span>
+              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.Pickup.Date) }}</span>
             </div>
           </template>
 
@@ -47,18 +51,20 @@
             <q-btn color="secondary" label="Change" outline/>
             <div class="timeline-instruction">
               <q-icon name="directions_car" size="sm"/>
-              <span>Carpool for {{ carpoolDuration }} min.</span>
+              <span>Carpool for {{ ride.CarpoolDuration }} min.</span>
             </div>
           </div>
 
         </q-timeline-entry>
 
-        <!--        Drop off-->
+        <!-- Drop off-->
         <q-timeline-entry icon="local_parking">
           <template v-slot:title>
             <div class="timeline-header">
               <span>{{ ride.Driver.Name }} drops you</span>
-              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{ dropTime }}</span>
+              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
+                  ExtractTime(ride.Drop.Date)
+                }}</span>
             </div>
           </template>
 
@@ -66,17 +72,20 @@
             <span>{{ ride.Drop.Address }}</span>
             <div class="timeline-instruction">
               <q-icon name="directions_walk" size="sm"/>
-              <span>Walk for {{ dropDuration }} min.</span>
+              <span>Walk for {{ ride.DropDuration }} min.</span>
             </div>
           </div>
 
         </q-timeline-entry>
 
+        <!-- Arrival -->
         <q-timeline-entry icon="flag">
           <template v-slot:title>
             <div class="timeline-header">
               <span>{{ ride.Destination.Address }}</span>
-              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{ arrivalTime }}</span>
+              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
+                  ExtractTime(ride.Arrival)
+                }}</span>
             </div>
           </template>
 
@@ -159,19 +168,21 @@
           <q-item-section>
             <div class="free-seats">
               <q-avatar
-                v-for="index in freeSeats"
+                v-for="index in ride.FreeSeats"
                 :key="index"
                 class="free-seat"
               >
               </q-avatar>
             </div>
           </q-item-section>
-          <q-item-section><span class="free-seats-text">{{ freeSeats }} free seat{{ freeSeats > 1 ? 's' : '' }}!</span>
+          <q-item-section><span class="free-seats-text">{{ ride.FreeSeats }} free seat{{
+              ride.FreeSeats > 1 ? 's' : ''
+            }}!</span>
           </q-item-section>
 
           <q-item-section>
             <div class="free-seats-actions">
-              <q-btn v-if="freeSeats > 1" color="primary" dense flat icon="person_add" label="Invite"></q-btn>
+              <q-btn v-if="ride.FreeSeats > 1" color="primary" dense flat icon="person_add" label="Invite"></q-btn>
             </div>
           </q-item-section>
         </q-item>
@@ -221,9 +232,10 @@
 <script lang="ts" setup>
 
 import { LeftButton, useNavigationStore } from 'stores/navigation-store'
-import { Ride, Transport, useRideStore } from 'stores/ride-store'
+import { Transport, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
-import { ExtractDate, ExtractTime, MinutesDiff } from 'src/tools/date-tools'
+import { ExtractDate, ExtractTime } from 'src/tools/date-tools'
+import { Ride } from 'src/models/ride'
 
 const ns = useNavigationStore()
 const rs = useRideStore()
@@ -235,20 +247,9 @@ const ride = computed<Ride>(() => {
   return rs.ride
 })
 
-const freeSeats = computed<number>(() => ride.value.Car.Seats - ride.value.Passengers.length)
-const departureTime = computed<string>(() => ExtractTime(ride.value.Departure))
-const arrivalTime = computed<string>(() => ExtractTime(ride.value.Arrival))
-const pickupTime = computed<string>(() => ExtractTime(ride.value.Pickup.Date))
-const dropTime = computed<string>(() => ExtractTime(ride.value.Drop.Date))
-const departureDate = computed<string>(() => ExtractDate(ride.value.Departure))
-
-const carpoolDuration = computed<number>(() => MinutesDiff(ride.value.Drop.Date, ride.value.Pickup.Date))
-const dropDuration = computed<number>(() => MinutesDiff(ride.value.Arrival, ride.value.Drop.Date))
-const pickupDuration = computed<number>(() => MinutesDiff(ride.value.Pickup.Date, ride.value.Departure))
-
 ns.setButton(LeftButton.Back)
 ns.setTitle(`${ride.value.Origin.Label ?? ride.value.Origin.Address} to ${ride.value.Destination.Label ?? ride.value.Destination.Address}`)
-ns.setSubtitle(departureDate.value)
+ns.setSubtitle(ExtractDate(ride.value.Departure))
 
 </script>
 

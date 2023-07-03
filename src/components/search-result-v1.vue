@@ -99,10 +99,11 @@
 
 <script lang="ts" setup>
 
-import { Ride, useRideStore } from 'stores/ride-store'
+import { useRideStore } from 'stores/ride-store'
 import { useRouter } from 'vue-router'
 import { ExtractTime, FormatDuration } from 'src/tools/date-tools'
 import { computed } from 'vue'
+import { Ride } from 'src/models/ride'
 
 const rs = useRideStore()
 const router = useRouter()
