@@ -100,6 +100,7 @@ export interface Ride {
   readonly Passengers: ReadonlyArray<User>
 }
 
+// tk add validation (reach time must be > 5)
 export interface RideParameters {
   Origin: Location;
   Destination: Location;
@@ -138,13 +139,13 @@ export const useRideStore = defineStore('ride',
       rideParameters.value = parameters
     }
 
-    function generateNewRides (origin: Location, destination: Location) {
+    function generateNewRides () {
       if (rideParameters.value === undefined) throw new Error('Missing search parameters')
 
       // needs not track variable through changes
-      let {
+      const {
         ArriveBy: arriveBy,
-        ReachTime: commuteBudget
+        ReachTime: reachTime
       } = rideParameters.value
 
       // signal which addresses should be removed from newly randomly generated ones
@@ -158,16 +159,16 @@ export const useRideStore = defineStore('ride',
         // determine a random departure time
         const departure = subtractFromDate(arrival, { minutes: RandomInt(18, 59) })
 
-        // determine a random pickup time, close to the departure time, but allow some time for the drop
-        const pickupDelay = RandomInt(1, commuteBudget - 3)
-        commuteBudget -= pickupDelay
+        // determine how long it takes to reach the pickup point
+        // allow some time for the drop; 2 minutes at least
+        const pickupDelay = RandomInt(Math.max(1, reachTime * 0.6), reachTime - 2)
 
         // determine which means of transport the user can rely on to get to a pickup
         const eligibleTransports = [Transport.None]
-        if (rideParameters.value.BusAllowed && commuteBudget > 10) {
+        if (rideParameters.value.BusAllowed && pickupDelay > 10) {
           eligibleTransports.push(Transport.Bus)
         }
-        if (rideParameters.value.SubwayAllowed && commuteBudget > 10) {
+        if (rideParameters.value.SubwayAllowed && pickupDelay > 10) {
           eligibleTransports.push(Transport.Subway)
         }
 
@@ -176,7 +177,7 @@ export const useRideStore = defineStore('ride',
           chosenTransport === Transport.Bus ? RandomInt(10, 900).toString() : ['Metro A', 'Metro B'][RandomInt(0, 2)]
 
         // determine a random drop-off time close to the actual arrival time
-        const dropDate = subtractFromDate(arrival, { minutes: RandomInt(1, commuteBudget) })
+        const dropDate = subtractFromDate(arrival, { minutes: RandomInt(1, reachTime - pickupDelay) })
 
         // determine random number of total and available seats
         const passengers = []
@@ -189,8 +190,8 @@ export const useRideStore = defineStore('ride',
           Id: RandomId(),
           Departure: departure,
           Arrival: arrival,
-          Origin: origin,
-          Destination: destination,
+          Origin: rideParameters.value.Origin,
+          Destination: rideParameters.value.Destination,
           Driver: generateDriver(),
           Car: car,
           Pickup: {

@@ -54,8 +54,6 @@ ns.setTitle('Ride Search')
 ns.setSubtitle('Results')
 ns.setButton(LeftButton.Back)
 
-rs.generateNewRides(rs.rideParameters.Origin, rs.rideParameters.Destination)
-
 const arriveByTime = computed<string>(() => rs.rideParameters?.ArriveBy ? ExtractTime(rs.rideParameters.ArriveBy) : '')
 const arriveByDate = computed<string>(() => rs.rideParameters?.ArriveBy ? FormatFriendlyDate(rs.rideParameters.ArriveBy) : '')
 

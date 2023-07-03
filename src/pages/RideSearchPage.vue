@@ -100,8 +100,7 @@
               </q-tooltip>
             </q-btn>
           </div>
-          <span v-if="maxPickupTime === 0" class="time-result">I don't want to move</span>
-          <span v-else-if="maxPickupTime === pickupTimeLimit" class="time-result">{{
+          <span v-if="maxPickupTime === pickupTimeLimit" class="time-result">{{
               pickupTimeLimit
             }} minutes or more</span>
           <span v-else class="time-result">{{ maxPickupTime }} minutes</span>
@@ -109,18 +108,12 @@
             v-model="maxPickupTime"
             :label-value="maxPickupTime + ' min.'"
             :max="30"
-            :min="0"
+            :min="5"
             label
             switch-label-side
           />
         </div>
         <div class="trip-options-toggles">
-          <q-toggle
-            v-model="walk"
-            :disable="maxPickupTime === 0"
-            color="secondary"
-            label="I can walk"
-          />
           <q-toggle
             v-model="bus"
             :disable="maxPickupTime === 0"
@@ -209,7 +202,6 @@ const friendlyDate = computed(() => {
 })
 
 // trip options
-const walk = ref(true)
 const bus = ref(true)
 const subway = ref(true)
 const pickupTimeLimit = 30
@@ -231,8 +223,11 @@ function search (): void {
       Origin: origin.value,
       Destination: destination.value,
       ArriveBy: date.extractDate(`${arrivalDate.value} ${arrivalTime.value}`, 'YYYY/MM/DD HH:mm'),
-      ReachTime: 10 // tk change ME
+      ReachTime: maxPickupTime.value,
+      BusAllowed: bus.value,
+      SubwayAllowed: subway.value
     })
+    rs.generateNewRides()
     router.push('/search-results')
   }
 }
