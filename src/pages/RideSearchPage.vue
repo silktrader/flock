@@ -117,13 +117,11 @@
           <q-toggle
             v-model="bus"
             :disable="maxPickupTime === 0"
-            color="secondary"
             label="I can ride a bus"
           />
           <q-toggle
             v-model="subway"
             :disable="maxPickupTime === 0"
-            color="secondary"
             label="I can take the subway"
           />
         </div>
@@ -132,7 +130,7 @@
       <div style="flex-grow: 5"></div>
 
       <div class="trip-action">
-        <q-btn color="primary" label="Search" rounded size="large" @click="search"></q-btn>
+        <q-btn color="accent" label="Search" no-caps rounded size="large" @click="search"></q-btn>
       </div>
 
       <div style="flex-grow: 1"></div>
@@ -234,7 +232,8 @@ function search (): void {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/css/quasar.variables.scss";
 
 .trip {
   display: flex;

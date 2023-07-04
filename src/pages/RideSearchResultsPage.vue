@@ -61,7 +61,8 @@ const destination = computed(() => rs.rideParameters.Destination)
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/css/quasar.variables.scss";
 
 .results-container {
   display: flex;
@@ -75,7 +76,8 @@ const destination = computed(() => rs.rideParameters.Destination)
   flex-direction: column;
   padding: 1rem;
   gap: 1rem;
-  background-color: azure;
+  background-color: $secondary;
+  color: $on-secondary;
 }
 
 .locations {

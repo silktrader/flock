@@ -1,8 +1,8 @@
 <template>
 
-  <q-card>
+  <div v-ripple class="card" style="position: relative" @click="reviewRide()">
 
-    <q-card-section class="ride-card">
+    <div class="card-contents">
 
       <section class="driver">
         <div class="driver-avatar">
@@ -91,16 +91,21 @@
 
       </section>
 
-    </q-card-section>
+    </div>
 
-    <q-separator/>
+    <!--    <section class="card-actions">-->
+    <!--      <q-btn flat>Request</q-btn>-->
+    <!--      <q-btn flat @click="reviewRide()">View</q-btn>-->
+    <!--    </section>-->
 
-    <q-card-actions align="right">
-      <q-btn flat>Request</q-btn>
-      <q-btn flat @click="reviewRide()">View</q-btn>
-    </q-card-actions>
+  </div>
 
-  </q-card>
+  <!--    <q-separator/>-->
+
+  <!--    <q-card-actions align="right">-->
+  <!--      <q-btn flat>Request</q-btn>-->
+  <!--      <q-btn flat @click="reviewRide()">View</q-btn>-->
+  <!--    </q-card-actions>-->
 
 </template>
 
@@ -125,12 +130,27 @@ function reviewRide (): void {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/css/quasar.variables.scss";
 
-.ride-card {
+.card {
+  padding: 24px;
+  background-color: #23261e;
+  color: rgb(228, 227, 221);
+  border-radius: 12px;
   display: flex;
-  padding: 1rem;
+  flex-direction: column;
+}
+
+//most values taken from https://m3.material.io/theme-builder#/custom
+.card-contents {
+  display: flex;
   gap: 18px;
+  //background-color: $secondary-container;
+}
+
+.card-actions {
+
 }
 
 .driver {
@@ -138,7 +158,7 @@ function reviewRide (): void {
   flex-direction: column;
   flex-grow: 2;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
 }
 
 .driver-avatar {
@@ -163,6 +183,7 @@ function reviewRide (): void {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: $on-secondary;
 }
 
 .ride-details {
@@ -215,7 +236,8 @@ function reviewRide (): void {
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: aliceblue;
+  background-color: $secondary;
+  color: $on-secondary;
   gap: 4px;
   padding: 5px;
   border-radius: 10px;

@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHr LpR lFr">
 
-    <q-header class="bg-primary text-white" elevated>
+    <q-header v-if="ns.toolbar" class="toolbar" elevated>
       <q-toolbar>
         <q-btn v-if="ns.leftButton === LeftButton.Menu" aria-label="Menu" flat icon="menu" size="lg"
                @click="toggleLeftDrawer"/>
@@ -59,7 +59,14 @@ function goBack (): void {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/css/quasar.variables.scss";
+
+.toolbar {
+  color: $on-primary;
+  background-color: $primary;
+
+}
 
 .toolbar-title {
   display: flex;
