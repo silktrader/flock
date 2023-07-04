@@ -12,14 +12,39 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary   : #1976D2;
-$secondary : #26A69A;
-$accent    : #9C27B0;
+//$primary   : #1976D2;
+//$secondary : #26A69A;
+//$accent    : #9C27B0;
+//
+//$dark      : #1D1D1D;
+//$dark-page : #121212;
+//
+//$positive  : #21BA45;
+//$negative  : #C10015;
+//$info      : #31CCEC;
+//$warning   : #F2C037;
 
-$dark      : #1D1D1D;
-$dark-page : #121212;
+// src/css/quasar.variables.scss
 
-$positive  : #21BA45;
-$negative  : #C10015;
-$info      : #31CCEC;
-$warning   : #F2C037;
+$primary: #a7d474;
+$secondary: #bfcbad;
+$accent: #a0cfcc;
+
+$on-primary: #1e3700;
+$on-secondary: #2a331e;
+$on-tertiary: #003735;
+
+//$secondary-container: #404a33;
+$secondary-container: #23261d;
+$on-secondary-container: #e3e3db;
+
+$tertiary-container: #1f4e4b;
+$on-tertiary-container: #bbece8;
+
+$dark: #91918b;
+$dark-page: #1b1c18;
+
+$positive: #21BA45;
+$negative: #ffb4ab;
+$info: #2d9cb3;
+$warning: #f4c431;
