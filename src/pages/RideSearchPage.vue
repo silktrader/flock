@@ -16,11 +16,11 @@
             v-model="origin"
             :options="originOptions"
             behavior="menu"
-            clearable
             dense
             fill-input
             hide-dropdown-icon
-            hide-selected input-debounce="0"
+            hide-selected
+            input-debounce="0" label-color="secondary"
             option-label="Label"
             option-value="Address"
             outlined
@@ -247,10 +247,12 @@ function search (): void {
 .trip-box {
   display: flex;
   flex-direction: row;
-  border: 2px solid #027be3;
+  background-color: #23261d;
+  //color: $on-secondary-container;
+  color: rgb(228, 227, 221);
   width: 100%;
-  border-radius: 15px;
-  padding: 1.5rem 1rem 1.5rem 1rem;
+  border-radius: 24px;
+  padding: 2rem 1rem 2rem 1rem;
   gap: 1rem;
 }
 

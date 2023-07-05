@@ -4,7 +4,7 @@
 
     <section class="route">
 
-      <q-img class="route-image shadow-7" spinner-color="white" src="src/assets/map.jpg"/>
+      <q-img class="route-image shadow-7" fit="cover" spinner-color="white" src="src/assets/route-map.svg"/>
 
       <q-timeline class="timeline" color="secondary" layout="dense">
 
@@ -14,13 +14,13 @@
           <template v-slot:title>
             <div class="timeline-header">
               <span>{{ ride.Origin.Address }}</span>
-              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
-                  ExtractTime(ride.Departure)
-                }}</span>
+              <span class="timeline-header-time">
+                <q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.Departure) }}
+              </span>
             </div>
           </template>
 
-          <div class="timeline-instruction">
+          <div class="timeline-instruction shuttle">
             <template v-if="ride.Pickup.Transport === Transport.None">
               <q-icon name="directions_walk" size="sm"/>
               <span>Walk for {{ ride.PickupDuration }} min.</span>
@@ -31,14 +31,16 @@
             </template>
             <template v-if="ride.Pickup.Transport === Transport.Bus">
               <q-icon name="directions_bus" size="sm"/>
-              <span>Ride bus #{{ ride.Pickup.TransportId }} for {{ ride.PickupDuration }} min.</span>
+              <span>Ride bus <small>#</small>{{ ride.Pickup.TransportId }} for {{
+                  ride.PickupDuration
+                }} min.</span>
             </template>
           </div>
 
         </q-timeline-entry>
 
         <!-- Pickup -->
-        <q-timeline-entry :avatar="ride.Driver.AvatarUrl" color="orange">
+        <q-timeline-entry :avatar="ride.Driver.AvatarUrl" color="yellow-7">
           <template v-slot:title>
             <div class="timeline-header">
               <span>Meet {{ ride.Driver.Name }}</span>
@@ -48,8 +50,11 @@
 
           <div class="timeline-pickup">
             <span>{{ ride.Pickup.Address }}</span>
-            <q-btn color="secondary" label="Change" outline/>
-            <div class="timeline-instruction">
+            <div style="display: flex">
+              <q-btn class="tonal-button" label="Change" rounded style="flex-grow: 1"/>
+              <div style="flex-grow: 5"></div>
+            </div>
+            <div class="timeline-instruction carpool">
               <q-icon name="directions_car" size="sm"/>
               <span>Carpool for {{ ride.CarpoolDuration }} min.</span>
             </div>
@@ -58,7 +63,7 @@
         </q-timeline-entry>
 
         <!-- Drop off-->
-        <q-timeline-entry icon="local_parking">
+        <q-timeline-entry icon="directions_car">
           <template v-slot:title>
             <div class="timeline-header">
               <span>{{ ride.Driver.Name }} drops you</span>
@@ -70,7 +75,7 @@
 
           <div class="timeline-pickup">
             <span>{{ ride.Drop.Address }}</span>
-            <div class="timeline-instruction">
+            <div class="timeline-instruction shuttle">
               <q-icon name="directions_walk" size="sm"/>
               <span>Walk for {{ ride.DropDuration }} min.</span>
             </div>
@@ -99,7 +104,7 @@
 
       <q-separator/>
 
-      <q-list>
+      <q-list padding>
 
         <!--        <q-item-label header><span class="section-header">Details</span></q-item-label>-->
         <q-item-label header>Driver</q-item-label>
@@ -116,8 +121,8 @@
               <span>{{ ride.Driver.Name }}</span>
               <!--              <span class="degree">{{ ride.Driver.Degree }}</span>-->
               <div>
-                <q-btn color="primary" dense flat icon="call"/>
-                <q-btn color="primary" dense flat icon="chat"/>
+                <q-btn color="primary" dense flat icon="las la-phone"/>
+                <q-btn color="primary" dense flat icon="las la-sms"/>
               </div>
             </div>
           </q-item-section>
@@ -182,7 +187,8 @@
 
           <q-item-section>
             <div class="free-seats-actions">
-              <q-btn v-if="ride.FreeSeats > 1" color="primary" dense flat icon="person_add" label="Invite"></q-btn>
+              <q-btn v-if="ride.FreeSeats > 1" color="primary" dense flat icon="las la-user-plus"
+                     label="Invite"></q-btn>
             </div>
           </q-item-section>
         </q-item>
@@ -192,8 +198,8 @@
         <q-item>
 
           <q-item-section>
-            <q-avatar class="car-icon">
-              <q-icon name="directions_car" size="md"></q-icon>
+            <q-avatar size="64px">
+              <img src="/src/assets/cars/clio.jpg" style="object-fit: cover">
             </q-avatar>
 
           </q-item-section>
@@ -216,12 +222,12 @@
     <q-separator spaced/>
 
     <footer>
-      <q-btn class="footer-button" color="accent" label="Request Ride" no-caps rounded size="lg"
+      <q-btn class="filled-button" label="Request Ride" no-caps rounded size="lg"
              @click="RequestRide()"/>
     </footer>
 
     <q-page-scroller :offset="[8, 8]" :scroll-offset="20" position="bottom-right" reverse>
-      <q-btn color="accent" fab-mini icon="keyboard_arrow_down"/>
+      <q-btn class="filled-button" fab-mini icon="keyboard_arrow_down"/>
     </q-page-scroller>
 
   </q-page>
@@ -258,7 +264,7 @@ function RequestRide (): void {
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "src/css/quasar.variables.scss";
 
 .route {
@@ -268,6 +274,7 @@ function RequestRide (): void {
 }
 
 .timeline {
+  color: $on-background;
   margin: 0;
   padding-left: 2rem;
   padding-right: 2rem;
@@ -323,12 +330,12 @@ function RequestRide (): void {
 
 .free-seat {
   position: relative;
-  border: 2px solid #fff;
+  border: 2px solid $on-surface-variant;
   border-radius: 50%;
   overflow: hidden;
   width: 50px;
   height: 50px;
-  background-color: lightgray;
+  background-color: $surface-variant;
 }
 
 .free-seat:not(:last-child) {
@@ -367,7 +374,6 @@ footer {
   width: 100%;
   padding-bottom: 16px;
   padding-top: 8px;
-  background-color: white;
   align-items: center;
 }
 
@@ -393,11 +399,24 @@ footer {
 .timeline-instruction {
   display: flex;
   flex-direction: row;
+  width: fit-content;
   gap: 8px;
-  opacity: 80%;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 8px;
   align-items: center;
   font-size: small;
   font-style: italic;
+}
+
+.carpool {
+  background-color: #fdd835;
+  color: #1f4e4c;
+}
+
+.shuttle {
+  background-color: #1f4e4c;
+  color: #bbece8;
 }
 
 .timeline-pickup {
@@ -405,6 +424,11 @@ footer {
   flex-direction: column;
   gap: 8px;
   font-size: small;
+  width: fit-content;
+}
+
+.timeline-carpool {
+  color: $carpool;
 }
 
 /*.timeline-address {*/
@@ -412,7 +436,11 @@ footer {
 /*}*/
 
 .q-timeline__subtitle {
-  margin: 0;
+  margin-bottom: 0 !important;
+}
+
+small {
+  font-size: xx-small;
 }
 
 </style>

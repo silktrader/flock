@@ -89,8 +89,9 @@ function SearchReturnRides (): void {
 
   rs.reset()
   rs.setNewParameters(newParameters)
-  rs.generateNewRides()
   router.push('/search-results')
+  rs.generateNewRides()
+  ns.showToolbar()
 }
 
 </script>
