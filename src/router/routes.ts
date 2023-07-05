@@ -18,7 +18,12 @@ const routes: RouteRecordRaw[] = [
     {
       path: 'ride-details',
       component: () => import('pages/RideDetailsPage.vue')
-    }]
+    },
+    {
+      path: 'request-sent',
+      component: () => import('pages/RequestSentPage.vue')
+    }
+    ]
   },
 
   // Always leave this as last one,

@@ -7,6 +7,7 @@ export enum LeftButton {
 }
 
 export const useNavigationStore = defineStore('navigation', () => {
+  const toolbar = ref<boolean>(true)
   const title = ref<string>('Flock')
   const subtitle = ref<string>('')
   const leftButton = ref<string>(LeftButton.Menu)
@@ -23,13 +24,24 @@ export const useNavigationStore = defineStore('navigation', () => {
     leftButton.value = newValue
   }
 
+  function hideToolbar (): void {
+    toolbar.value = false
+  }
+
+  function showToolbar (): void {
+    toolbar.value = true
+  }
+
   return {
+    toolbar: readonly(toolbar),
     title: readonly(title),
     subtitle: readonly(subtitle),
     leftButton: readonly(leftButton),
     setTitle,
     setSubtitle,
-    setButton
+    setButton,
+    showToolbar,
+    hideToolbar
   }
 }
 )
