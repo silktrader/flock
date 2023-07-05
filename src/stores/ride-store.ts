@@ -132,8 +132,10 @@ export const useRideStore = defineStore('ride',
       // signal which addresses should be removed from newly randomly generated ones
       const searchAddresses: ReadonlyArray<string> = [rideParameters.value.Origin.Address, rideParameters.value.Destination.Address]
 
+      // tk allow for 0 rides generated!! remember
+
       // create a random number of new rides
-      for (let results = RandomInt(0, 5); results > 0; results--) {
+      for (let results = RandomInt(2, 7); results > 0; results--) {
         // determine a random arrival time close to the user's specified limit
         const arrival = subtractFromDate(arriveBy, { minutes: RandomInt(5, 20) })
 
@@ -266,6 +268,14 @@ export const useRideStore = defineStore('ride',
       ride.value = newRide
     }
 
+    function requestSelectedRide (): void {
+      if (ride.value) {
+        ride.value.Requested = true
+      } else {
+        throw new Error('No ride to request')
+      }
+    }
+
     return {
       rides: readonly(rides),
       ride: readonly(ride),
@@ -273,6 +283,7 @@ export const useRideStore = defineStore('ride',
       generateNewRides,
       setNewParameters,
       selectRide,
+      requestSelectedRide,
       reset
     }
   })

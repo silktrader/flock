@@ -29,13 +29,13 @@ export const useLocationStore = defineStore('location', () => {
 
   const otherLocations = ref<Location[]>([{
     Label: 'Home',
-    Address: 'Via Archimede 110'
+    Address: 'Via Archimede, 110'
   }, {
     Label: 'Home',
-    Address: 'Viale Africa 25'
+    Address: 'Viale Africa, 25'
   }, {
     Label: 'Home',
-    Address: 'Viale degli Estensi'
+    Address: 'Viale degli Estensi, 3'
   }])
 
   const GetDefaultSapienzaLocation = (): Location => sapienzaLocations.value[0]

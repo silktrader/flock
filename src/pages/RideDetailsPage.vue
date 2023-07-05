@@ -104,7 +104,7 @@
 
       <q-separator/>
 
-      <q-list padding>
+      <q-list style="padding-left: 8px">
 
         <!--        <q-item-label header><span class="section-header">Details</span></q-item-label>-->
         <q-item-label header>Driver</q-item-label>
@@ -222,7 +222,8 @@
     <q-separator spaced/>
 
     <footer>
-      <q-btn class="filled-button" label="Request Ride" no-caps rounded size="lg"
+      <span v-if="ride.Requested">Ride requested, pending approval</span>
+      <q-btn v-else class="filled-button" label="Request Ride" no-caps rounded size="lg"
              @click="RequestRide()"/>
     </footer>
 

@@ -7,6 +7,8 @@ import { Pickup } from 'src/models/pickup'
  but TS has no explicit support for them, requiring prototype pollution. */
 
 export class Ride {
+  Requested = false
+
   constructor (
     readonly Id: string,
     readonly Origin: Location,

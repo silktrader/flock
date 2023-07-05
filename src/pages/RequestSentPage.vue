@@ -5,7 +5,7 @@
     <div class="container">
 
       <div class="back-control">
-        <q-btn aria-label="Back" flat icon="arrow_back" round size="lg"/>
+        <q-btn aria-label="Back" flat icon="arrow_back" round size="lg" @click="ReviewRide()"/>
       </div>
 
       <header>
@@ -77,6 +77,7 @@ const ride = computed<Ride>(() => {
 })
 
 ns.hideToolbar()
+rs.requestSelectedRide()
 
 function SearchReturnRides (): void {
   // invert destination and origin
@@ -91,6 +92,11 @@ function SearchReturnRides (): void {
   rs.setNewParameters(newParameters)
   router.push('/search-results')
   rs.generateNewRides()
+  ns.showToolbar()
+}
+
+async function ReviewRide (): Promise<void> {
+  await router.go(-1)
   ns.showToolbar()
 }
 
