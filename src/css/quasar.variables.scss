@@ -30,13 +30,12 @@ $primary: #a7d474;
 $secondary: #bfcbad;
 $accent: #a0cfcc;
 
-$on-primary: #1e3700;
+$on-primary: #1d3700;
 $on-secondary: #2a331e;
 $on-tertiary: #003735;
 
-//$secondary-container: #404a33;
-$secondary-container: #23261d;
-$on-secondary-container: #e3e3db;
+$secondary-container: #404a33;
+$on-secondary-container: #dbe7c8;
 
 $tertiary-container: #1f4e4b;
 $on-tertiary-container: #bbece8;
@@ -48,3 +47,15 @@ $positive: #21BA45;
 $negative: #ffb4ab;
 $info: #2d9cb3;
 $warning: #f4c431;
+
+.filled-button {
+  -webkit-font-smoothing: antialiased;
+  background-color: $primary;
+  color: $on-primary
+}
+
+.tonal-button {
+  -webkit-font-smoothing: antialiased;
+  color: $on-secondary-container;
+  background-color: $secondary-container;
+}

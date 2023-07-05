@@ -4,7 +4,7 @@
 
     <section class="route">
 
-      <q-img class="route-image shadow-7" spinner-color="white" src="src/assets/route.jpg"/>
+      <q-img class="route-image shadow-7" spinner-color="white" src="src/assets/map.jpg"/>
 
       <q-timeline class="timeline" color="secondary" layout="dense">
 
@@ -38,7 +38,7 @@
         </q-timeline-entry>
 
         <!-- Pickup -->
-        <q-timeline-entry :avatar="ride.Driver.AvatarUrl">
+        <q-timeline-entry :avatar="ride.Driver.AvatarUrl" color="orange">
           <template v-slot:title>
             <div class="timeline-header">
               <span>Meet {{ ride.Driver.Name }}</span>
@@ -97,9 +97,9 @@
 
       </q-timeline>
 
-      <q-separator spaced></q-separator>
+      <q-separator/>
 
-      <q-list padding>
+      <q-list>
 
         <!--        <q-item-label header><span class="section-header">Details</span></q-item-label>-->
         <q-item-label header>Driver</q-item-label>
@@ -207,23 +207,22 @@
             </div>
           </q-item-section>
 
-          <!--          <q-item-section side>-->
-          <!--            <q-item-label caption>meta</q-item-label>-->
-          <!--          </q-item-section>-->
         </q-item>
 
       </q-list>
 
-      <div class="separator"></div>
-
     </section>
 
-    <q-page-sticky expand position="bottom">
-      <footer>
-        <q-separator spaced="16px"/>
-        <q-btn class="footer-button" color="secondary" label="Book Ride" no-caps rounded size="lg"/>
-      </footer>
-    </q-page-sticky>
+    <q-separator spaced/>
+
+    <footer>
+      <q-btn class="footer-button" color="accent" label="Request Ride" no-caps rounded size="lg"
+             @click="RequestRide()"/>
+    </footer>
+
+    <q-page-scroller :offset="[8, 8]" :scroll-offset="20" position="bottom-right" reverse>
+      <q-btn color="accent" fab-mini icon="keyboard_arrow_down"/>
+    </q-page-scroller>
 
   </q-page>
 
@@ -236,9 +235,11 @@ import { Transport, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { ExtractDate, ExtractTime } from 'src/tools/date-tools'
 import { Ride } from 'src/models/ride'
+import { useRouter } from 'vue-router'
 
 const ns = useNavigationStore()
 const rs = useRideStore()
+const router = useRouter()
 
 const ride = computed<Ride>(() => {
   if (rs.ride === undefined) {
@@ -251,23 +252,25 @@ ns.setButton(LeftButton.Back)
 ns.setTitle(`${ride.value.Origin.Label ?? ride.value.Origin.Address} to ${ride.value.Destination.Label ?? ride.value.Destination.Address}`)
 ns.setSubtitle(ExtractDate(ride.value.Departure))
 
+function RequestRide (): void {
+  router.push('/request-sent')
+}
+
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "src/css/quasar.variables.scss";
 
 .route {
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
 .timeline {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-.section-header {
-  font-size: large;
-  font-weight: bold;
+  margin: 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .route-image {
@@ -361,15 +364,14 @@ ns.setSubtitle(ExtractDate(ride.value.Departure))
 footer {
   display: flex;
   flex-direction: column;
-  min-height: 50px;
   width: 100%;
   padding-bottom: 16px;
+  padding-top: 8px;
   background-color: white;
   align-items: center;
 }
 
 .footer-button {
-  max-width: 200px;
 }
 
 .timeline-header {
@@ -411,10 +413,6 @@ footer {
 
 .q-timeline__subtitle {
   margin: 0;
-}
-
-.separator {
-  min-height: 100px;
 }
 
 </style>

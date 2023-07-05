@@ -130,7 +130,7 @@
       <div style="flex-grow: 5"></div>
 
       <div class="trip-action">
-        <q-btn color="accent" label="Search" no-caps rounded size="large" @click="search"></q-btn>
+        <q-btn class="filled-button" label="Search" no-caps rounded size="lg" @click="search"/>
       </div>
 
       <div style="flex-grow: 1"></div>
