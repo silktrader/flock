@@ -17,7 +17,7 @@
         <div class="icon-text">
 
           <div>
-            <q-icon color='primary' name='las la-user' size="40px"/>
+            <q-icon color='primary' name='las la-star' size="40px"/>
           </div>
 
           <div class="only-text">
