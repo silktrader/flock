@@ -22,6 +22,18 @@ const routes: RouteRecordRaw[] = [
     {
       path: 'request-sent',
       component: () => import('pages/RequestSentPage.vue')
+    },
+    {
+      path: '/profile',
+      component: () => import('pages/AnotherProfile.vue')
+    },
+    {
+      path: '/create-ride',
+      component: () => import('pages/CreateRide.vue')
+    },
+    {
+      path: 'search',
+      component: () => import('pages/SearchingPage.vue')
     }
     ]
   },
