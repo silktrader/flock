@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <q-icon color="secondary" name="keyboard_double_arrow_up" size='lg' style="padding-bottom: 2%;"/>
+      <q-icon color="secondary" name="keyboard_double_arrow_up" size='lg'  style="padding-bottom: 2%;"/>
 
     </div>
   </q-page>
