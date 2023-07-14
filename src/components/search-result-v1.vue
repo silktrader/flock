@@ -11,7 +11,7 @@
           </q-avatar>
           <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
         </div>
-        <span class="driver-name">{{ r.Driver.Name }}</span>
+        <span class="driver-name">{{ r.Driver.DisplayName }}</span>
       </section>
 
       <section class="ride-details">

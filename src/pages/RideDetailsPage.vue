@@ -118,7 +118,7 @@
 
           <q-item-section>
             <div class="driver-name">
-              <span>{{ ride.Driver.Name }}</span>
+              <span>{{ ride.Driver.DisplayName }}</span>
               <!--              <span class="degree">{{ ride.Driver.Degree }}</span>-->
               <div>
                 <q-btn color="primary" dense flat icon="las la-phone"/>
@@ -154,7 +154,7 @@
 
           <q-item-section>
             <div class="passenger-details">
-              <span>{{ passenger.Name }}</span>
+              <span>{{ passenger.DisplayName }}</span>
               <span class="degree">{{ passenger.Degree }}</span>
             </div>
           </q-item-section>

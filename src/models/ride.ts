@@ -1,7 +1,9 @@
 import { Location } from 'stores/location-store'
 import { MinutesDiff } from 'src/tools/date-tools'
-import { Car, Driver, Drop, User } from 'stores/ride-store'
+import { Car, Drop } from 'stores/ride-store'
 import { Pickup } from 'src/models/pickup'
+import { User } from 'src/models/user'
+import { Driver } from 'src/models/driver'
 
 /* Interface extensions would be an ideal substitute to actual classes in this case
  but TS has no explicit support for them, requiring prototype pollution. */

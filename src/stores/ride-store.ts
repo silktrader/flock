@@ -1,21 +1,13 @@
 import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
 import { date } from 'quasar'
-import { RandomFloat, RandomId, RandomInt, RandomName } from 'src/tools/random-tools'
+import { RandomId, RandomInt } from 'src/tools/random-tools'
 import { Location, useLocationStore } from 'stores/location-store'
 import { Ride } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
+import { useUserStore } from 'stores/user-store'
 import subtractFromDate = date.subtractFromDate
 import addToDate = date.addToDate
-
-export interface User {
-  Id: string;
-  Name: string;
-  AvatarUrl: string;
-  Age: number;
-  Degree: string;
-  Badges: ReadonlyArray<string>;
-}
 
 export const Badges = ['punctual', 'veteran', 'cordial']
 
@@ -65,10 +57,6 @@ export const Degrees = [
 
 ]
 
-export interface Driver extends User {
-  Rating: number;
-}
-
 export interface Car {
   Model: string;
   Seats: number;
@@ -94,6 +82,7 @@ export interface RideParameters {
 export const useRideStore = defineStore('ride',
   () => {
     const ls = useLocationStore()
+    const us = useUserStore()
 
     const rides = ref<Ride[]>([])
     const ride = ref<Ride>()
@@ -132,6 +121,9 @@ export const useRideStore = defineStore('ride',
       // signal which addresses should be removed from newly randomly generated ones
       const searchAddresses: ReadonlyArray<string> = [rideParameters.value.Origin.Address, rideParameters.value.Destination.Address]
 
+      // avoid creating rides whose drivers share the same avatar
+      const avoidAvatarIds: Set<number> = new Set()
+
       // tk allow for 0 rides generated!! remember
 
       // create a random number of new rides
@@ -147,11 +139,18 @@ export const useRideStore = defineStore('ride',
         const pickupTime = RandomInt(Math.max(1, reachTime * 0.5), reachTime - 3)
         const pickup = generatePickup(departure, pickupTime, searchAddresses)
 
+        // generate a suitable driver
+        const driver = us.generateDriver(avoidAvatarIds)
+        avoidAvatarIds.add(driver.AvatarId)
+
         // determine random number of total and available seats
         const car = generateCar()
         const passengers = []
+        const passengerAvatarIds: Set<number> = new Set()
         for (let occupiedSeats = RandomInt(0, car.Seats - 1); occupiedSeats > 0; occupiedSeats--) {
-          passengers.push(generateUser())
+          const user = us.generateUser(passengerAvatarIds)
+          passengerAvatarIds.add(user.AvatarId)
+          passengers.push(user)
         }
 
         // build ride with debatable passing of unnamed arguments
@@ -161,37 +160,13 @@ export const useRideStore = defineStore('ride',
           rideParameters.value.Destination,
           arrival,
           departure,
-          generateDriver(),
+          driver,
           car,
           generateDrop(arrival, reachTime - pickupTime, [...searchAddresses, pickup.Address]),
           pickup,
           RandomInt(0, 3),
           passengers
         ))
-      }
-    }
-
-    function generateUser (): User {
-      // choose gender first for naming and avatar purposes
-      const isFemale = Boolean(RandomInt(0, 1))
-      return {
-        Id: RandomId(),
-        Name: RandomName(isFemale, true),
-        AvatarUrl: `https://i.pravatar.cc/150?img=${RandomInt(0, 40)}`,
-        Age: RandomInt(18, 39),
-        Degree: Degrees[RandomInt(0, Degrees.length - 1)].Label,
-        Badges: [
-          RandomFloat(0, 1) > 0.5 ? Badges[0] : '',
-          RandomFloat(0, 1) > 0.7 ? Badges[1] : '',
-          RandomFloat(0, 1) > 0.6 ? Badges[2] : '']
-          .filter(i => i !== '')
-      }
-    }
-
-    function generateDriver (): Driver {
-      return {
-        ...generateUser(),
-        Rating: RandomFloat(2.9, 4.9)
       }
     }
 
