@@ -259,10 +259,10 @@ export const useRideStore = defineStore('ride',
     }
 
     function colourCodePickup (minutes: number): string {
-      if (minutes < PickupThreshold.Minimal) return 'green-2'
-      if (minutes < PickupThreshold.Short) return 'yellow-2'
-      if (minutes < PickupThreshold.Average) return 'orange-2'
-      return 'red-2'
+      if (minutes < PickupThreshold.Minimal) return 'green-3'
+      if (minutes < PickupThreshold.Short) return 'yellow-3'
+      if (minutes < PickupThreshold.Average) return 'orange-3'
+      return 'red-3'
     }
 
     return {

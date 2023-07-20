@@ -2,15 +2,15 @@
 
   <main class="results-container">
 
-    <header class="header">
+    <header class="modal-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
-      <section class="title">
+      <section class="modal-header-title">
         <span>Ride Search</span>
-        <span class="subtitle">Results</span>
+        <span class="modal-header-subtitle">Results</span>
       </section>
       <section>
         <q-btn aria-label="Close" flat icon="las la-bug" size="sm" @click="showOptions = true"/>
-        <q-btn aria-label="Close" flat icon="close" size="lg" @click="router.go(-1)"/>
+        <q-btn aria-label="Close" flat icon="close" size="lg" @click="abort()"/>
       </section>
     </header>
 
@@ -99,6 +99,11 @@ const arriveByDate = computed<string>(() => rs.rideParameters?.ArriveBy ? Format
 
 const destination = computed(() => rs.rideParameters.Destination)
 
+async function abort (): Promise<void> {
+  await router.replace('/')
+  rs.reset()
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -109,28 +114,6 @@ const destination = computed(() => rs.rideParameters.Destination)
   flex-direction: column;
   height: 100vh;
   margin: 0;
-}
-
-.title {
-  display: flex;
-  flex-direction: column;
-  font-size: large;
-  justify-content: center;
-}
-
-.subtitle {
-  font-size: small;
-  opacity: 0.8;
-}
-
-.header {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: $on-primary;
-  background-color: $primary;
 }
 
 #summary {

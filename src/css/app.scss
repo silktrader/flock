@@ -1,1 +1,24 @@
 // app global css in SCSS form
+@import "src/css/quasar.variables.scss";
+
+.modal-header {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: $on-primary;
+  background-color: $primary;
+}
+
+.modal-header-title {
+  display: flex;
+  flex-direction: column;
+  font-size: large;
+  justify-content: center;
+}
+
+.modal-header-subtitle {
+  font-size: small;
+  opacity: 0.8;
+}

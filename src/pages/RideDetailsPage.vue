@@ -2,6 +2,20 @@
 
   <q-page>
 
+    <header class="modal-header">
+      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
+      <section class="modal-header-title">
+        <span>{{
+            `${ride.Origin.Label ?? ride.Origin.Address}
+            to ${ride.Destination.Label ?? ride.Destination.Address}`
+          }}</span>
+        <span class="modal-header-subtitle">{{ ExtractDate(ride.Departure) }}</span>
+      </section>
+      <section>
+        <q-btn aria-label="Close" flat icon="close" size="lg" @click="abort()"/>
+      </section>
+    </header>
+
     <section class="route">
 
       <q-img class="route-image shadow-7" fit="cover" spinner-color="white" src="src/assets/route-map.svg"/>
@@ -237,7 +251,7 @@
 
 <script lang="ts" setup>
 
-import { LeftButton, useNavigationStore } from 'stores/navigation-store'
+import { useNavigationStore } from 'stores/navigation-store'
 import { Transport, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { ExtractDate, ExtractTime } from 'src/tools/date-tools'
@@ -255,12 +269,13 @@ const ride = computed<Ride>(() => {
   return rs.ride
 })
 
-ns.setButton(LeftButton.Back)
-ns.setTitle(`${ride.value.Origin.Label ?? ride.value.Origin.Address} to ${ride.value.Destination.Label ?? ride.value.Destination.Address}`)
-ns.setSubtitle(ExtractDate(ride.value.Departure))
-
 function RequestRide (): void {
   router.push('/request-sent')
+}
+
+async function abort (): Promise<void> {
+  await router.replace('/')
+  rs.reset()
 }
 
 </script>
