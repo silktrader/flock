@@ -1,24 +1,23 @@
 <template>
 
   <q-page>
-
     <div class="container">
 
-      <div class="back-control">
-        <q-btn aria-label="Back" flat icon="arrow_back" round size="lg" @click="ReviewRide()"/>
-      </div>
-
-      <header>
+      <header class="request-sent-header">
+        <div class="close-button">
+          <q-btn aria-label="Close" flat icon="close" size="lg" @click="abort()"/>
+        </div>
+        <div style="flex-grow: 3"></div>
         <q-img fit="contain" height="200px" src="src/assets/success-car.svg"/>
+        <div style="flex-grow: 3"></div>
       </header>
 
       <section class="messages">
 
         <span class="request-sent">Request Sent!</span>
         <q-icon name="las la-check-circle" size="lg"/>
-        <!--        <q-img fit="contain" height="32px" src="src/assets/checkmark.webp"/>-->
         <div class="request-wait">
-          <span>We will <em>notify</em> you when {{ ride.Driver.Name }} reviews the proposed route.</span>
+          <span>We will <em>notify</em> you when {{ ride.Driver.DisplayName }} reviews the proposed route.</span>
           <span>Fingers crossed!</span>
           <div class="notification-icons">
             <q-icon name="las la-at" size="sm"/>
@@ -41,10 +40,6 @@
         </div>
 
         <div class="text-action">
-          <q-btn color="accent" label="Add a comment to your request" outline rounded/>
-        </div>
-
-        <div class="text-action">
           <q-btn color="accent" label="View your Pending Requests" outline rounded/>
         </div>
 
@@ -58,14 +53,12 @@
 
 <script lang="ts" setup>
 
-import { useNavigationStore } from 'stores/navigation-store'
 import { RideParameters, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { Ride } from 'src/models/ride'
 import { date } from 'quasar'
 import { useRouter } from 'vue-router'
 
-const ns = useNavigationStore()
 const rs = useRideStore()
 const router = useRouter()
 
@@ -76,8 +69,12 @@ const ride = computed<Ride>(() => {
   return rs.ride
 })
 
-ns.hideToolbar()
 rs.requestSelectedRide()
+
+async function abort (): Promise<void> {
+  await router.replace('/')
+  rs.reset()
+}
 
 function SearchReturnRides (): void {
   // invert destination and origin
@@ -92,12 +89,6 @@ function SearchReturnRides (): void {
   rs.setNewParameters(newParameters)
   router.push('/search-results')
   rs.generateNewRides()
-  ns.showToolbar()
-}
-
-async function ReviewRide (): Promise<void> {
-  await router.go(-1)
-  ns.showToolbar()
 }
 
 </script>
@@ -113,11 +104,16 @@ async function ReviewRide (): Promise<void> {
   color: $on-primary;
 }
 
-header {
+.request-sent-header {
   flex-grow: 5;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+}
+
+.close-button {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
 }
 
 .messages {

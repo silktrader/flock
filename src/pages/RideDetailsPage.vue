@@ -57,7 +57,7 @@
         <q-timeline-entry :avatar="ride.Driver.AvatarUrl" color="yellow-7">
           <template v-slot:title>
             <div class="timeline-header">
-              <span>Meet {{ ride.Driver.Name }}</span>
+              <span>Meet {{ ride.Driver.DisplayName }}</span>
               <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.Pickup.Date) }}</span>
             </div>
           </template>
@@ -80,7 +80,7 @@
         <q-timeline-entry icon="directions_car">
           <template v-slot:title>
             <div class="timeline-header">
-              <span>{{ ride.Driver.Name }} drops you</span>
+              <span>{{ ride.Driver.DisplayName }} drops you</span>
               <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
                   ExtractTime(ride.Drop.Date)
                 }}</span>
