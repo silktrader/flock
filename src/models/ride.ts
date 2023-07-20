@@ -1,6 +1,6 @@
 import { Location } from 'stores/location-store'
 import { MinutesDiff } from 'src/tools/date-tools'
-import { Car, Drop } from 'stores/ride-store'
+import { Car, Drop, Transport } from 'stores/ride-store'
 import { Pickup } from 'src/models/pickup'
 import { User } from 'src/models/user'
 import { Driver } from 'src/models/driver'
@@ -45,6 +45,10 @@ export class Ride {
 
   get DropDuration (): number {
     return MinutesDiff(this.Arrival, this.Drop.Date)
+  }
+
+  get WalkDuration (): number {
+    return this.DropDuration + this.Pickup.Transport === Transport.None ? this.PickupDuration : 0
   }
 
   get FreeSeats (): number {

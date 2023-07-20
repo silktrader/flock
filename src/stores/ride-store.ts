@@ -17,6 +17,13 @@ export enum Transport {
   Subway = 'Subway'
 }
 
+export enum PickupThreshold {
+  Minimal = 5,
+  Short = 10,
+  Average = 20,
+  Long = 30
+}
+
 export const Degrees = [
   {
     Label: 'ACSAI',
@@ -251,6 +258,13 @@ export const useRideStore = defineStore('ride',
       }
     }
 
+    function colourCodePickup (minutes: number): string {
+      if (minutes < PickupThreshold.Minimal) return 'green-2'
+      if (minutes < PickupThreshold.Short) return 'yellow-2'
+      if (minutes < PickupThreshold.Average) return 'orange-2'
+      return 'red-2'
+    }
+
     return {
       rides: readonly(rides),
       ride: readonly(ride),
@@ -259,6 +273,7 @@ export const useRideStore = defineStore('ride',
       setNewParameters,
       selectRide,
       requestSelectedRide,
-      reset
+      reset,
+      colourCodePickup
     }
   })

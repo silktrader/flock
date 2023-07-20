@@ -47,15 +47,17 @@
 
         <section class="schedule-details">
 
-          <div v-if="r.Pickup.Transport === Transport.Subway" class="ride-detail">
+          <div v-if="r.Pickup.Transport === Transport.Subway"
+               :class="['ride-detail', pickupClass]">
             <q-icon name="directions_subway" size="sm"></q-icon>
           </div>
 
-          <div v-else-if="r.Pickup.Transport === Transport.Bus" class="ride-detail">
+          <div v-else-if="r.Pickup.Transport === Transport.Bus"
+               :class="['ride-detail', pickupClass]">
             <q-icon name="directions_bus" size="sm"></q-icon>
           </div>
 
-          <div class="ride-detail">
+          <div :class="['ride-detail', walkClass]">
             <q-icon name="directions_walk" size="sm"></q-icon>
           </div>
 
@@ -77,6 +79,7 @@ import { Transport, useRideStore } from 'stores/ride-store'
 import { useRouter } from 'vue-router'
 import { Ride } from 'src/models/ride'
 import { ExtractTime, FormatDuration } from '../tools/date-tools'
+import { computed } from 'vue'
 
 const rs = useRideStore()
 const router = useRouter()
@@ -84,6 +87,14 @@ const router = useRouter()
 const props = defineProps<{
   r: Ride // webstorm will complain if the instance is named after the interface (bug)
 }>()
+
+const pickupClass = computed<string>(() =>
+  `bg-${rs.colourCodePickup(props.r.PickupDuration)}`
+)
+
+const walkClass = computed<string>(() =>
+  `bg-${rs.colourCodePickup(props.r.WalkDuration)}`
+)
 
 function reviewRide (): void {
   rs.selectRide(props.r)
