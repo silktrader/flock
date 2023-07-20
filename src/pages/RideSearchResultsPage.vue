@@ -2,6 +2,18 @@
 
   <main class="results-container">
 
+    <header class="header">
+      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
+      <section class="title">
+        <span>Ride Search</span>
+        <span class="subtitle">Results</span>
+      </section>
+      <section>
+        <q-btn aria-label="Close" flat icon="las la-bug" size="sm" @click="showOptions = true"/>
+        <q-btn aria-label="Close" flat icon="close" size="lg" @click="router.go(-1)"/>
+      </section>
+    </header>
+
     <section id="summary" class="shadow-6">
 
       <div class="locations">
@@ -31,9 +43,37 @@
 
     <q-separator/>
 
-    <div class="ride-cards">
+    <div v-if="resultCardVersion === 'a'" class="ride-cards">
       <search-result-v1 v-for='ride in rs.rides' :key='ride.Id' :r="ride"/>
     </div>
+
+    <div v-else-if="resultCardVersion === 'b'" class="ride-cards">
+      <search-result-v2 v-for='ride in rs.rides' :key='ride.Id' :r="ride"/>
+    </div>
+
+    <q-dialog v-model="showOptions">
+      <q-card class="dialog">
+        <q-card-section>
+          <div class="text-h6">Component Versions</div>
+        </q-card-section>
+
+        <q-item-label header>Results Cards</q-item-label>
+        <q-item dense>
+          <q-item-section>
+            <q-btn-toggle
+              v-model="resultCardVersion"
+              :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
+              outline
+              toggle-color="primary"
+            />
+          </q-item-section>
+        </q-item>
+
+        <q-card-actions align="right">
+          <q-btn v-close-popup flat label="Close" no-caps/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
   </main>
 
@@ -41,18 +81,18 @@
 
 <script lang="ts" setup>
 
-import { LeftButton, useNavigationStore } from 'stores/navigation-store'
 import { useRideStore } from 'stores/ride-store'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { ExtractTime, FormatFriendlyDate } from 'src/tools/date-tools'
-import SearchResultV1 from 'components/search-result-v1.vue'
+import SearchResultV1 from 'components/SearchResultV1.vue'
+import SearchResultV2 from 'components/SearchResultV2.vue'
+import { useRouter } from 'vue-router'
 
-const ns = useNavigationStore()
 const rs = useRideStore()
+const router = useRouter()
 
-ns.setTitle('Ride Search')
-ns.setSubtitle('Results')
-ns.setButton(LeftButton.Back)
+const showOptions = ref<boolean>(false)
+const resultCardVersion = ref<string>('b')
 
 const arriveByTime = computed<string>(() => rs.rideParameters?.ArriveBy ? ExtractTime(rs.rideParameters.ArriveBy) : '')
 const arriveByDate = computed<string>(() => rs.rideParameters?.ArriveBy ? FormatFriendlyDate(rs.rideParameters.ArriveBy) : '')
@@ -67,8 +107,30 @@ const destination = computed(() => rs.rideParameters.Destination)
 .results-container {
   display: flex;
   flex-direction: column;
-  height: 93vh;
+  height: 100vh;
   margin: 0;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  font-size: large;
+  justify-content: center;
+}
+
+.subtitle {
+  font-size: small;
+  opacity: 0.8;
+}
+
+.header {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: $on-primary;
+  background-color: $primary;
 }
 
 #summary {
@@ -129,6 +191,11 @@ const destination = computed(() => rs.rideParameters.Destination)
 .ride-details-header em {
   font-style: normal;
   font-weight: bold;
+}
+
+.dialog {
+  background-color: $surface-variant;
+  color: $on-surface-variant;
 }
 
 </style>

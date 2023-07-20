@@ -11,6 +11,7 @@ export const useNavigationStore = defineStore('navigation', () => {
   const title = ref<string>('Flock')
   const subtitle = ref<string>('')
   const leftButton = ref<string>(LeftButton.Menu)
+  const debugButton = ref<boolean>(false)
 
   function setTitle (newTitle: string): void {
     title.value = newTitle
@@ -32,6 +33,10 @@ export const useNavigationStore = defineStore('navigation', () => {
     toolbar.value = true
   }
 
+  function toggleDebugButton (): void {
+    debugButton.value = !debugButton.value
+  }
+
   return {
     toolbar: readonly(toolbar),
     title: readonly(title),
@@ -41,7 +46,8 @@ export const useNavigationStore = defineStore('navigation', () => {
     setSubtitle,
     setButton,
     showToolbar,
-    hideToolbar
+    hideToolbar,
+    toggleDebugButton
   }
 }
 )

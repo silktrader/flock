@@ -21,7 +21,7 @@
             <span>Leave at <em>{{ ExtractTime(r.Departure) }}</em></span>
             <span>Arrive at <em>{{ ExtractTime(r.Arrival) }}</em></span>
           </div>
-          <aside class="ride-details-header-duration">
+          <aside class="duration">
             <q-icon name="update" size="xs"></q-icon>
             <span>{{ FormatDuration(r.Departure, r.Arrival) }}</span>
           </aside>
@@ -206,7 +206,7 @@ function reviewRide (): void {
   justify-content: space-between;
 }
 
-.ride-details-header-duration {
+.duration {
   opacity: 65%;
   display: flex;
   flex-direction: column;
