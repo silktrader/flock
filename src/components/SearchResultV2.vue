@@ -1,72 +1,81 @@
 <template>
 
-  <div v-ripple class="card" @click="reviewRide()">
+  <div class="result-container">
 
-    <div class="driver-schedule">
+    <div v-if="r.Recurring" class="regular-route-header">
+      <span>This ride recurs every week.</span>
+      <q-icon name="info" size="sm"></q-icon>
+    </div>
 
-      <section class="driver">
-        <div class="driver-avatar">
-          <q-avatar size="100px">
-            <img :src="r.Driver.AvatarUrl"/>
-          </q-avatar>
-          <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
-        </div>
-        <span class="driver-name">{{ r.Driver.DisplayName }}</span>
-      </section>
+    <div v-ripple class="card" @click="reviewRide()">
 
-      <section class="schedule">
+      <div class="driver-schedule">
 
-        <section class="schedule-times">
-
-          <aside class="duration">
-            <q-icon name="update" size="sm"></q-icon>
-            <span>{{ FormatDuration(r.Departure, r.Arrival) }}</span>
-          </aside>
-
-          <div class="locations">
-
-            <div class="origin">
-              <q-icon name="trip_origin" size="sm"/>
-              <div class="origin-details">
-                <span>{{ ExtractTime(r.Departure) }}</span>
-              </div>
-            </div>
-
-            <div class="route"></div>
-
-            <div class="destination">
-              <q-icon name="location_on" size="sm"/>
-              <div class="destination-details">
-                <span>{{ ExtractTime(r.Arrival) }}</span>
-              </div>
-            </div>
-
+        <section class="driver">
+          <div class="driver-avatar">
+            <q-avatar size="100px">
+              <img :src="r.Driver.AvatarUrl"/>
+            </q-avatar>
+            <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
           </div>
-
+          <span class="driver-name">{{ r.Driver.DisplayName }}</span>
         </section>
 
-        <section class="schedule-details">
+        <section class="schedule">
 
-          <div v-if="r.Pickup.Transport === Transport.Subway"
-               :class="['ride-detail', pickupClass]">
-            <q-icon name="directions_subway" size="sm"></q-icon>
-          </div>
+          <section class="schedule-times">
 
-          <div v-else-if="r.Pickup.Transport === Transport.Bus"
-               :class="['ride-detail', pickupClass]">
-            <q-icon name="directions_bus" size="sm"></q-icon>
-          </div>
+            <aside class="duration">
+              <q-icon name="update" size="sm"></q-icon>
+              <span>{{ FormatDuration(r.Departure, r.Arrival) }}</span>
+            </aside>
 
-          <div :class="['ride-detail', walkClass]">
-            <q-icon name="directions_walk" size="sm"></q-icon>
-          </div>
+            <div class="locations">
 
-          <div class="expense">
-            {{ r.Expense }} €
-          </div>
+              <div class="origin">
+                <q-icon name="trip_origin" size="sm"/>
+                <div class="origin-details">
+                  <span>{{ ExtractTime(r.Departure) }}</span>
+                </div>
+              </div>
 
+              <div class="route"></div>
+
+              <div class="destination">
+                <q-icon name="location_on" size="sm"/>
+                <div class="destination-details">
+                  <span>{{ ExtractTime(r.Arrival) }}</span>
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+
+          <section class="schedule-details">
+
+            <div v-if="r.Pickup.Transport === Transport.Subway"
+                 :class="['ride-detail', pickupClass]">
+              <q-icon name="directions_subway" size="sm"></q-icon>
+            </div>
+
+            <div v-else-if="r.Pickup.Transport === Transport.Bus"
+                 :class="['ride-detail', pickupClass]">
+              <q-icon name="directions_bus" size="sm"></q-icon>
+            </div>
+
+            <div :class="['ride-detail', walkClass]">
+              <q-icon name="directions_walk" size="sm"></q-icon>
+            </div>
+
+            <div class="expense">
+              {{ r.Expense }} €
+            </div>
+
+          </section>
         </section>
-      </section>
+      </div>
+
     </div>
 
   </div>
@@ -105,6 +114,27 @@ function reviewRide (): void {
 
 <style lang="scss" scoped>
 @import "src/css/quasar.variables.scss";
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.regular-route-header {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-style: italic;
+  font-size: small;
+  padding: 6px 6px 12px;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  transform: translateY(6px);
+  color: $on-surface-variant;
+  background-color: $surface-variant;
+  z-index: -1;
+}
 
 .card {
   padding: 24px;

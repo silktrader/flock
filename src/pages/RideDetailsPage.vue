@@ -251,14 +251,12 @@
 
 <script lang="ts" setup>
 
-import { useNavigationStore } from 'stores/navigation-store'
 import { Transport, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { ExtractDate, ExtractTime } from 'src/tools/date-tools'
 import { Ride } from 'src/models/ride'
 import { useRouter } from 'vue-router'
 
-const ns = useNavigationStore()
 const rs = useRideStore()
 const router = useRouter()
 
