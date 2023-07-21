@@ -44,11 +44,11 @@
     <q-separator/>
 
     <div v-if="resultCardVersion === 'a'" class="ride-cards">
-      <search-result-v1 v-for='ride in rs.rides' :key='ride.Id' :r="ride"/>
+      <search-result-v1 v-for='ride in rides' :key='ride.Id' :r="ride"/>
     </div>
 
     <div v-else-if="resultCardVersion === 'b'" class="ride-cards">
-      <search-result-v2 v-for='ride in rs.rides' :key='ride.Id' :r="ride"/>
+      <search-result-v2 v-for='ride in rides' :key='ride.Id' :r="ride"/>
     </div>
 
     <q-dialog v-model="showOptions">
@@ -87,6 +87,7 @@ import { ExtractTime, FormatFriendlyDate } from 'src/tools/date-tools'
 import SearchResultV1 from 'components/SearchResultV1.vue'
 import SearchResultV2 from 'components/SearchResultV2.vue'
 import { useRouter } from 'vue-router'
+import { Ride } from 'src/models/ride'
 
 const rs = useRideStore()
 const router = useRouter()
@@ -98,6 +99,14 @@ const arriveByTime = computed<string>(() => rs.rideParameters?.ArriveBy ? Extrac
 const arriveByDate = computed<string>(() => rs.rideParameters?.ArriveBy ? FormatFriendlyDate(rs.rideParameters.ArriveBy) : '')
 
 const destination = computed(() => rs.rideParameters.Destination)
+
+const rides = computed<ReadonlyArray<Ride>>(() => [...rs.rides].sort(sortByRecurring))
+
+function sortByRecurring (a: Ride, b: Ride): number {
+  if (a.Recurring && !b.Recurring) return -1
+  if (b.Recurring && !a.Recurring) return 1
+  return 0
+}
 
 async function abort (): Promise<void> {
   await router.replace('/')
