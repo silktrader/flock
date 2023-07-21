@@ -219,7 +219,7 @@ function reviewRide (): void {
   align-items: center;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 .route {

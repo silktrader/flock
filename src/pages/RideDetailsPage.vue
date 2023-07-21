@@ -231,6 +231,56 @@
 
         <q-separator spaced/>
 
+        <q-item v-if="ride.Expense === 0">
+          <q-item-section>
+            <div class="expense-container">
+              Free Ride
+            </div>
+            <aside class="expense-none-notice">
+              <q-icon name="las la-mug-hot" size="md"/>
+              <span>
+              You can still tip {{ ride.Driver.DisplayName }} when the ride's over. <br/>
+              Donuts and coffee are welcome too!
+              </span>
+            </aside>
+          </q-item-section>
+
+        </q-item>
+
+        <q-item v-else>
+          <q-item-section>
+            <div class="expense-container">
+              <span class="expense-title">Your Contribution <q-icon name="info"/>
+               <q-tooltip>
+                This amount comprises <b>all costs</b>, including parking and fuel. You're welcome to <b>tip the driver</b>
+                 in excess of displayed figure!
+              </q-tooltip>
+              </span>
+
+              <div class="expense">
+                {{ ride.Expense }} €
+              </div>
+              <aside class="expense-payments-container">
+                <span>Pay when the ride's over with:</span>
+                <div class="expense-payments-means">
+                  <q-icon name="las la-money-bill-wave" size="sm">
+                    <q-tooltip>Cash</q-tooltip>
+                  </q-icon>
+                  <q-icon name="lab la-paypal" size="sm">
+                    <q-tooltip>Paypal</q-tooltip>
+                  </q-icon>
+                  <q-icon name="lab la-bitcoin" size="sm">
+                    <q-tooltip>Bitcoins</q-tooltip>
+                  </q-icon>
+                </div>
+              </aside>
+            </div>
+          </q-item-section>
+
+        </q-item>
+
+        <q-separator spaced/>
+
         <template v-if="ride.Recurring">
 
           <q-item>
@@ -471,6 +521,54 @@ footer {
 
 small {
   font-size: xx-small;
+}
+
+.expense-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: medium;
+  gap: 8px;
+}
+
+.expense {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px;
+  border-radius: 12px;
+  padding: 8px;
+  border: 2px solid $secondary;
+}
+
+.expense-title {
+  font-size: medium;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.expense-none-notice {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 24px;
+  font-style: italic;
+}
+
+.expense-payments-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: small;
+  gap: 8px;
+}
+
+.expense-payments-means {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 }
 
 #recurring-information {
