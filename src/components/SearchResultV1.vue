@@ -44,7 +44,7 @@
               <span>{{ r.Expense }}</span>
             </div>
 
-            <div class="ride-detail">
+            <div v-if="r.Recurring" class="ride-detail">
               <q-icon name="event_repeat" size="sm"/>
             </div>
 
