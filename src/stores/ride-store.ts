@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
 import { date } from 'quasar'
-import { RandomId, RandomInt } from 'src/tools/random-tools'
+import { RandomFloat, RandomId, RandomInt } from 'src/tools/random-tools'
 import { Location, useLocationStore } from 'stores/location-store'
 import { Ride } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
@@ -131,6 +131,9 @@ export const useRideStore = defineStore('ride',
       // avoid creating rides whose drivers share the same avatar
       const avoidAvatarIds: Set<number> = new Set()
 
+      // flag the creation of at least one recurring ride, if any ride at all is to be generated
+      let hasRecurringRide = false
+
       // tk allow for 0 rides generated!! remember
 
       // create a random number of new rides
@@ -160,20 +163,24 @@ export const useRideStore = defineStore('ride',
           passengers.push(user)
         }
 
-        // build ride with debatable passing of unnamed arguments
-        rides.value.push(new Ride(
-          RandomId(),
-          rideParameters.value.Origin,
-          rideParameters.value.Destination,
-          arrival,
-          departure,
-          driver,
-          car,
-          generateDrop(arrival, reachTime - pickupTime, [...searchAddresses, pickup.Address]),
-          pickup,
-          RandomInt(0, 3),
-          passengers
-        ))
+        // ensure that at least one ride in the whole set is recurring
+        const recurring: boolean = !hasRecurringRide ? true : RandomFloat(0, 1) > 0.75
+        hasRecurringRide = recurring || hasRecurringRide
+
+        rides.value.push(new Ride({
+          Id: RandomId(),
+          Origin: rideParameters.value.Origin,
+          Destination: rideParameters.value.Destination,
+          Arrival: arrival,
+          Departure: departure,
+          Driver: driver,
+          Car: car,
+          Drop: generateDrop(arrival, reachTime - pickupTime, [...searchAddresses, pickup.Address]),
+          Pickup: pickup,
+          Expense: RandomInt(0, 3),
+          Passengers: passengers,
+          Recurring: recurring
+        }))
       }
     }
 
