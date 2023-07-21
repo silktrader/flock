@@ -229,11 +229,27 @@
 
         </q-item>
 
+        <q-separator spaced/>
+
+        <template v-if="ride.Recurring">
+
+          <q-item>
+            <q-item-section>
+              <div id="recurring-information">
+                <q-icon name="las la-calendar-week" size="lg"/>
+                <span>
+              {{ ride.Driver.DisplayName }} drives to <b>{{ ride.Destination.Label ?? ride.Destination.Address }}</b> every
+              <b>{{ ExtractDay(ride.Departure) }}</b> arriving at <b>{{ ExtractTime(ride.Arrival) }}</b>.
+                </span>
+              </div>
+            </q-item-section>
+
+          </q-item>
+        </template>
+
       </q-list>
 
     </section>
-
-    <q-separator spaced/>
 
     <footer>
       <span v-if="ride.Requested">Ride requested, pending approval</span>
@@ -253,7 +269,7 @@
 
 import { Transport, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
-import { ExtractDate, ExtractTime } from 'src/tools/date-tools'
+import { ExtractDate, ExtractDay, ExtractTime } from 'src/tools/date-tools'
 import { Ride } from 'src/models/ride'
 import { useRouter } from 'vue-router'
 
@@ -386,8 +402,8 @@ footer {
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-bottom: 16px;
-  padding-top: 8px;
+  margin-bottom: 24px;
+  margin-top: 24px;
   align-items: center;
 }
 
@@ -455,6 +471,19 @@ footer {
 
 small {
   font-size: xx-small;
+}
+
+#recurring-information {
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  font-size: medium;
+  width: 100%;
+  background-color: $tertiary-container;
+  color: $on-tertiary-container
 }
 
 </style>
