@@ -106,10 +106,18 @@ export const useRideStore = defineStore('ride',
 
     const rideParameters = ref<RideParameters>(defaultParameters)
 
+    // Clears existing rides, selected ride and parameters.
     function reset (): void {
       rides.value.splice(0)
       rideParameters.value = defaultParameters
       ride.value = undefined
+    }
+
+    // Fetches new rides with updated parameters.
+    function updateSearch (): void {
+      rides.value.splice(0)
+      ride.value = undefined
+      generateNewRides()
     }
 
     function setNewParameters (parameters: RideParameters): void {
@@ -272,6 +280,14 @@ export const useRideStore = defineStore('ride',
       return 'red-3'
     }
 
+    function setDestination (newLocation: Location): void {
+      rideParameters.value.Destination = newLocation
+    }
+
+    function setOrigin (newLocation: Location): void {
+      rideParameters.value.Origin = newLocation
+    }
+
     return {
       rides: readonly(rides),
       ride: readonly(ride),
@@ -281,6 +297,9 @@ export const useRideStore = defineStore('ride',
       selectRide,
       requestSelectedRide,
       reset,
-      colourCodePickup
+      colourCodePickup,
+      setDestination,
+      setOrigin,
+      updateSearch
     }
   })

@@ -14,7 +14,8 @@
       </section>
     </header>
 
-    <search-controls-v1/>
+    <search-controls-v1 v-if="searchControlsVersion === 'a'"/>
+    <search-controls-v2 v-else/>
 
     <q-separator/>
 
@@ -32,17 +33,33 @@
           <div class="text-h6">Component Versions</div>
         </q-card-section>
 
-        <q-item-label header>Results Cards</q-item-label>
-        <q-item dense>
-          <q-item-section>
-            <q-btn-toggle
-              v-model="resultCardVersion"
-              :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
-              outline
-              toggle-color="primary"
-            />
-          </q-item-section>
-        </q-item>
+        <q-list>
+
+          <q-item-label header>Search Controls</q-item-label>
+          <q-item dense>
+            <q-item-section>
+              <q-btn-toggle
+                v-model="searchControlsVersion"
+                :options="[{label: 'Initial', value: 'a'}, {label: 'Expanded', value: 'b'}]"
+                outline
+                toggle-color="primary"
+              />
+            </q-item-section>
+          </q-item>
+
+          <q-item-label header>Results Cards</q-item-label>
+          <q-item dense>
+            <q-item-section>
+              <q-btn-toggle
+                v-model="resultCardVersion"
+                :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
+                outline
+                toggle-color="primary"
+              />
+            </q-item-section>
+          </q-item>
+
+        </q-list>
 
         <q-card-actions align="right">
           <q-btn v-close-popup flat label="Close" no-caps/>
@@ -63,12 +80,14 @@ import SearchResultV2 from 'components/SearchResultV2.vue'
 import { useRouter } from 'vue-router'
 import { Ride } from 'src/models/ride'
 import SearchControlsV1 from 'components/SearchControlsV1.vue'
+import SearchControlsV2 from 'components/SearchControlsV2.vue'
 
 const rs = useRideStore()
 const router = useRouter()
 
 const showOptions = ref<boolean>(false)
 const resultCardVersion = ref<string>('b')
+const searchControlsVersion = ref<string>('b')
 
 const rides = computed<ReadonlyArray<Ride>>(() => [...rs.rides].sort(sortByRecurring))
 
@@ -104,6 +123,7 @@ async function abort (): Promise<void> {
 }
 
 .dialog {
+  padding: 8px;
   background-color: $surface-variant;
   color: $on-surface-variant;
 }
