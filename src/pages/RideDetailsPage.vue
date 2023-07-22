@@ -125,34 +125,32 @@
         <q-item>
 
           <q-item-section>
-            <q-avatar size="64px">
+            <q-avatar size="88px">
               <q-img :src="ride.Driver.AvatarUrl"/>
+              <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
             <div class="driver-name">
               <span>{{ ride.Driver.DisplayName }}</span>
-              <!--              <span class="degree">{{ ride.Driver.Degree }}</span>-->
-              <div>
-                <q-btn color="primary" dense flat icon="las la-phone"/>
-                <q-btn color="primary" dense flat icon="las la-sms"/>
-              </div>
+              <span class="degree driver-degree">{{ ride.Driver.Degree }}</span>
+              <!--              <div class="rating">-->
+              <!--                <q-rating-->
+              <!--                  v-model="ride.Driver.Rating"-->
+              <!--                  color="orange"-->
+              <!--                  icon-half="star_half"-->
+              <!--                  readonly-->
+              <!--                  size="small"-->
+              <!--                />-->
+              <!--                <span class="rating-number">{{ ride.Driver.Rating.toFixed(1) }}</span>-->
+              <!--              </div>-->
             </div>
           </q-item-section>
 
-          <q-item-section>
-            <div class="rating">
-              <q-rating
-                v-model="ride.Driver.Rating"
-                color="orange"
-                icon-half="star_half"
-                readonly
-                size="small"
-              />
-              <span class="rating-number">{{ ride.Driver.Rating.toFixed(1) }}</span>
-            </div>
-          </q-item-section>
+          <div class="passenger-action">
+            <q-btn color="secondary" flat icon="las la-sms" label="Contact" no-caps rounded/>
+          </div>
 
         </q-item>
 
@@ -161,7 +159,7 @@
         <q-item v-for="passenger in ride.Passengers" :key="passenger.Id">
 
           <q-item-section>
-            <q-avatar size="50px">
+            <q-avatar size="64px">
               <q-img :src="passenger.AvatarUrl"/>
             </q-avatar>
           </q-item-section>
@@ -174,10 +172,8 @@
           </q-item-section>
 
           <q-item-section>
-            <div class="passenger-badges">
-              <q-icon v-if="passenger.Badges.includes('punctual')" name="watch" size="sm"/>
-              <q-icon v-if="passenger.Badges.includes('cordial')" name="mood" size="sm"/>
-              <q-icon v-if="passenger.Badges.includes('veteran')" name="star" size="sm"/>
+            <div class="passenger-action">
+              <q-btn color="secondary" flat icon="las la-user-check" label="View" no-caps rounded/>
             </div>
           </q-item-section>
 
@@ -196,13 +192,14 @@
           </q-item-section>
           <q-item-section><span class="free-seats-text">{{ ride.FreeSeats }} free seat{{
               ride.FreeSeats > 1 ? 's' : ''
-            }}!</span>
+            }}</span>
           </q-item-section>
 
           <q-item-section>
             <div class="free-seats-actions">
-              <q-btn v-if="ride.FreeSeats > 1" color="primary" dense flat icon="las la-user-plus"
-                     label="Invite"></q-btn>
+              <q-btn v-if="ride.FreeSeats > 1" color="secondary" flat icon="las la-user-plus"
+                     label="Invite" no-caps rounded
+              />
             </div>
           </q-item-section>
         </q-item>
@@ -221,7 +218,7 @@
           <q-item-section><span class="car-model">{{ ride.Car.Model }}</span></q-item-section>
 
           <q-item-section>
-            <div class="passenger-badges">
+            <div class="passenger-action">
               <q-icon v-if='ride.Car.Electric' name="electric_bolt" size="sm"/>
               <q-icon v-if='ride.Car.AirConditioning' name="ac_unit" size="sm"/>
             </div>
@@ -384,7 +381,11 @@ async function abort (): Promise<void> {
   font-size: smaller;
 }
 
-.passenger-badges {
+.driver-degree {
+  font-size: small;
+}
+
+.passenger-action {
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -582,6 +583,23 @@ small {
   width: 100%;
   background-color: $tertiary-container;
   color: $on-tertiary-container
+}
+
+.driver-rating {
+  position: absolute;
+  bottom: -12px;
+  right: -12px;
+  height: 48px;
+  width: 48px;
+  background-image: url(/src/assets/star.png);
+  background-size: 48px 48px;
+  background-repeat: no-repeat;
+  text-align: center;
+  font-size: xx-small;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $on-secondary;
 }
 
 </style>

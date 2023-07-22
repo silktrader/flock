@@ -177,7 +177,7 @@ export const useRideStore = defineStore('ride',
           Car: car,
           Drop: generateDrop(arrival, reachTime - pickupTime, [...searchAddresses, pickup.Address]),
           Pickup: pickup,
-          Expense: RandomInt(0, 3),
+          Expense: RandomInt(0, 4),
           Passengers: passengers,
           Recurring: recurring
         }))
