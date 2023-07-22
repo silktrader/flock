@@ -125,7 +125,7 @@
         <q-item>
 
           <q-item-section>
-            <q-avatar size="88px">
+            <q-avatar size="88  px">
               <q-img :src="ride.Driver.AvatarUrl"/>
               <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
             </q-avatar>
