@@ -1,0 +1,91 @@
+@import "src/css/quasar.variables.scss";
+
+.vue-scroll-picker {
+  position: relative;
+  width: 100%;
+  height: 120px; // assume three items are displayed, each requiring 40px as per Material guidelines
+  overflow: hidden
+}
+
+.vue-scroll-picker-rotator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - .6em)
+}
+
+.vue-scroll-picker-rotator-transition {
+  transition: top ease .2s
+}
+
+.vue-scroll-picker-item {
+  text-align: right;
+  padding: 8px;
+}
+
+.vue-scroll-picker-item-selected {
+  color: $on-primary-container;
+  background-color: $primary-container;
+}
+
+.vue-scroll-picker-item-empty, .vue-scroll-picker-item-placeholder {
+  color: #aaa
+}
+
+.vue-scroll-picker-item-empty.vue-scroll-picker-item-selected, .vue-scroll-picker-item-placeholder.vue-scroll-picker-item-selected {
+  color: #777
+}
+
+.vue-scroll-picker-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0
+}
+
+.vue-scroll-picker-layer-top, .vue-scroll-picker-layer-selection, .vue-scroll-picker-layer-bottom {
+  position: absolute;
+  left: 0;
+  right: 0
+}
+
+.vue-scroll-picker-layer-top {
+  box-sizing: border-box;
+  //border-bottom: 1px solid #c8c7cc;
+  //background: linear-gradient(180deg, #fff 10%, rgba(255, 255, 255, .7));
+  top: 0;
+  height: 40px;
+  cursor: pointer
+}
+
+.vue-scroll-picker-layer-selection {
+  top: calc(50% - 1em);
+  bottom: calc(50% - 1em)
+}
+
+.vue-scroll-picker-layer-bottom {
+  //border-top: 1px solid #c8c7cc;
+  //background: linear-gradient(0deg, #fff 10%, rgba(255, 255, 255, .7));
+  bottom: 0;
+  height: 80px;
+  cursor: pointer
+}
+
+.days .vue-scroll-picker-item {
+  padding-right: 16px;
+}
+
+.minutes .vue-scroll-picker-item-selected {
+  border-bottom-right-radius: $border-radius;
+  border-top-right-radius: $border-radius;
+}
+
+.days .vue-scroll-picker-item-selected {
+  border-bottom-left-radius: $border-radius;
+  border-top-left-radius: $border-radius;
+}
+
+.minutes .vue-scroll-picker-item, .hours .vue-scroll-picker-item {
+  text-align: left;
+}
