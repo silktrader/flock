@@ -52,6 +52,8 @@ $on-background: #e3e3db;
 $surface-variant: #44483d;
 $on-surface-variant: #c4c8ba;
 
+$outline: #8e9285;
+
 $positive: #21BA45;
 $negative: #ffb4ab;
 $info: #2d9cb3;
@@ -59,23 +61,44 @@ $warning: #f4c431;
 
 $carpool: #fad7a1;
 
+$border-radius: 12px;
+
+// the follow classes follow Google's Material 3 guidelines for buttons
+// as illustrated on: https://m3.material.io/components/buttons/overview
+
 .filled-button {
   -webkit-font-smoothing: antialiased;
   background-color: $primary;
   color: $on-primary;
-  text-transform: capitalize;
+  text-transform: none;
+  min-height: 40px;
+  border-radius: 12px !important;
 }
 
 .tonal-button {
   -webkit-font-smoothing: antialiased;
   color: $on-secondary-container;
   background-color: $secondary-container;
-  text-transform: capitalize;
+  text-transform: none;
+  min-height: 40px;
+  border-radius: 12px !important;
 }
 
 .accent-button {
   -webkit-font-smoothing: antialiased;
   color: $on-tertiary-container;
   background-color: $tertiary-container;
-  text-transform: capitalize;
+  text-transform: none;
+  min-height: 40px;
+  border-radius: 12px !important;
+}
+
+.outline-button {
+  -webkit-font-smoothing: antialiased;
+  border-color: $outline;
+  color: $primary;
+  text-transform: none;
+  min-height: 40px;
+  border-radius: 12px !important;
+  box-shadow: none;
 }

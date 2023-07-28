@@ -2,13 +2,14 @@
 @import "src/css/quasar.variables.scss";
 
 .modal-header {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 16px;
+  padding-bottom: 16px;
   display: flex;
   justify-content: space-between;
+  width: 100vw;
   align-items: center;
-  color: $on-primary;
-  background-color: $primary;
+  color: $on-secondary-container;
+  background-color: $secondary-container;
 }
 
 .modal-header-title {
@@ -21,4 +22,9 @@
 .modal-header-subtitle {
   font-size: small;
   opacity: 0.8;
+}
+
+// add a gap between elements in buttons, as in: https://m3.material.io/components/buttons/specs
+.q-btn__content {
+  gap: 8px !important;
 }
