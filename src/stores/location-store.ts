@@ -1,13 +1,6 @@
 import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
-
-/**
- * Defines location data structures, to be expanded with GPS location.
- */
-export interface Location {
-  Label: string
-  Address: string,
-}
+import { Location } from 'src/models/location'
 
 export const useLocationStore = defineStore('location', () => {
   const sapienzaLocations = ref<Location[]>([{
@@ -38,14 +31,38 @@ export const useLocationStore = defineStore('location', () => {
     Address: 'Viale degli Estensi, 3'
   }])
 
-  const GetDefaultSapienzaLocation = (): Location => sapienzaLocations.value[0]
+  const getDefaultSapienzaLocation = (): Location => sapienzaLocations.value[0]
 
-  const GetDefaultHomeLocation = (): Location => (otherLocations.value[0])
+  const getDefaultHomeLocation = (): Location => (otherLocations.value[0])
+
+  // const searchTimeLabel = computed<string>(() => ExtractTime(searchDate.value))
+  // const searchDateLabel = computed<string>(() => FormatShortDate(searchDate.value))
+  //
+  // const searchDate = ref<Date>(new Date())
+  // const searchMode = ref<DateMode>(DateMode.Arrive)
+
+  // Checks if a location is among Sapienza's facilities
+  const isSapLocation = (location: Location): boolean => sapienzaLocations.value.some(l => l.Address === location.Address)
+
+  // function updateSearchDate (newDate: Date): void {
+  //   searchDate.value = newDate
+  // }
+  //
+  // function updateSearchMode (mode: DateMode): void {
+  //   searchMode.value = mode
+  // }
 
   return {
     sapienzaLocations: readonly(sapienzaLocations),
     otherLocations: readonly(otherLocations),
-    GetDefaultSapienzaLocation,
-    GetDefaultHomeLocation
+    // searchDate: readonly(searchDate),
+    // searchMode: readonly(searchMode),
+    // searchTimeLabel,
+    // searchDateLabel,
+    getDefaultSapienzaLocation,
+    getDefaultHomeLocation,
+    isSapLocation
+    // updateSearchDate,
+    // updateSearchMode
   }
 })

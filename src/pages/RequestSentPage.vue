@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 
-import { RideParameters, useRideStore } from 'stores/ride-store'
+import { SearchParameters, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { Ride } from 'src/models/ride'
 import { date } from 'quasar'
@@ -78,15 +78,16 @@ async function abort (): Promise<void> {
 
 function SearchReturnRides (): void {
   // invert destination and origin
-  const newParameters: RideParameters = {
-    ...rs.rideParameters,
-    Origin: rs.rideParameters.Destination,
-    Destination: rs.rideParameters.Origin,
-    ArriveBy: date.addToDate(rs.rideParameters.ArriveBy, { hours: 3 })
+  const newParameters: SearchParameters = {
+    ...rs.searchParameters,
+    Origin: rs.searchParameters.Destination,
+    Destination: rs.searchParameters.Origin,
+    Date: date.addToDate(rs.searchParameters.Date, { hours: 3 })
   }
 
+  // tk review these steps
   rs.reset()
-  rs.setNewParameters(newParameters)
+  rs.updateParameters(newParameters)
   router.push('/search-results')
   rs.generateNewRides()
 }

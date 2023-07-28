@@ -224,7 +224,7 @@ function reviewRide (): void {
 
 .route {
   border-left: 2px solid white;
-  margin-left: 10px;
+  margin-left: 11px;
   height: 16px;
 }
 

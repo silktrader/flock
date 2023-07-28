@@ -34,6 +34,10 @@ const routes: RouteRecordRaw[] = [
     {
       path: 'search',
       component: () => import('pages/SearchingPage.vue')
+    },
+    {
+      path: 'date-select',
+      component: () => import('pages/DateSelection.vue')
     }
     ]
   },

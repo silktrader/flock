@@ -331,7 +331,7 @@ export default {
       weekDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       step: 1,
       value: 1,
-      date: '',
+      searchDate: '',
       time: '06:30',
       recurrentCheck: false,
       carModel: 'Panda',
@@ -352,10 +352,10 @@ export default {
 
   computed: {
     everyWeekdayModel () {
-      return 'Every ' + this.date.slice(0, this.date.indexOf(','))
+      return 'Every ' + this.searchDate.slice(0, this.searchDate.indexOf(','))
     },
     displayedDate () {
-      return this.date.slice(0, -5)
+      return this.searchDate.slice(0, -5)
     },
     styleStart () {
       if (this.startingAddress === 'Your location') {
@@ -385,7 +385,7 @@ export default {
         return
       }
       if (this.step === 2) {
-        if (!this.recurrentCheck && (this.time === '' || this.date === '')) {
+        if (!this.recurrentCheck && (this.time === '' || this.searchDate === '')) {
           this.makePulse()
           return
         }
@@ -419,7 +419,7 @@ export default {
       }, 1250) // 1250 milliseconds, same duration as the CSS animation
     },
     checkboxMakePulse () {
-      if (this.date === '') {
+      if (this.searchDate === '') {
         this.makePulse()
       }
     },

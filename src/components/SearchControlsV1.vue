@@ -7,8 +7,8 @@
       <div class="origin">
         <q-icon name="trip_origin" size="sm"/>
         <div class="origin-details">
-          <span v-if="rs.rideParameters.Origin.Label !== ''">{{ rs.rideParameters.Origin.Label }}</span>
-          <span class="address">{{ rs.rideParameters.Origin.Address }}</span>
+          <span v-if="rs.searchParameters.Origin.Label !== ''">{{ rs.searchParameters.Origin.Label }}</span>
+          <span class="address">{{ rs.searchParameters.Origin.Address }}</span>
         </div>
       </div>
 
@@ -37,10 +37,10 @@ import { ExtractTime, FormatFriendlyDate } from 'src/tools/date-tools'
 
 const rs = useRideStore()
 
-const arriveByTime = computed<string>(() => rs.rideParameters?.ArriveBy ? ExtractTime(rs.rideParameters.ArriveBy) : '')
-const arriveByDate = computed<string>(() => rs.rideParameters?.ArriveBy ? FormatFriendlyDate(rs.rideParameters.ArriveBy) : '')
+const arriveByTime = computed<string>(() => rs.searchParameters?.Date ? ExtractTime(rs.searchParameters.Date) : '')
+const arriveByDate = computed<string>(() => rs.searchParameters?.Date ? FormatFriendlyDate(rs.searchParameters.Date) : '')
 
-const destination = computed(() => rs.rideParameters.Destination)
+const destination = computed(() => rs.searchParameters.Destination)
 
 </script>
 

@@ -2,10 +2,12 @@ import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
 import { date } from 'quasar'
 import { RandomFloat, RandomId, RandomInt } from 'src/tools/random-tools'
-import { Location, useLocationStore } from 'stores/location-store'
+import { useLocationStore } from 'stores/location-store'
 import { Ride } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
 import { useUserStore } from 'stores/user-store'
+import { Location } from 'src/models/location'
+import { DateMode } from 'src/tools/date-tools'
 import subtractFromDate = date.subtractFromDate
 import addToDate = date.addToDate
 
@@ -77,10 +79,11 @@ export interface Drop {
 }
 
 // tk add validation (reach time must be > 5)
-export interface RideParameters {
+export interface SearchParameters {
   Origin: Location;
   Destination: Location;
-  ArriveBy: Date;
+  Date: Date;
+  DateMode: DateMode;
   ReachTime: number;
   BusAllowed: boolean;
   SubwayAllowed: boolean;
@@ -95,21 +98,22 @@ export const useRideStore = defineStore('ride',
     const ride = ref<Ride>()
 
     // setup default parameters for easy testing while avoiding undefined state
-    const defaultParameters = {
-      Origin: ls.GetDefaultHomeLocation(),
-      ArriveBy: new Date(),
-      Destination: ls.GetDefaultSapienzaLocation(),
+    const defaultParameters: Readonly<SearchParameters> = {
+      Origin: ls.getDefaultHomeLocation(),
+      Date: new Date(),
+      DateMode: DateMode.Arrive,
+      Destination: ls.getDefaultSapienzaLocation(),
       ReachTime: 15,
       BusAllowed: false,
       SubwayAllowed: true
     }
 
-    const rideParameters = ref<RideParameters>(defaultParameters)
+    const searchParameters = ref<SearchParameters>(defaultParameters)
 
     // Clears existing rides, selected ride and parameters.
     function reset (): void {
       rides.value.splice(0)
-      rideParameters.value = defaultParameters
+      searchParameters.value = defaultParameters
       ride.value = undefined
     }
 
@@ -120,21 +124,25 @@ export const useRideStore = defineStore('ride',
       generateNewRides()
     }
 
-    function setNewParameters (parameters: RideParameters): void {
-      rideParameters.value = parameters
+    function updateParameters (newParameters: Partial<SearchParameters>): void {
+      searchParameters.value = {
+        ...searchParameters.value,
+        ...newParameters
+      }
     }
 
     function generateNewRides () {
-      if (rideParameters.value === undefined) throw new Error('Missing search parameters')
-
       // needs not track variable through changes
       const {
-        ArriveBy: arriveBy,
+        Origin: origin,
+        Destination: destination,
+        Date: date,
+        DateMode: dateMode,
         ReachTime: reachTime
-      } = rideParameters.value
+      } = searchParameters.value
 
       // signal which addresses should be removed from newly randomly generated ones
-      const searchAddresses: ReadonlyArray<string> = [rideParameters.value.Origin.Address, rideParameters.value.Destination.Address]
+      const usedAddresses: ReadonlyArray<string> = [origin.Address, destination.Address]
 
       // avoid creating rides whose drivers share the same avatar
       const avoidAvatarIds: Set<number> = new Set()
@@ -146,16 +154,25 @@ export const useRideStore = defineStore('ride',
 
       // create a random number of new rides
       for (let results = RandomInt(2, 7); results > 0; results--) {
-        // determine a random arrival time close to the user's specified limit
-        const arrival = subtractFromDate(arriveBy, { minutes: RandomInt(5, 20) })
+        let arrival: Date, departure: Date
 
-        // determine a random departure time
-        const departure = subtractFromDate(arrival, { minutes: RandomInt(25, 90) })
+        // determine arrival and departure times
+        if (dateMode === DateMode.Arrive) {
+          arrival = subtractFromDate(date, { minutes: RandomInt(3, 20) })
+          departure = subtractFromDate(arrival, { minutes: RandomInt(25, 90) })
+        } else {
+          departure = addToDate(date, { minutes: RandomInt(3, 20) })
+          arrival = addToDate(departure, { minutes: RandomInt(25, 90) })
+        }
 
-        // determine how long it takes to reach the pickup point
-        // allow some time for the drop; 3 minutes at least
-        const pickupTime = RandomInt(Math.max(1, reachTime * 0.5), reachTime - 3)
-        const pickup = generatePickup(departure, pickupTime, searchAddresses)
+        // determine pickup details
+        let pickupMinutes: number
+        if (ls.isSapLocation(origin)) {
+          pickupMinutes = RandomInt(1, 6)
+        } else {
+          pickupMinutes = RandomInt(Math.max(1, reachTime * 0.8), reachTime - 3)
+        }
+        const pickup = generatePickup(departure, pickupMinutes, usedAddresses)
 
         // generate a suitable driver
         const driver = us.generateDriver(avoidAvatarIds)
@@ -177,13 +194,13 @@ export const useRideStore = defineStore('ride',
 
         rides.value.push(new Ride({
           Id: RandomId(),
-          Origin: rideParameters.value.Origin,
-          Destination: rideParameters.value.Destination,
+          Origin: origin,
+          Destination: destination,
           Arrival: arrival,
           Departure: departure,
           Driver: driver,
           Car: car,
-          Drop: generateDrop(arrival, reachTime - pickupTime, [...searchAddresses, pickup.Address]),
+          Drop: generateDrop(arrival, reachTime - pickupMinutes, [...usedAddresses, pickup.Address]),
           Pickup: pickup,
           Expense: RandomInt(0, 4),
           Passengers: passengers,
@@ -206,20 +223,20 @@ export const useRideStore = defineStore('ride',
     }
 
     // Create a drop with a random address and sensible date, close to arrival time
-    function generateDrop (arrival: Date, dropTime: number, avoidAddresses: string[]): Drop {
+    function generateDrop (arrival: Date, availableMinutes: number, avoidAddresses: string[]): Drop {
       return {
         Address: getRandomAddress(avoidAddresses),
-        Date: subtractFromDate(arrival, { minutes: RandomInt(1, dropTime) })
+        Date: subtractFromDate(arrival, { minutes: RandomInt(1, availableMinutes) })
       }
     }
 
     function generatePickup (departure: Date, pickupDelay: number, avoidAddresses: ReadonlyArray<string>): Pickup {
       // determine which means of transport the user can rely on to get to a pickup
       const eligibleTransports = [Transport.None]
-      if (rideParameters.value.BusAllowed && pickupDelay > 5) {
+      if (searchParameters.value.BusAllowed && pickupDelay > 5) {
         eligibleTransports.push(Transport.Bus)
       }
-      if (rideParameters.value.SubwayAllowed && pickupDelay > 10) {
+      if (searchParameters.value.SubwayAllowed && pickupDelay > 10) {
         eligibleTransports.push(Transport.Subway)
       }
 
@@ -281,19 +298,19 @@ export const useRideStore = defineStore('ride',
     }
 
     function setDestination (newLocation: Location): void {
-      rideParameters.value.Destination = newLocation
+      searchParameters.value.Destination = newLocation
     }
 
     function setOrigin (newLocation: Location): void {
-      rideParameters.value.Origin = newLocation
+      searchParameters.value.Origin = newLocation
     }
 
     return {
       rides: readonly(rides),
       ride: readonly(ride),
-      rideParameters: readonly(rideParameters),
+      searchParameters: readonly(searchParameters),
       generateNewRides,
-      setNewParameters,
+      updateParameters,
       selectRide,
       requestSelectedRide,
       reset,

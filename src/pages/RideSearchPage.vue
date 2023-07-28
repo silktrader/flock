@@ -148,7 +148,8 @@ import { date, useQuasar } from 'quasar'
 import { LeftButton, useNavigationStore } from 'stores/navigation-store'
 import { useRouter } from 'vue-router'
 import { useRideStore } from 'stores/ride-store'
-import { Location, useLocationStore } from 'stores/location-store'
+import { useLocationStore } from 'stores/location-store'
+import { Location } from 'src/models/location'
 
 const ns = useNavigationStore()
 const rs = useRideStore()
@@ -156,6 +157,7 @@ const ls = useLocationStore()
 const router = useRouter()
 const q = useQuasar()
 
+// tk remove these
 ns.setTitle('Ride Search')
 ns.setSubtitle('')
 ns.setButton(LeftButton.Menu)
@@ -164,8 +166,8 @@ rs.reset()
 // location
 const originOptions: Ref<string[]> = ref([])
 
-const origin = ref<Location>(ls.GetDefaultHomeLocation())
-const destination = ref<Location>(ls.GetDefaultSapienzaLocation())
+const origin = ref<Location>(ls.getDefaultHomeLocation())
+const destination = ref<Location>(ls.getDefaultSapienzaLocation())
 
 // const allLocations = computed<Location[]>(() => ls.sapienzaLocations.concat(ls.otherLocations))
 
@@ -216,16 +218,14 @@ function search (): void {
   } else {
     // store the search parameters for display and random results generation
     const rs = useRideStore()
-    rs.reset()
-    rs.setNewParameters({
+    rs.updateParameters({
       Origin: origin.value,
       Destination: destination.value,
-      ArriveBy: date.extractDate(`${arrivalDate.value} ${arrivalTime.value}`, 'YYYY/MM/DD HH:mm'),
+      Date: date.extractDate(`${arrivalDate.value} ${arrivalTime.value}`, 'YYYY/MM/DD HH:mm'),
       ReachTime: maxPickupTime.value,
       BusAllowed: bus.value,
       SubwayAllowed: subway.value
     })
-    rs.generateNewRides()
     router.push('/search-results')
   }
 }
