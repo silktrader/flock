@@ -104,9 +104,9 @@ async function abort (): Promise<void> {
   rs.reset()
 }
 
-watch(rs.searchParameters, (params) => {
+watch(rs.searchParameters, (value, oldValue) => {
   rs.updateSearch()
-})
+}, { immediate: true })
 
 </script>
 

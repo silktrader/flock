@@ -83,9 +83,11 @@ const rs = useRideStore()
 const tomorrow = date.addToDate(new Date(), { day: 1 })
 tomorrow.setHours(8)
 tomorrow.setMinutes(5)
+tomorrow.setSeconds(0)
+tomorrow.setMilliseconds(0)
 
 const dateMode = ref<DateMode>(DateMode.Arrive)
-const dateValue = ref<Date>(tomorrow)
+const dateValue = ref<Date>(rs.searchParameters.Date)
 
 function closeModal (): void {
   router.replace('/search-results')

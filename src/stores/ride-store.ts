@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { readonly, ref } from 'vue'
+import { readonly, ref, toRaw } from 'vue'
 import { date } from 'quasar'
 import { RandomFloat, RandomId, RandomInt } from 'src/tools/random-tools'
 import { useLocationStore } from 'stores/location-store'
@@ -8,6 +8,7 @@ import { Pickup } from 'src/models/pickup'
 import { useUserStore } from 'stores/user-store'
 import { Location } from 'src/models/location'
 import { DateMode } from 'src/tools/date-tools'
+import { Car } from 'src/models/car'
 import subtractFromDate = date.subtractFromDate
 import addToDate = date.addToDate
 
@@ -66,13 +67,6 @@ export const Degrees = [
 
 ]
 
-export interface Car {
-  Model: string;
-  Seats: number;
-  Electric: boolean;
-  AirConditioning: boolean;
-}
-
 export interface Drop {
   Address: string;
   Date: Date;
@@ -89,6 +83,11 @@ export interface SearchParameters {
   SubwayAllowed: boolean;
 }
 
+export interface RideSearch {
+  Date: Date,
+  Rides: ReadonlyArray<Ride>
+}
+
 export const useRideStore = defineStore('ride',
   () => {
     const ls = useLocationStore()
@@ -96,6 +95,7 @@ export const useRideStore = defineStore('ride',
 
     const rides = ref<Ride[]>([])
     const ride = ref<Ride>()
+    const searches = ref<Map<string, RideSearch>>(new Map())
 
     // setup default parameters for easy testing while avoiding undefined state
     const defaultParameters: Readonly<SearchParameters> = {
@@ -117,11 +117,37 @@ export const useRideStore = defineStore('ride',
       ride.value = undefined
     }
 
+    // Takes parameters and turn them into JSON strings.
+    // This horrible expedient is required to bypass JS maps equalities.
+    function serialiseParameters (parameters: SearchParameters): string {
+      return JSON.stringify({
+        Origin: toRaw(parameters.Origin),
+        Destination: toRaw(parameters.Destination),
+        Date: toRaw(parameters.Date),
+        DateMode: parameters.DateMode,
+        ReachTime: parameters.ReachTime,
+        BusAllowed: parameters.BusAllowed,
+        SubwayAllowed: parameters.SubwayAllowed
+      })
+    }
+
     // Fetches new rides with updated parameters.
     function updateSearch (): void {
-      rides.value.splice(0)
+      const serialisedParameters = serialiseParameters(searchParameters.value)
+      const oldSearch = searches.value.get(serialisedParameters)
       ride.value = undefined
-      generateNewRides()
+
+      // either fetch previously stored results or generate new ones
+      if (oldSearch === undefined || date.getDateDiff(oldSearch.Date, new Date(), 'minutes') > 10) {
+        rides.value.splice(0, rides.value.length, ...generateNewRides())
+        searches.value.set(serialisedParameters, {
+          Rides: [...rides.value],
+          Date: new Date()
+        })
+      } else {
+        // when the search is repeated populate the results with old rides
+        rides.value.splice(0, rides.value.length, ...oldSearch.Rides)
+      }
     }
 
     function updateParameters (newParameters: Partial<SearchParameters>): void {
@@ -131,7 +157,7 @@ export const useRideStore = defineStore('ride',
       }
     }
 
-    function generateNewRides () {
+    function generateNewRides (): ReadonlyArray<Ride> {
       // needs not track variable through changes
       const {
         Origin: origin,
@@ -150,8 +176,9 @@ export const useRideStore = defineStore('ride',
       // flag the creation of at least one recurring ride, if any ride at all is to be generated
       let hasRecurringRide = false
 
-      // tk allow for 0 rides generated!! remember
+      const rides: Array<Ride> = []
 
+      // tk allow for 0 rides generated!! remember
       // create a random number of new rides
       for (let results = RandomInt(2, 7); results > 0; results--) {
         let arrival: Date, departure: Date
@@ -192,7 +219,7 @@ export const useRideStore = defineStore('ride',
         const recurring: boolean = !hasRecurringRide ? true : RandomFloat(0, 1) > 0.75
         hasRecurringRide = recurring || hasRecurringRide
 
-        rides.value.push(new Ride({
+        rides.push(new Ride({
           Id: RandomId(),
           Origin: origin,
           Destination: destination,
@@ -207,6 +234,8 @@ export const useRideStore = defineStore('ride',
           Recurring: recurring
         }))
       }
+
+      return rides
     }
 
     const carModels = ['Toyota Yaris', 'Fiat 500', 'Lancia Ypsilon', 'Mazda 2', 'Lamborghini Murcielago', 'Renault Clio', 'Ford Fiesta']
@@ -309,7 +338,6 @@ export const useRideStore = defineStore('ride',
       rides: readonly(rides),
       ride: readonly(ride),
       searchParameters: readonly(searchParameters),
-      generateNewRides,
       updateParameters,
       selectRide,
       requestSelectedRide,
