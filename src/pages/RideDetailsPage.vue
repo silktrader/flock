@@ -125,14 +125,14 @@
         <q-item>
 
           <q-item-section>
-            <q-avatar size="88  px">
+            <q-avatar size="80px">
               <q-img :src="ride.Driver.AvatarUrl"/>
               <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <div class="driver-name">
+            <div class="driver-details">
               <span>{{ ride.Driver.DisplayName }}</span>
               <span class="degree driver-degree">{{ ride.Driver.Degree }}</span>
               <!--              <div class="rating">-->
@@ -148,9 +148,14 @@
             </div>
           </q-item-section>
 
-          <div class="passenger-action">
-            <q-btn color="secondary" flat icon="las la-sms" label="Contact" no-caps rounded/>
-          </div>
+          <q-item-section side>
+            <q-btn color="secondary" flat no-caps rounded>
+              <div class="list-action-contents">
+                <q-icon name="las la-sms"/>
+                <span>Contact</span>
+              </div>
+            </q-btn>
+          </q-item-section>
 
         </q-item>
 
@@ -171,10 +176,15 @@
             </div>
           </q-item-section>
 
-          <q-item-section>
-            <div class="passenger-action">
-              <q-btn color="secondary" flat icon="las la-user-check" label="View" no-caps rounded/>
-            </div>
+          <q-item-section side>
+            <!--            <div class="list-action">-->
+            <q-btn color="secondary" flat no-caps rounded>
+              <div class="list-action-contents">
+                <q-icon name="las la-user-check"/>
+                <span>View</span>
+              </div>
+            </q-btn>
+            <!--            </div>-->
           </q-item-section>
 
         </q-item>
@@ -190,17 +200,19 @@
               </q-avatar>
             </div>
           </q-item-section>
-          <q-item-section><span class="free-seats-text">{{ ride.FreeSeats }} free seat{{
-              ride.FreeSeats > 1 ? 's' : ''
-            }}</span>
+          <q-item-section>
+            <span class="free-seats-text">{{ ride.FreeSeats }} free seat{{ ride.FreeSeats > 1 ? 's' : '' }}</span>
           </q-item-section>
 
-          <q-item-section>
-            <div class="free-seats-actions">
-              <q-btn v-if="ride.FreeSeats > 1" color="secondary" flat icon="las la-user-plus"
-                     label="Invite" no-caps rounded
-              />
-            </div>
+          <q-item-section side>
+            <!--            <div class="list-action">-->
+            <q-btn v-if="ride.FreeSeats > 1" color="secondary" flat no-caps rounded>
+              <div class="list-action-contents">
+                <q-icon name="las la-user-plus"/>
+                <span>Invite</span>
+              </div>
+            </q-btn>
+            <!--            </div>-->
           </q-item-section>
         </q-item>
 
@@ -217,36 +229,39 @@
 
           <q-item-section><span class="car-model">{{ ride.Car.Model }}</span></q-item-section>
 
-          <q-item-section>
-            <div class="passenger-action">
-              <q-icon v-if='ride.Car.Electric' name="electric_bolt" size="sm"/>
-              <q-icon v-if='ride.Car.AirConditioning' name="ac_unit" size="sm"/>
-            </div>
+          <q-item-section side>
+            <q-btn color="secondary" flat no-caps rounded>
+              <div class="list-action-contents">
+                <q-icon name="las la-car-side"/>
+                <span>View</span>
+              </div>
+            </q-btn>
           </q-item-section>
 
         </q-item>
+      </q-list>
 
-        <q-separator spaced/>
+      <q-separator spaced/>
 
-        <q-item v-if="ride.Expense === 0">
-          <q-item-section>
-            <div class="expense-container">
-              Free Ride
-            </div>
-            <aside class="expense-none-notice">
-              <q-icon name="las la-mug-hot" size="md"/>
-              <span>
+      <q-item v-if="ride.Expense === 0">
+        <q-item-section>
+          <div class="expense-container">
+            Free Ride
+          </div>
+          <aside class="expense-none-notice">
+            <q-icon name="las la-mug-hot" size="md"/>
+            <span>
               You can still tip {{ ride.Driver.DisplayName }} when the ride's over. <br/>
               Donuts and coffee are welcome too!
               </span>
-            </aside>
-          </q-item-section>
+          </aside>
+        </q-item-section>
 
-        </q-item>
+      </q-item>
 
-        <q-item v-else>
-          <q-item-section>
-            <div class="expense-container">
+      <q-item v-else>
+        <q-item-section>
+          <div class="expense-container">
               <span class="expense-title">Your Contribution <q-icon name="info"/>
                <q-tooltip>
                 This amount comprises <b>all costs</b>, including parking and fuel. You're welcome to <b>tip the driver</b>
@@ -254,47 +269,45 @@
               </q-tooltip>
               </span>
 
-              <div class="expense">
-                {{ ride.Expense }} €
+            <div class="expense">
+              {{ ride.Expense }} €
+            </div>
+            <aside class="expense-payments-container">
+              <span>Pay when the ride's over with:</span>
+              <div class="expense-payments-means">
+                <q-icon name="las la-money-bill-wave" size="sm">
+                  <q-tooltip>Cash</q-tooltip>
+                </q-icon>
+                <q-icon name="lab la-paypal" size="sm">
+                  <q-tooltip>Paypal</q-tooltip>
+                </q-icon>
+                <q-icon name="lab la-bitcoin" size="sm">
+                  <q-tooltip>Bitcoins</q-tooltip>
+                </q-icon>
               </div>
-              <aside class="expense-payments-container">
-                <span>Pay when the ride's over with:</span>
-                <div class="expense-payments-means">
-                  <q-icon name="las la-money-bill-wave" size="sm">
-                    <q-tooltip>Cash</q-tooltip>
-                  </q-icon>
-                  <q-icon name="lab la-paypal" size="sm">
-                    <q-tooltip>Paypal</q-tooltip>
-                  </q-icon>
-                  <q-icon name="lab la-bitcoin" size="sm">
-                    <q-tooltip>Bitcoins</q-tooltip>
-                  </q-icon>
-                </div>
-              </aside>
+            </aside>
+          </div>
+        </q-item-section>
+
+      </q-item>
+
+      <q-separator spaced/>
+
+      <template v-if="ride.Recurring">
+
+        <q-item>
+          <q-item-section>
+            <div id="recurring-information">
+              <q-icon name="las la-calendar-week" size="lg"/>
+              <span>
+              {{ ride.Driver.DisplayName }} drives to <b>{{ ride.Destination.Label ?? ride.Destination.Address }}</b> every
+              <b>{{ ExtractDay(ride.Departure) }}</b> arriving at <b>{{ ExtractTime(ride.Arrival) }}</b>.
+                </span>
             </div>
           </q-item-section>
 
         </q-item>
-
-        <q-separator spaced/>
-
-        <template v-if="ride.Recurring">
-
-          <q-item>
-            <q-item-section>
-              <div id="recurring-information">
-                <q-icon name="las la-calendar-week" size="lg"/>
-                <span>
-              {{ ride.Driver.DisplayName }} drives to <b>{{ ride.Destination.Label ?? ride.Destination.Address }}</b> every
-              <b>{{ ExtractDay(ride.Departure) }}</b> arriving at <b>{{ ExtractTime(ride.Arrival) }}</b>.
-                </span>
-              </div>
-            </q-item-section>
-
-          </q-item>
-        </template>
-
-      </q-list>
+      </template>
 
     </section>
 
@@ -362,16 +375,13 @@ async function abort (): Promise<void> {
   object-fit: cover;
 }
 
-.driver-name {
+.driver-details, .passenger-details, .car-model {
   display: flex;
   flex-direction: column;
-  /*align-items: center;*/
   font-size: medium;
 }
 
 .passenger-details {
-  display: flex;
-  flex-direction: column;
   font-size: small;
 }
 
@@ -385,11 +395,9 @@ async function abort (): Promise<void> {
   font-size: small;
 }
 
-.passenger-action {
+.list-action {
   display: flex;
-  flex-direction: row;
-  gap: 8px;
-  justify-content: center;
+  justify-content: end;
 }
 
 .free-seats {
@@ -420,7 +428,15 @@ async function abort (): Promise<void> {
 }
 
 .free-seat:not(:last-child) {
-  margin-left: -25px;
+  margin-left: -30px;
+}
+
+.list-action-contents {
+  display: flex;
+  flex-direction: column;
+  width: 40px;
+  align-items: center;
+
 }
 
 .rating {
@@ -443,10 +459,6 @@ async function abort (): Promise<void> {
   border: 2px solid maroon;
   /*background-color: lightgray;*/
   color: maroon;
-}
-
-.car-model {
-  font-size: medium;
 }
 
 footer {

@@ -42,6 +42,7 @@
                 v-model="searchControlsVersion"
                 :options="[{label: 'Initial', value: 'a'}, {label: 'Expanded', value: 'b'}]"
                 outline
+                rounded
                 toggle-color="primary"
               />
             </q-item-section>
@@ -54,6 +55,7 @@
                 v-model="resultCardVersion"
                 :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
                 outline
+                rounded
                 toggle-color="primary"
               />
             </q-item-section>
@@ -104,7 +106,7 @@ async function abort (): Promise<void> {
 
 watch(rs.searchParameters, (params) => {
   rs.updateSearch()
-}, { immediate: true })
+})
 
 </script>
 

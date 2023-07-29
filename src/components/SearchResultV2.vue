@@ -18,7 +18,7 @@
             </q-avatar>
             <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
           </div>
-          <span class="driver-name">{{ r.Driver.DisplayName }}</span>
+          <span class="driver-details">{{ r.Driver.DisplayName }}</span>
         </section>
 
         <section class="schedule">
@@ -165,7 +165,7 @@ function reviewRide (): void {
   position: relative;
 }
 
-.driver-name {
+.driver-details {
   font-size: medium;
 }
 

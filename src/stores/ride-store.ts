@@ -216,7 +216,7 @@ export const useRideStore = defineStore('ride',
       const electric = Math.random() < 0.2
       return {
         Model: electric ? electricCarModels[RandomInt(0, electricCarModels.length - 1)] : carModels[RandomInt(0, carModels.length - 1)],
-        Seats: RandomInt(3, 5),
+        Seats: RandomInt(2, 4),
         AirConditioning: Math.random() < 0.8,
         Electric: electric
       }
