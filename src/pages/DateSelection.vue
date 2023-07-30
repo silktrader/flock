@@ -19,13 +19,28 @@
 
     <div class="contents">
 
+      <section style="flex-grow: 1"/>
+
       <date-selector v-model="dateValue"/>
 
       <section class="hints">
-        <q-btn v-if="dateMode === DateMode.Arrive && lectureTomorrow" @click="updateDate(lectureTomorrow?.Date)">
-          First lecture tomorrow
-        </q-btn>
+        <template v-if="dateMode === DateMode.Arrive">
+          <q-btn v-if="dateMode === DateMode.Arrive" class="outline-button"
+                 outline rounded @click="updateDate(oneHourFromNow())">
+            One hour from now
+          </q-btn>
+          <q-btn v-if="lectureTomorrow" class="outline-button"
+                 outline rounded @click="updateDate(lectureTomorrow?.Date)">
+            First lecture tomorrow
+          </q-btn>
+          <q-btn v-if="lectureNextWeek" class="outline-button"
+                 outline rounded @click="updateDate(lectureNextWeek?.Date)">
+            First lecture next week
+          </q-btn>
+        </template>
       </section>
+
+      <section style="flex-grow: 2"/>
 
       <section class="lectures">
         <q-list padding>
@@ -80,11 +95,12 @@ const router = useRouter()
 const us = useUserStore()
 const rs = useRideStore()
 
-const tomorrow = date.addToDate(new Date(), { day: 1 })
-tomorrow.setHours(8)
-tomorrow.setMinutes(5)
-tomorrow.setSeconds(0)
-tomorrow.setMilliseconds(0)
+const today = new Date()
+today.setHours(8)
+today.setMinutes(0)
+today.setSeconds(0)
+today.setMilliseconds(0)
+const tomorrow = date.addToDate(today, { day: 1 })
 
 const dateMode = ref<DateMode>(DateMode.Arrive)
 const dateValue = ref<Date>(rs.searchParameters.Date)
@@ -109,6 +125,8 @@ function updateDate (date: Date): void {
   dateValue.value = date
 }
 
+const oneHourFromNow = () => date.addToDate(new Date(), { minutes: 60 })
+
 function selectDate (): void {
   rs.updateParameters({
     Date: dateValue.value,
@@ -120,6 +138,16 @@ function selectDate (): void {
 // informs whether there's a lecture the next day
 const lectureTomorrow = computed<Lecture | null>(
   () => us.lectures.filter(lecture => date.getDateDiff(lecture.Date, tomorrow) === 0).sort((a, b) => +(a.Date > b.Date))[0] ?? null
+)
+
+const lectureNextWeek = computed<Lecture | null>(
+  () => {
+    const sameDayNextWeek = date.addToDate(today, { days: 7 })
+    const day = sameDayNextWeek.getDate()
+    const month = sameDayNextWeek.getMonth()
+    return us.lectures.filter(lecture => lecture.Date.getDate() === day && lecture.Date.getMonth() === month)
+      .sort((a, b) => +(a.Date > b.Date))[0] ?? null
+  }
 )
 
 </script>
@@ -142,14 +170,21 @@ const lectureTomorrow = computed<Lecture | null>(
   width: 100%;
   gap: 24px;
   align-items: center;
-  margin-top: 24px;
 }
 
 .date-mode-select {
   font-size: medium;
 }
 
+.hints {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .lectures {
+  flex-grow: 3;
   padding-left: 24px;
   padding-right: 24px;
   width: 100%;
