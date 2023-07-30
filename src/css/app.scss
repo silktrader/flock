@@ -24,6 +24,18 @@
   opacity: 0.8;
 }
 
+.button-toggle span {
+  color: $on-secondary-container;
+  font-size: small;
+}
+
+.button-toggle {
+  border: 1px solid $primary;
+  border-radius: 24px;
+  color: $primary;
+  box-shadow: none;
+}
+
 // add a gap between elements in buttons, as in: https://m3.material.io/components/buttons/specs
 .q-btn__content {
   gap: 8px !important;

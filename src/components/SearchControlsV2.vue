@@ -36,13 +36,30 @@
 
     <section class="date-time-controls">
       <q-btn class="outline-button" outline @click="selectDate()">
-        <span v-if="rs.searchParameters.DateMode === DateMode.Arrive">Arrive {{ searchDateLabel }} by {{
-            searchTimeLabel
-          }}</span>
+        <span v-if="wantsArrive">Arrive {{ searchDateLabel }} by {{ searchTimeLabel }}</span>
         <span v-else>Leave {{ searchDateLabel }} at {{ searchTimeLabel }}</span>
         <q-icon name="schedule" size="18px"/>
       </q-btn>
+
+      <q-btn class="outline-button" outline>
+        <span>Filters</span>
+        <!--        <q-icon name="las la-filter"/>-->
+      </q-btn>
+
+      <!--      <div class="pickup-time">-->
+      <!--        <span>Pickup Time</span>-->
+      <!--        <q-btn-toggle-->
+      <!--          v-model="maxPickupTime"-->
+      <!--          :options="pickupOptions"-->
+      <!--          class="pickup-time-toggle"-->
+      <!--          no-caps-->
+      <!--          no-wrap-->
+      <!--          toggle-color="primary"-->
+      <!--          toggle-text-color="light-green-10"-->
+      <!--        />-->
+      <!--      </div>-->
     </section>
+
   </section>
 
 </template>
@@ -58,9 +75,22 @@ const rs = useRideStore()
 const router = useRouter()
 
 const destination = computed(() => rs.searchParameters.Destination)
+const wantsArrive = computed<boolean>(() => rs.searchParameters.DateMode === DateMode.Arrive)
 
 const searchTimeLabel = computed<string>(() => ExtractTime(rs.searchParameters.Date))
 const searchDateLabel = computed<string>(() => FormatShortDate(rs.searchParameters.Date))
+
+// const maxPickupTime = ref<number>(10)
+// const pickupOptions: ReadonlyArray<{ label: string, value: number }> = [{
+//   label: '10',
+//   value: 10
+// }, {
+//   label: '20',
+//   value: 20
+// }, {
+//   label: '30',
+//   value: 30
+// }]
 
 function switchLocations (): void {
   const {
@@ -148,7 +178,18 @@ function selectDate (): void {
 }
 
 .date-time-controls {
+  display: flex;
+  flex-direction: row;
   font-size: medium;
+  justify-content: space-between;
+}
+
+.pickup-time {
+  display: flex;
+  flex-direction: row;
+  text-wrap: none;
+  align-items: center;
+  gap: 8px;
 }
 
 .time em {
