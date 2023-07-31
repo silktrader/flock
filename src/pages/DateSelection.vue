@@ -21,21 +21,36 @@
 
       <section style="flex-grow: 1"/>
 
-      <date-selector v-model="dateValue"/>
+      <date-selector v-model="dateValue" :minute-step="selectorMinuteStep"/>
 
       <section class="hints">
         <template v-if="dateMode === DateMode.Arrive">
-          <q-btn v-if="dateMode === DateMode.Arrive" class="outline-button"
-                 outline rounded @click="updateDate(oneHourFromNow())">
-            One hour from now
+          <q-btn v-if='nextLectureToday' class="outline-button" outline rounded
+                 @click="updateDate(nextLectureToday?.Date)">
+            Next lecture today
           </q-btn>
-          <q-btn v-if="lectureTomorrow" class="outline-button"
-                 outline rounded @click="updateDate(lectureTomorrow?.Date)">
+          <q-btn v-if="firstLectureTomorrow" class="outline-button"
+                 outline rounded @click="updateDate(firstLectureTomorrow?.Date)">
             First lecture tomorrow
           </q-btn>
           <q-btn v-if="lectureNextWeek" class="outline-button"
                  outline rounded @click="updateDate(lectureNextWeek?.Date)">
             First lecture next week
+          </q-btn>
+        </template>
+
+        <template v-else>
+          <q-btn class="outline-button"
+                 outline rounded @click="updateDate(oneHourFromNow())">
+            One hour from now
+          </q-btn>
+          <q-btn v-if="endLectureToday" class="outline-button"
+                 outline rounded @click="updateDate(endLectureToday)">
+            After last lecture today
+          </q-btn>
+          <q-btn v-if="endLectureTomorrow" class="outline-button"
+                 outline rounded @click="updateDate(endLectureTomorrow)">
+            After last lecture tomorrow
           </q-btn>
         </template>
       </section>
@@ -90,6 +105,7 @@ import { Lecture } from 'src/models/lecture'
 import { useUserStore } from 'stores/user-store'
 import DateSelector from 'components/DateSelector.vue'
 import { useRideStore } from 'stores/ride-store'
+import addToDate = date.addToDate
 
 const router = useRouter()
 const us = useUserStore()
@@ -101,6 +117,8 @@ today.setMinutes(0)
 today.setSeconds(0)
 today.setMilliseconds(0)
 const tomorrow = date.addToDate(today, { day: 1 })
+
+const selectorMinuteStep = 5
 
 const dateMode = ref<DateMode>(DateMode.Arrive)
 const dateValue = ref<Date>(rs.searchParameters.Date)
@@ -135,10 +153,29 @@ function selectDate (): void {
   closeModal()
 }
 
+const nextLectureToday = computed<Lecture | null>(
+  () => {
+    const now = new Date()
+    return us.lectures.find(lecture => lecture.Date > now && date.getDateDiff(lecture.Date, now) === 0) ?? null
+  }
+)
+
 // informs whether there's a lecture the next day
-const lectureTomorrow = computed<Lecture | null>(
+const firstLectureTomorrow = computed<Lecture | null>(
   () => us.lectures.filter(lecture => date.getDateDiff(lecture.Date, tomorrow) === 0).sort((a, b) => +(a.Date > b.Date))[0] ?? null
 )
+
+const endLectureTomorrow = computed<Date | null>(
+  () => {
+    const lecture: Lecture | null = us.lectures.filter(lecture => date.getDateDiff(lecture.Date, tomorrow) === 0).sort((a, b) => +(b.Date > a.Date))[0] ?? null
+    return addToDate(lecture.Date, { minutes: lecture.Duration })
+  })
+
+const endLectureToday = computed<Date | null>(
+  () => {
+    const lecture: Lecture | null = us.lectures.filter(lecture => date.getDateDiff(lecture.Date, today) === 0).sort((a, b) => +(b.Date > a.Date))[0] ?? null
+    return addToDate(lecture.Date, { minutes: lecture.Duration })
+  })
 
 const lectureNextWeek = computed<Lecture | null>(
   () => {
