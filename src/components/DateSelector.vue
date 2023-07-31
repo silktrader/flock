@@ -16,6 +16,9 @@ import { computed, ref, watch } from 'vue'
 import { DateFromIso, FormatShortDate, IsoDate, IsoDateFromDate } from 'src/tools/date-tools'
 import { date } from 'quasar'
 
+const props = defineProps<{ modelValue: Date, minuteStep: number }>()
+const emit = defineEmits<{(e: 'update:modelValue', value: Date): void }>()
+
 const selectedDate = ref<IsoDate>('')
 const selectedHour = ref(8)
 const selectedMinute = ref(0)
@@ -30,12 +33,9 @@ const dates: ReadonlyArray<{ name: string, value: IsoDate }> = populateSelector(
 const hours: ReadonlyArray<string> = arrayRange(6, 22, 1).map(n => n.toLocaleString('en-UK', {
   minimumIntegerDigits: 2
 }))
-const minutes: ReadonlyArray<string> = arrayRange(0, 55, 5).map(n => n.toLocaleString('en-UK', {
+const minutes: ReadonlyArray<string> = arrayRange(0, 55, props.minuteStep).map(n => n.toLocaleString('en-UK', {
   minimumIntegerDigits: 2
 }))
-
-const props = defineProps<{ modelValue: Date }>()
-const emit = defineEmits<{(e: 'update:modelValue', value: Date): void }>()
 
 const model = computed<Date>({
   get: () => props.modelValue,
@@ -63,7 +63,7 @@ watch(model, (value) => {
   if (isoDate !== selectedDate.value || selectedHour.value !== value.getHours() || selectedMinute.value !== value.getMinutes()) {
     selectedDate.value = isoDate
     selectedHour.value = value.getHours()
-    selectedMinute.value = value.getMinutes()
+    selectedMinute.value = Math.floor(value.getMinutes() / props.minuteStep) * props.minuteStep
   }
 }, { immediate: true })
 
