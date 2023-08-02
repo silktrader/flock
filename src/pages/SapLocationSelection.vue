@@ -52,7 +52,7 @@ const ls = useLocationStore()
 const us = useUserStore()
 const rs = useRideStore()
 
-const props = defineProps<{ destination: boolean }>()
+const props = defineProps<{ target: 'origin' | 'destination' }>()
 
 const places = computed<Array<{ Location: SapienzaPlace, Courses: Set<string> }>>(() => {
   return ls.sapienzaLocations.map(location => ({
@@ -65,9 +65,15 @@ function closeModal (): void {
   router.replace('/search-results')
 }
 
-async function selectPlace (place: SapienzaPlace): Promise<void> {
-  await rs.updateParameters(props.destination ? { Destination: place } : { Origin: place })
-  await router.replace('/search-results')
+function selectPlace (place: SapienzaPlace): void {
+  if (props.target === 'destination') {
+    rs.updateParameters({ Destination: place })
+  } else if (props.target === 'origin') {
+    rs.updateParameters({ Origin: place })
+  } else {
+    throw new Error('invalid parameter while selecting location')
+  }
+  router.replace('/search-results')
 }
 
 </script>

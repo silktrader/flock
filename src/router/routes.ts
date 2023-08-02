@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/DateSelection.vue')
     },
     {
-      path: 'sap-location-select/:destination',
+      path: 'sap-location-select/:target',
       component: () => import('pages/SapLocationSelection.vue'),
       props: true
     }

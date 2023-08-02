@@ -326,14 +326,6 @@ export const useRideStore = defineStore('ride',
       return 'red-3'
     }
 
-    function setDestination (newLocation: Place): void {
-      searchParameters.value.Destination = newLocation
-    }
-
-    function setOrigin (newLocation: Place): void {
-      searchParameters.value.Origin = newLocation
-    }
-
     return {
       rides: readonly(rides),
       ride: readonly(ride),
@@ -343,8 +335,6 @@ export const useRideStore = defineStore('ride',
       requestSelectedRide,
       reset,
       colourCodePickup,
-      setDestination,
-      setOrigin,
       updateSearch
     }
   })
