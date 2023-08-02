@@ -226,7 +226,6 @@ function search (): void {
       BusAllowed: bus.value,
       SubwayAllowed: subway.value
     })
-    rs.updateSearch()
     router.push('/search-results')
   }
 }

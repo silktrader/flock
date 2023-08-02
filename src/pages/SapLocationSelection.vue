@@ -65,7 +65,7 @@ function closeModal (): void {
   router.replace('/search-results')
 }
 
-function selectPlace (place: SapienzaPlace): void {
+async function selectPlace (place: SapienzaPlace): Promise<void> {
   if (props.target === 'destination') {
     rs.updateParameters({ Destination: place })
   } else if (props.target === 'origin') {
@@ -73,7 +73,7 @@ function selectPlace (place: SapienzaPlace): void {
   } else {
     throw new Error('invalid parameter while selecting location')
   }
-  router.replace('/search-results')
+  await router.replace('/search-results')
 }
 
 </script>

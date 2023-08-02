@@ -76,7 +76,7 @@
 <script lang="ts" setup>
 
 import { useRideStore } from 'stores/ride-store'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import SearchResultV1 from 'components/SearchResultV1.vue'
 import SearchResultV2 from 'components/SearchResultV2.vue'
 import { useRouter } from 'vue-router'
@@ -104,9 +104,12 @@ async function abort (): Promise<void> {
   rs.reset()
 }
 
-watch(rs.searchParameters, () => {
-  rs.updateSearch()
-}, { immediate: true })
+// watch(rs.searchParameters, () => {
+//   rs.updateSearch()
+// }, {
+//   immediate: true,
+//   deep: true
+// })
 
 </script>
 

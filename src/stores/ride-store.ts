@@ -155,6 +155,7 @@ export const useRideStore = defineStore('ride',
         ...searchParameters.value,
         ...newParameters
       }
+      updateSearch()
     }
 
     function generateNewRides (): ReadonlyArray<Ride> {
@@ -334,7 +335,7 @@ export const useRideStore = defineStore('ride',
       selectRide,
       requestSelectedRide,
       reset,
-      colourCodePickup,
-      updateSearch
+      colourCodePickup
+      // updateSearch
     }
   })
