@@ -66,14 +66,20 @@
           </q-item>
 
           <q-item v-for="lecture in dayLectures" v-else :key="lecture.Date">
-            <q-item-section>
-              <q-item-label>{{ lecture.Course }}</q-item-label>
+            <q-item-section class="lecture-name">
+              <q-item-label lines="2">{{ lecture.Course }}</q-item-label>
             </q-item-section>
-            <q-item-section>
-            <span class="lecture-details"><q-icon name="schedule"/>{{
-                ExtractTime(lecture.Date)
-              }} - {{ ExtractTime(date.addToDate(lecture.Date, { minute: lecture.Duration })) }}</span>
-              <span class="lecture-details"><q-icon name="map"/>{{ lecture.Location.Label }}</span>
+            <q-item-section class="lecture-details">
+              <q-item-label lines="1">
+                <q-icon name="schedule"/>
+                {{
+                  ExtractTime(lecture.Date)
+                }} - {{ ExtractTime(date.addToDate(lecture.Date, { minute: lecture.Duration })) }}
+              </q-item-label>
+              <q-item-label caption lines="1">
+                <q-icon name="map"/>
+                {{ lecture.Location.Label }}
+              </q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -203,8 +209,7 @@ const lectureNextWeek = computed<Lecture | null>(
 .contents {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
+  flex: 1;
   gap: 24px;
   align-items: center;
 }
@@ -224,7 +229,9 @@ const lectureNextWeek = computed<Lecture | null>(
   flex-grow: 3;
   padding-left: 24px;
   padding-right: 24px;
+  min-width: 0;
   width: 100%;
+  height: 200px; // fix height to avoid layout changes when no lectures are included
 }
 
 .no-lectures {
@@ -233,12 +240,12 @@ const lectureNextWeek = computed<Lecture | null>(
   width: 100%;
 }
 
+.lecture-name {
+  flex-grow: 2;
+}
+
 .lecture-details {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  white-space: nowrap;
-  width: min-content;
+  flex-grow: 3;
 }
 
 .action-button {

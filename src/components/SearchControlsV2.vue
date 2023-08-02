@@ -16,7 +16,7 @@
         <q-btn class="location-button" @click="selectOrigin()">
           <div class="location-button-container">
             <div class="location-button-labels">
-              <span v-if="origin.Label !== ''" class="label">{{ origin.Label }}</span>
+              <span v-if="origin.Label !== ''" class="lecture-name">{{ origin.Label }}</span>
               <span class="address">{{ origin.Address }}</span>
             </div>
             <q-icon v-if="isSapienzaPlace(origin)" class="sapienza-icon" name="school" size="sm"/>
@@ -26,7 +26,7 @@
         <q-btn class="location-button" @click="selectDestination()">
           <div class="location-button-container">
             <div class="location-button-labels">
-              <span v-if="destination.Label !== ''" class="label">{{ destination.Label }}</span>
+              <span v-if="destination.Label !== ''" class="lecture-name">{{ destination.Label }}</span>
               <span class="address">{{ destination.Address }}</span>
             </div>
             <!--          <q-img fit="scale-down" src="/src/assets/SapLogo.png" width="32px"/>-->
@@ -158,6 +158,7 @@ function selectOrigin (): void {
   flex-direction: column;
   gap: 8px;
   flex-grow: 3;
+  min-width: 0;
 }
 
 .location-button {
@@ -178,13 +179,28 @@ function selectOrigin (): void {
   gap: 8px;
   align-items: center;
   justify-content: space-between;
-  flex-grow: 1;
+  min-width: 0;
+  flex: 1;
 }
 
 .location-button-labels {
   display: flex;
   flex-direction: column;
-  max-width: 200px;
+  flex: 1;
+  min-width: 0;
+}
+
+.lecture-name, .address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.address {
+  font-size: xx-small;
+  font-style: italic;
+  padding-right: 2px; // solves issues with overflow clipping content
 }
 
 .sapienza-icon {
@@ -196,19 +212,6 @@ function selectOrigin (): void {
   background-image: url(//maps.gstatic.com/consumer/images/icons/1x/route_3dots_grey650_24dp.png);
   height: 32px;
   background-repeat: repeat-y;
-}
-
-.label, .address {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
-}
-
-.address {
-  font-size: xx-small;
-  font-style: italic;
-  padding-right: 2px; // solves issues with overflow clipping content
 }
 
 .locations-switch {
