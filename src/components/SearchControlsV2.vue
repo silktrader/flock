@@ -14,20 +14,24 @@
       <div class="locations-boxes">
 
         <q-btn class="location-button" @click="selectOrigin()">
-          <div class="location-button-labels">
-            <span v-if="origin.Label !== ''">{{ origin.Label }}</span>
-            <span class="address">{{ origin.Address }}</span>
+          <div class="location-button-container">
+            <div class="location-button-labels">
+              <span v-if="origin.Label !== ''" class="label">{{ origin.Label }}</span>
+              <span class="address">{{ origin.Address }}</span>
+            </div>
+            <q-icon v-if="isSapienzaPlace(origin)" class="sapienza-icon" name="school" size="sm"/>
           </div>
-          <q-icon v-if="isSapienzaPlace(origin)" class="sapienza-icon" name="school" size="sm"/>
         </q-btn>
 
         <q-btn class="location-button" @click="selectDestination()">
-          <div class="location-button-labels">
-            <span v-if="destination.Label !== ''">{{ destination.Label }}</span>
-            <span class="address">{{ destination.Address }}</span>
+          <div class="location-button-container">
+            <div class="location-button-labels">
+              <span v-if="destination.Label !== ''" class="label">{{ destination.Label }}</span>
+              <span class="address">{{ destination.Address }}</span>
+            </div>
+            <!--          <q-img fit="scale-down" src="/src/assets/SapLogo.png" width="32px"/>-->
+            <q-icon v-if="isSapienzaPlace(destination)" class="sapienza-icon" name="school" size="sm"/>
           </div>
-          <!--          <q-img fit="scale-down" src="/src/assets/SapLogo.png" width="32px"/>-->
-          <q-icon v-if="isSapienzaPlace(destination)" class="sapienza-icon" name="school" size="sm"/>
         </q-btn>
 
       </div>
@@ -168,11 +172,19 @@ function selectOrigin (): void {
   font-weight: normal;
 }
 
+.location-button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
 .location-button-labels {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  flex-grow: 3;
+  max-width: 200px;
 }
 
 .sapienza-icon {
@@ -186,9 +198,17 @@ function selectOrigin (): void {
   background-repeat: repeat-y;
 }
 
+.label, .address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
 .address {
   font-size: xx-small;
   font-style: italic;
+  padding-right: 2px; // solves issues with overflow clipping content
 }
 
 .locations-switch {
