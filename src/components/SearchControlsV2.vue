@@ -11,21 +11,25 @@
 
       </aside>
 
-      <div class="locations-boxes">
+      <div :style="`flex-direction:${isSapDestination ?  `column` : 'column-reverse'}`"
+           class="locations-boxes">
 
-        <div class="origin">
-          <div class="origin-details">
-            <span v-if="rs.searchParameters.Origin.Label !== ''">{{ rs.searchParameters.Origin.Label }}</span>
-            <span class="address">{{ rs.searchParameters.Origin.Address }}</span>
+        <q-btn class="location-button">
+          <div class="location-button-labels">
+            <span v-if="otherPlace.Label !== ''">{{ otherPlace.Label }}</span>
+            <span class="address">{{ otherPlace.Address }}</span>
           </div>
-        </div>
+        </q-btn>
 
-        <div class="destination">
-          <div class="destination-details">
-            <span>{{ destination.Label }}</span>
-            <span class="address">{{ destination.Address }}</span>
+        <q-btn class="location-button" @click="selectSapLocation()">
+          <div class="location-button-labels">
+            <span>{{ sapienzaPlace.Label }}</span>
+            <span class="address">{{ sapienzaPlace.Address }}</span>
           </div>
-        </div>
+          <!--          <q-img fit="scale-down" src="/src/assets/SapLogo.png" width="32px"/>-->
+          <q-icon class="sapienza-icon" name="school" size="sm"/>
+        </q-btn>
+
       </div>
 
       <aside class="locations-switch">
@@ -67,14 +71,16 @@
 <script lang="ts" setup>
 
 import { useRideStore } from 'stores/ride-store'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { DateMode, ExtractTime, FormatShortDate } from 'src/tools/date-tools'
 import { useRouter } from 'vue-router'
 
 const rs = useRideStore()
 const router = useRouter()
 
-const destination = computed(() => rs.searchParameters.Destination)
+const isSapDestination = ref<boolean>(true)
+const sapienzaPlace = computed(() => isSapDestination.value ? rs.searchParameters.Destination : rs.searchParameters.Origin)
+const otherPlace = computed(() => isSapDestination.value ? rs.searchParameters.Origin : rs.searchParameters.Destination)
 const wantsArrive = computed<boolean>(() => rs.searchParameters.DateMode === DateMode.Arrive)
 
 const searchTimeLabel = computed<string>(() => ExtractTime(rs.searchParameters.Date))
@@ -98,12 +104,17 @@ function switchLocations (): void {
     Destination: oldDestination
   } = rs.searchParameters
 
+  isSapDestination.value = !isSapDestination.value
   rs.setDestination(oldOrigin)
   rs.setOrigin(oldDestination)
 }
 
 function selectDate (): void {
   router.push('/date-select')
+}
+
+function selectSapLocation (): void {
+  router.push(`/sap-location-select/destination=${isSapDestination.value}`)
 }
 
 </script>
@@ -141,11 +152,27 @@ function selectDate (): void {
   flex-grow: 3;
 }
 
-.destination, .origin {
+.location-button {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: row;
   font-size: medium;
+  border-radius: $border-radius;
+  background-color: $primary;
+  color: $on-primary;
+  cursor: pointer;
+  text-transform: none;
+  font-weight: normal;
+}
+
+.location-button-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-grow: 3;
+}
+
+.sapienza-icon {
+  color: $on-primary;
 }
 
 .route {
@@ -153,17 +180,6 @@ function selectDate (): void {
   background-image: url(//maps.gstatic.com/consumer/images/icons/1x/route_3dots_grey650_24dp.png);
   height: 32px;
   background-repeat: repeat-y;
-}
-
-.destination-details, .origin-details {
-  display: flex;
-  flex-direction: column;
-  padding: 8px 16px 8px 16px;
-  width: 100%;
-  border-radius: $border-radius;
-  background-color: $primary;
-  color: $on-primary;
-  cursor: pointer;
 }
 
 .address {

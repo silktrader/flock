@@ -6,7 +6,7 @@ import { useLocationStore } from 'stores/location-store'
 import { Ride } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
 import { useUserStore } from 'stores/user-store'
-import { Location } from 'src/models/location'
+import { Place } from 'src/models/place'
 import { DateMode } from 'src/tools/date-tools'
 import { Car } from 'src/models/car'
 import subtractFromDate = date.subtractFromDate
@@ -74,8 +74,8 @@ export interface Drop {
 
 // tk add validation (reach time must be > 5)
 export interface SearchParameters {
-  Origin: Location;
-  Destination: Location;
+  Origin: Place;
+  Destination: Place;
   Date: Date;
   DateMode: DateMode;
   ReachTime: number;
@@ -326,11 +326,11 @@ export const useRideStore = defineStore('ride',
       return 'red-3'
     }
 
-    function setDestination (newLocation: Location): void {
+    function setDestination (newLocation: Place): void {
       searchParameters.value.Destination = newLocation
     }
 
-    function setOrigin (newLocation: Location): void {
+    function setOrigin (newLocation: Place): void {
       searchParameters.value.Origin = newLocation
     }
 

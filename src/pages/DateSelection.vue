@@ -1,6 +1,6 @@
 <template>
 
-  <main class="date-selection-container">
+  <main class="container">
 
     <header class="modal-header">
       <div class="modal-header-spacer"></div>
@@ -193,7 +193,7 @@ const lectureNextWeek = computed<Lecture | null>(
 
 @import "src/css/quasar.variables.scss";
 
-.date-selection-container {
+.container {
   display: flex;
   flex-direction: column;
   height: 100vh;

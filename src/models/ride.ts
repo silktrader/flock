@@ -3,7 +3,7 @@ import { Drop, Transport } from 'stores/ride-store'
 import { Pickup } from 'src/models/pickup'
 import { User } from 'src/models/user'
 import { Driver } from 'src/models/driver'
-import { Location } from 'src/models/location'
+import { Place } from 'src/models/place'
 import { Car } from 'src/models/car'
 
 /* Interface extensions would be an ideal substitute to actual classes in this case
@@ -11,8 +11,8 @@ import { Car } from 'src/models/car'
 
 export interface RideConfig {
   Id: string,
-  Origin: Location,
-  Destination: Location,
+  Origin: Place,
+  Destination: Place,
   Arrival: Date,
   Departure: Date,
   Driver: Driver,
@@ -26,8 +26,8 @@ export interface RideConfig {
 
 export class Ride {
   readonly Id: string
-  readonly Origin: Location
-  readonly Destination: Location
+  readonly Origin: Place
+  readonly Destination: Place
   readonly Arrival: Date
   readonly Departure: Date
   readonly Driver: Driver

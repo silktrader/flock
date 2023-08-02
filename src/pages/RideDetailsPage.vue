@@ -524,10 +524,6 @@ footer {
   color: $carpool;
 }
 
-/*.timeline-address {*/
-/*  font-size: small;*/
-/*}*/
-
 .q-timeline__subtitle {
   margin-bottom: 0 !important;
 }

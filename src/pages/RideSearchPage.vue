@@ -149,7 +149,7 @@ import { LeftButton, useNavigationStore } from 'stores/navigation-store'
 import { useRouter } from 'vue-router'
 import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
-import { Location } from 'src/models/location'
+import { Place } from 'src/models/place'
 
 const ns = useNavigationStore()
 const rs = useRideStore()
@@ -166,8 +166,8 @@ rs.reset()
 // location
 const originOptions: Ref<string[]> = ref([])
 
-const origin = ref<Location>(ls.getDefaultHomeLocation())
-const destination = ref<Location>(ls.getDefaultSapienzaLocation())
+const origin = ref<Place>(ls.getDefaultHomeLocation())
+const destination = ref<Place>(ls.getDefaultSapienzaLocation())
 
 // const allLocations = computed<Location[]>(() => ls.sapienzaLocations.concat(ls.otherLocations))
 

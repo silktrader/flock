@@ -6,6 +6,7 @@ import { Driver } from 'src/models/driver'
 import { Lecture } from 'src/models/lecture'
 import { date } from 'quasar'
 import { readonly } from 'vue'
+import { useLocationStore } from 'stores/location-store'
 
 const femaleNames = ['Federica', 'Agnese', 'Francesca', 'Guinevere', 'Desdemona', 'Eva', 'Anna-Laura', 'Katalyn', 'So-Jin', 'Daphne', 'Rachel', 'Barbara']
 const maleNames = ['Francesco', 'Alessandro', 'Lorenzo', 'Benjamin', 'Carlo', 'Konstantin', 'Gianfranco', 'Ubaldo', 'Ignazio', 'Paulo', 'Gabriel Omar']
@@ -18,6 +19,48 @@ export const useUserStore = defineStore('user', () => {
   const maleAvatarIds = [3, 6, 7, 8, 11, 12, 13, 14, 15, 33, 50, 51, 52, 55, 56, 57, 59, 60, 61, 62, 68]
 
   const lectures: Array<Lecture> = []
+
+  const ls = useLocationStore()
+
+  const randomSapLocation = () => ls.sapienzaLocations[RandomInt(0, ls.sapienzaLocations.length)]
+
+  // few courses justify the use of arrays instead of maps
+  const courses = [
+    {
+      name: 'Human Computer Interaction',
+      acro: 'HCI',
+      days: ['mon', 'thu'],
+      start: [10, 14],
+      location: randomSapLocation()
+    },
+    {
+      name: 'Database Management',
+      acro: 'DBM',
+      days: ['tue', 'wed'],
+      start: [9, 16],
+      location: randomSapLocation()
+    },
+    {
+      name: 'Computer Architecture',
+      acro: 'CAR',
+      days: ['mon', 'wed'],
+      start: [16, 8],
+      location: randomSapLocation()
+    },
+    {
+      name: 'Statistics',
+      acro: 'STA',
+      days: ['thu', 'fri'],
+      start: [8, 8],
+      location: randomSapLocation()
+    },
+    {
+      name: 'Calculus',
+      acro: 'CLC',
+      days: ['tue', 'fri'],
+      start: [15, 16],
+      location: randomSapLocation()
+    }]
 
   generateRandomLectures()
 
@@ -60,33 +103,6 @@ export const useUserStore = defineStore('user', () => {
     // reinitialise store's lectures
     lectures.splice(0, lectures.length)
 
-    const courses = [
-      {
-        name: 'Human Computer Interaction',
-        days: ['mon', 'thu'],
-        start: [10, 14]
-      },
-      {
-        name: 'Database Management',
-        days: ['tue', 'wed'],
-        start: [9, 16]
-      },
-      {
-        name: 'Computer Architecture',
-        days: ['mon', 'wed'],
-        start: [16, 8]
-      },
-      {
-        name: 'Statistics',
-        days: ['thu', 'fri'],
-        start: [8, 8]
-      },
-      {
-        name: 'Calculus',
-        days: ['tue', 'fri'],
-        start: [15, 16]
-      }]
-
     const today = new Date()
 
     for (const course of courses) {
@@ -101,10 +117,7 @@ export const useUserStore = defineStore('user', () => {
         for (let weeks = 0; weeks <= 6; weeks++) {
           lectures.push({
             Course: course.name,
-            Location: {
-              Label: 'Campus',
-              Address: 'Stocazzo'
-            },
+            Location: course.location,
             Duration: 120,
             Date: date.addToDate(startDate, { days: weeks * 7 })
 
@@ -124,9 +137,14 @@ export const useUserStore = defineStore('user', () => {
     return refDate
   }
 
+  function getCourseAcro (courseName: string): string {
+    return courses.find(c => c.name === courseName)?.acro ?? 'Err'
+  }
+
   return {
+    lectures: readonly(lectures),
     generateUser,
     generateDriver,
-    lectures: readonly(lectures)
+    getCourseAcro
   }
 })

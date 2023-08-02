@@ -1,26 +1,31 @@
 import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
-import { Location } from 'src/models/location'
+import { Place, SapienzaPlace } from 'src/models/place'
 
-export const useLocationStore = defineStore('location', () => {
-  const sapienzaLocations = ref<Location[]>([{
+export const useLocationStore = defineStore('location-store', () => {
+  const sapienzaLocations = ref<SapienzaPlace[]>([{
     Label: 'Città Universitaria',
-    Address: 'Piazzale Aldo Moro, 1'
+    Address: 'Piazzale Aldo Moro, 1',
+    Avatar: 'https://metronews.it/wp-content/uploads/2021/05/universita_sapienza.jpg'
   }, {
     Label: 'Facoltà d\'Economia',
-    Address: 'Via del Castro Laurenziano, 9'
+    Address: 'Via del Castro Laurenziano, 9',
+    Avatar: 'https://web.uniroma1.it/cersites/sites/default/files/facolta_economia_latina.jpg'
   }, {
     Label: 'Facoltà d\'Ingegneria',
-    Address: 'Via Eudossiana, 18'
+    Address: 'Via Eudossiana, 18',
+    Avatar: 'https://www.ilgiornaledeltermoidraulico.it/files/2016/07/IT_PR_160523_Conferenza-acqua-sanitaria-Roma_01.jpg'
   }, {
     Label: 'Facoltà d\'Architettura',
-    Address: 'Piazza Borghese, 9'
+    Address: 'Piazza Borghese, 9',
+    Avatar: 'https://www.radiocolonna.it/public/images/2020/10/D940D26C-8E6B-49AF-B50C-C1B65A2E83D5-1280x720.jpeg'
   }, {
-    Label: 'Centro Sportivo Universitario',
-    Address: 'Via Fornaci di Tor di Quinto, 34'
+    Label: 'Centro Universitario Sportivo',
+    Address: 'Via Fornaci di Tor di Quinto, 34',
+    Avatar: 'https://web.uniroma1.it/sapienzasport/sites/default/files/styles/photonew/public/IMG_20200601_161308.jpg?itok=RdXs2U6g'
   }])
 
-  const otherLocations = ref<Location[]>([{
+  const otherLocations = ref<Place[]>([{
     Label: 'Home',
     Address: 'Via Archimede, 110'
   }, {
@@ -31,9 +36,9 @@ export const useLocationStore = defineStore('location', () => {
     Address: 'Viale degli Estensi, 3'
   }])
 
-  const getDefaultSapienzaLocation = (): Location => sapienzaLocations.value[0]
+  const getDefaultSapienzaLocation = (): Place => sapienzaLocations.value[0]
 
-  const getDefaultHomeLocation = (): Location => (otherLocations.value[0])
+  const getDefaultHomeLocation = (): Place => (otherLocations.value[0])
 
   // const searchTimeLabel = computed<string>(() => ExtractTime(searchDate.value))
   // const searchDateLabel = computed<string>(() => FormatShortDate(searchDate.value))
@@ -42,7 +47,7 @@ export const useLocationStore = defineStore('location', () => {
   // const searchMode = ref<DateMode>(DateMode.Arrive)
 
   // Checks if a location is among Sapienza's facilities
-  const isSapLocation = (location: Location): boolean => sapienzaLocations.value.some(l => l.Address === location.Address)
+  const isSapLocation = (location: Place): boolean => sapienzaLocations.value.some(l => l.Address === location.Address)
 
   // function updateSearchDate (newDate: Date): void {
   //   searchDate.value = newDate
