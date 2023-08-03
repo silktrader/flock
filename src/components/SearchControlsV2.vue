@@ -114,15 +114,11 @@ function selectDate (): void {
 }
 
 function selectDestination (): void {
-  if (isSapienzaPlace(destination.value)) {
-    router.push('/sap-location-select/destination')
-  }
+  router.push(`${isSapienzaPlace(destination.value) ? '/sap-location-select' : '/location-select'}/destination`)
 }
 
 function selectOrigin (): void {
-  if (isSapienzaPlace(origin.value)) {
-    router.push('/sap-location-select/origin')
-  }
+  router.push(`${isSapienzaPlace(origin.value) ? '/sap-location-select' : '/location-select'}/origin`)
 }
 
 </script>

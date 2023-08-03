@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{
       path: '',
-      component: () => import('pages/HomePage.vue')
+      redirect: () => ({ path: '/ride-search' })
     }, {
       path: 'ride-search',
       component: () => import('pages/RideSearchPage.vue')
@@ -42,6 +42,11 @@ const routes: RouteRecordRaw[] = [
     {
       path: 'sap-location-select/:target',
       component: () => import('pages/SapLocationSelection.vue'),
+      props: true
+    },
+    {
+      path: 'location-select/:target',
+      component: () => import('pages/LocationSelection.vue'),
       props: true
     }
     ]

@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 
 import { VueScrollPicker } from 'vue-scroll-picker'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, toRefs, watch } from 'vue'
 import { DateFromIso, FormatShortDate, IsoDate, IsoDateFromDate } from 'src/tools/date-tools'
 import { date } from 'quasar'
 
@@ -29,11 +29,11 @@ const arrayRange = (start: number, stop: number, step: number): Array<number> =>
     (value, index) => start + index * step
   )
 
-const dates: ReadonlyArray<{ name: string, value: IsoDate }> = populateSelector()
-const hours: ReadonlyArray<string> = arrayRange(6, 22, 1).map(n => n.toLocaleString('en-UK', {
+const dates: Array<{ name: string, value: IsoDate }> = populateSelector()
+const hours: Array<string> = arrayRange(6, 22, 1).map(n => n.toLocaleString('en-UK', {
   minimumIntegerDigits: 2
 }))
-const minutes: ReadonlyArray<string> = arrayRange(0, 55, props.minuteStep).map(n => n.toLocaleString('en-UK', {
+const minutes: Array<string> = arrayRange(0, 55, toRefs(props).minuteStep.value).map(n => n.toLocaleString('en-UK', {
   minimumIntegerDigits: 2
 }))
 
@@ -44,7 +44,7 @@ const model = computed<Date>({
   }
 })
 
-function populateSelector (): ReadonlyArray<{ name: string, value: IsoDate }> {
+function populateSelector (): Array<{ name: string, value: IsoDate }> {
   // start populating dates from today's
   const dates = []
   let possibleDate = new Date()

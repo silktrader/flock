@@ -128,9 +128,6 @@ async function selectPlace (place: SapienzaPlace): Promise<void> {
   color: $secondary;
 }
 
-.location-image {
-}
-
 .location-lectures {
   display: flex;
   justify-content: flex-start;

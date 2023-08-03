@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
 import { Place, SapienzaPlace } from 'src/models/place'
+import { fakerIT as faker } from '@faker-js/faker'
 
 export const useLocationStore = defineStore('location-store', () => {
   const sapienzaLocations = ref<SapienzaPlace[]>([{
@@ -43,11 +44,29 @@ export const useLocationStore = defineStore('location-store', () => {
   // Checks if a location is among Sapienza's facilities
   const isSapLocation = (location: Place): boolean => sapienzaLocations.value.some(l => l.Address === location.Address)
 
+  function genAddresses (stem: string): ReadonlyArray<Place> {
+    const places: Array<Place> = []
+    let attempts = 10000
+    while (attempts > 0) {
+      const newName = faker.location.street()
+      attempts -= 1
+      if (newName.includes(stem)) {
+        places.push({
+          Address: newName,
+          Label: ''
+        })
+        if (places.length > 5) break
+      }
+    }
+    return places
+  }
+
   return {
     sapienzaLocations: readonly(sapienzaLocations),
     otherLocations: readonly(otherLocations),
     getDefaultSapienzaLocation,
     getDefaultHomeLocation,
-    isSapLocation
+    isSapLocation,
+    genAddresses
   }
 })
