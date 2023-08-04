@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
 
   const ls = useLocationStore()
 
-  const randomSapLocation = () => ls.sapienzaLocations[RandomInt(0, ls.sapienzaLocations.length)]
+  const randomSapLocation = () => ls.sapienzaPlaces[RandomInt(0, ls.sapienzaPlaces.length)]
 
   // few courses justify the use of arrays instead of maps
   const courses = [

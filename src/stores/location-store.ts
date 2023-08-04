@@ -4,7 +4,7 @@ import { FavouritePlace, Place, SapienzaPlace } from 'src/models/place'
 import { fakerIT as faker } from '@faker-js/faker'
 
 export const useLocationStore = defineStore('location-store', () => {
-  const sapienzaLocations = ref<SapienzaPlace[]>([{
+  const sapienzaPlaces = ref<SapienzaPlace[]>([{
     Label: 'Città Universitaria',
     Address: 'Piazzale Aldo Moro, 1',
     Avatar: 'https://metronews.it/wp-content/uploads/2021/05/universita_sapienza.jpg'
@@ -26,7 +26,7 @@ export const useLocationStore = defineStore('location-store', () => {
     Avatar: 'https://web.uniroma1.it/sapienzasport/sites/default/files/styles/photonew/public/IMG_20200601_161308.jpg?itok=RdXs2U6g'
   }])
 
-  const favouriteLocations = ref<FavouritePlace[]>([{
+  const favouritePlaces = ref<FavouritePlace[]>([{
     Label: 'Home',
     Address: 'Via Archimede, 110',
     Icon: 'las la-home'
@@ -40,9 +40,9 @@ export const useLocationStore = defineStore('location-store', () => {
     Icon: 'las la-train'
   }])
 
-  const getDefaultSapienzaLocation = (): Place => sapienzaLocations.value[0]
+  const getDefaultSapienzaLocation = (): Place => sapienzaPlaces.value[0]
 
-  const getDefaultHomeLocation = (): Place => (favouriteLocations.value[0])
+  const getDefaultHomeLocation = (): Place => (favouritePlaces.value[0])
 
   const prevSearches = new Map<string, string[]>()
 
@@ -53,7 +53,7 @@ export const useLocationStore = defineStore('location-store', () => {
   const recentAddresses: Array<string> = []
 
   // Checks if a location is among Sapienza's facilities
-  const isSapLocation = (location: Place): boolean => sapienzaLocations.value.some(l => l.Address === location.Address)
+  const isSapLocation = (location: Place): boolean => sapienzaPlaces.value.some(l => l.Address === location.Address)
 
   // Generate unique address names, including prefixes, and memoize results for consistency
   function genAddresses (stem: string): ReadonlyArray<string> {
@@ -97,6 +97,11 @@ export const useLocationStore = defineStore('location-store', () => {
 
   // Add places to a stack like array, to fetch recently searched places
   function addRecentAddress (address: string): void {
+    // check if the place is among favourites
+    if (favouritePlaces.value.map(p => p.Address).includes(address)) {
+      return
+    }
+
     // check if the recent place already exists to avoid duplicates
     const existingItemIndex = recentAddresses.indexOf(address)
     if (existingItemIndex >= 0) {
@@ -113,8 +118,8 @@ export const useLocationStore = defineStore('location-store', () => {
   }
 
   return {
-    sapienzaLocations: readonly(sapienzaLocations),
-    favouriteLocations: readonly(favouriteLocations),
+    sapienzaPlaces: readonly(sapienzaPlaces),
+    favouritePlaces: readonly(favouritePlaces),
     recentAddresses: readonly(recentAddresses),
     getDefaultSapienzaLocation,
     getDefaultHomeLocation,

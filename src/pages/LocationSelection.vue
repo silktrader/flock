@@ -104,13 +104,30 @@ watch(locationInput, (newValue, oldValue) => {
           </q-item-section>
         </q-item>
 
-        <q-item-label header>Recent Searches</q-item-label>
-        <q-item v-for="address in ls.recentAddresses" :key="address" v-ripple clickable @click="selectAddress(address)">
+        <template v-if="ls.recentAddresses.length > 0">
+          <q-item-label header>Recent Searches</q-item-label>
+          <q-item v-for="address in ls.recentAddresses" :key="address" v-ripple clickable
+                  @click="selectAddress(address)">
+            <q-item-section avatar>
+              <q-avatar icon="las la-history"/>
+            </q-item-section>
+            <q-item-section no-wrap>
+              <q-item-label lines="1">{{ address }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-icon color="primary" name="navigate_next" size="lg"/>
+            </q-item-section>
+          </q-item>
+        </template>
+
+        <q-item-label header>Favourite Places</q-item-label>
+        <q-item v-for="place in ls.favouritePlaces" :key="place.Address" v-ripple clickable @click="selectPlace(place)">
           <q-item-section avatar>
-            <q-avatar icon="las la-history"/>
+            <q-avatar :icon="place.Icon"/>
           </q-item-section>
           <q-item-section no-wrap>
-            <q-item-label lines="1">{{ address }}</q-item-label>
+            <q-item-label>{{ place.Label }}</q-item-label>
+            <q-item-label caption>{{ place.Address }}</q-item-label>
           </q-item-section>
           <q-item-section side>
             <q-icon color="primary" name="navigate_next" size="lg"/>

@@ -42,7 +42,7 @@
 
           <q-select
             v-model="destination"
-            :options="ls.sapienzaLocations"
+            :options="ls.sapienzaPlaces"
             behavior="menu"
             dense
             option-label="Label"
@@ -177,7 +177,7 @@ function filterOrigins (val: string, update: (fn: () => void) => void, abort: ()
 
   update(() => {
     const needle = val.toLowerCase()
-    originOptions.value = ls.favouriteLocations.filter(v => v.Address.toLowerCase().indexOf(needle) > -1).map(l => l.Address)
+    originOptions.value = ls.favouritePlaces.filter(v => v.Address.toLowerCase().indexOf(needle) > -1).map(l => l.Address)
   })
 }
 

@@ -55,7 +55,7 @@ const rs = useRideStore()
 const props = defineProps<{ target: 'origin' | 'destination' }>()
 
 const places = computed<Array<{ Location: SapienzaPlace, Courses: Set<string> }>>(() => {
-  return ls.sapienzaLocations.map(location => ({
+  return ls.sapienzaPlaces.map(location => ({
     Location: location,
     Courses: new Set(us.lectures.filter(l => l.Location.Address === location.Address).map(l => l.Course))
   }))
