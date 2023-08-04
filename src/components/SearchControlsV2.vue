@@ -16,8 +16,11 @@
         <q-btn class="location-button" @click="selectOrigin()">
           <div class="location-button-container">
             <div class="location-button-labels">
-              <span v-if="origin.Label !== ''" class="lecture-name">{{ origin.Label }}</span>
-              <span class="address">{{ origin.Address }}</span>
+              <template v-if="origin.Label !== ''">
+                <span class="label">{{ origin.Label }}</span>
+                <span class="address">{{ origin.Address }}</span>
+              </template>
+              <span v-else class="label">{{ origin.Address }}</span>
             </div>
             <q-icon v-if="isSapienzaPlace(origin)" class="sapienza-icon" name="school" size="sm"/>
           </div>
@@ -26,8 +29,11 @@
         <q-btn class="location-button" @click="selectDestination()">
           <div class="location-button-container">
             <div class="location-button-labels">
-              <span v-if="destination.Label !== ''" class="lecture-name">{{ destination.Label }}</span>
-              <span class="address">{{ destination.Address }}</span>
+              <template v-if="destination.Label !== ''">
+                <span class="label">{{ destination.Label }}</span>
+                <span class="address">{{ destination.Address }}</span>
+              </template>
+              <span v-else class="label">{{ destination.Address }}</span>
             </div>
             <!--          <q-img fit="scale-down" src="/src/assets/SapLogo.png" width="32px"/>-->
             <q-icon v-if="isSapienzaPlace(destination)" class="sapienza-icon" name="school" size="sm"/>
@@ -167,6 +173,7 @@ function selectOrigin (): void {
   cursor: pointer;
   text-transform: none;
   font-weight: normal;
+  min-height: 60px;
 }
 
 .location-button-container {
@@ -186,7 +193,7 @@ function selectOrigin (): void {
   min-width: 0;
 }
 
-.lecture-name, .address {
+.label, .address {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -226,7 +233,6 @@ function selectOrigin (): void {
 .pickup-time {
   display: flex;
   flex-direction: row;
-  text-wrap: none;
   align-items: center;
   gap: 8px;
 }
