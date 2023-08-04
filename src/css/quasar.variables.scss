@@ -102,3 +102,10 @@ $border-radius: 12px;
   border-radius: 12px !important;
   box-shadow: none;
 }
+
+.flat-button {
+  -webkit-font-smoothing: antialiased;
+  text-transform: none;
+  color: $secondary;
+  min-height: 40px;
+}

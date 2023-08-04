@@ -74,11 +74,15 @@ export const useLocationStore = defineStore('location-store', () => {
       }
     }
 
+    // avoid these modifiers when generating random addresses
+    const avoidList = ['Contrada', 'Rotonda', 'Borgo', 'Strada', 'Incrocio']
+
     // generate random addresses that include the search string
     if (places.size < maxPlaces) {
       let attempts = 10000
       while (attempts > 0) {
         const newName = faker.location.street()
+        if (avoidList.some(avoid => newName.startsWith(avoid))) continue
         attempts -= 1
         if (newName.includes(stem)) {
           places.add(newName)
