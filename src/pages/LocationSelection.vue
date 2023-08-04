@@ -42,7 +42,9 @@ function fillAddress (address: string): void {
 
 const isCompleteAddress = (address: string): boolean => (/^(\w+)\s[A-Za-z]+\s\d+$/).test(address)
 
-const completeAddress = computed<boolean>(() => (!!locationInput.value && isCompleteAddress(locationInput.value)))
+const completeAddress = computed<boolean>(() =>
+  (locationInput.value === null || !locationInput.value.length) ? false : isCompleteAddress(locationInput.value)
+)
 
 function removeHint (): void {
   addressHint.value = ''
@@ -57,7 +59,12 @@ function selectAddress (address: string): void {
 
 function selectPlace (place: Place): void {
   // determine if the address is missing a number and assign a default if necessary
-  if (!captureNumber(place.Address)) place.Address = `${place.Address}, 1`
+  if (!captureNumber(place.Address)) {
+    place.Address = `${place.Address}, 1`
+  } else {
+    // add a comma to addresses with numbers
+    place.Address = place.Address.replace(/(\b\w+\b)\s+(\d+)$/, '$1, $2')
+  }
 
   if (props.target === 'destination') {
     rs.updateParameters({ Destination: place })
@@ -160,7 +167,7 @@ watch(locationInput, (newValue, oldValue) => {
         </q-item-section>
       </q-item>
 
-      <template v-if="!suggestedAddresses.length && ls.recentAddresses.length > 0 && !completeAddress">
+      <template v-if="!suggestedAddresses.length && ls.recentAddresses.length && !completeAddress">
         <q-item-label header>Recent Searches</q-item-label>
         <q-item v-for="address in ls.recentAddresses" :key="address" v-ripple clickable @click="selectAddress(address)">
           <q-item-section avatar>
@@ -173,7 +180,9 @@ watch(locationInput, (newValue, oldValue) => {
             <q-icon color="secondary" name="arrow_forward_ios"/>
           </q-item-section>
         </q-item>
+      </template>
 
+      <template v-if="ls.favouritePlaces.length && !suggestedAddresses.length && !completeAddress">
         <q-item-label header>Favourite Places</q-item-label>
         <q-item v-for="place in ls.favouritePlaces" :key="place.Address" v-ripple clickable @click="selectPlace(place)">
           <q-item-section avatar>
