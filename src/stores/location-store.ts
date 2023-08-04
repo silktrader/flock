@@ -41,24 +41,52 @@ export const useLocationStore = defineStore('location-store', () => {
 
   const getDefaultHomeLocation = (): Place => (otherLocations.value[0])
 
+  const randomAddresses = new Map<string, string[]>()
+
+  // contains all previously generated addresses for quick lookups; might grow large
+  const prevAddresses = new Set<string>()
+
   // Checks if a location is among Sapienza's facilities
   const isSapLocation = (location: Place): boolean => sapienzaLocations.value.some(l => l.Address === location.Address)
 
-  function genAddresses (stem: string): ReadonlyArray<Place> {
-    const places: Array<Place> = []
-    let attempts = 10000
-    while (attempts > 0) {
-      const newName = faker.location.street()
-      attempts -= 1
-      if (newName.includes(stem)) {
-        places.push({
-          Address: newName,
-          Label: ''
-        })
-        if (places.length > 5) break
+  // Generate unique address names, including prefixes, and memoize results for consistency
+  function genAddresses (stem: string): ReadonlyArray<string> {
+    // check if addresses were already generated
+    let addresses = randomAddresses.get(stem)
+    if (addresses !== undefined) {
+      return addresses
+    }
+
+    const places: Set<Place> = new Set()
+    const maxPlaces = 5
+
+    // browse previous random results to improve consistency
+    for (const address: string of prevAddresses) {
+      if (address.includes(stem)) {
+        places.add(address)
+        if (places.size >= maxPlaces) break
       }
     }
-    return places
+
+    // generate random addresses that include the search string
+    if (places.size < maxPlaces) {
+      let attempts = 10000
+      while (attempts > 0) {
+        const newName = faker.location.street()
+        attempts -= 1
+        if (newName.includes(stem)) {
+          places.add(newName)
+          prevAddresses.add(newName)
+          if (places.size >= maxPlaces) break
+        }
+      }
+    }
+
+    // memoize results
+    addresses = Array.from(places)
+    randomAddresses.set(stem, addresses)
+
+    return addresses
   }
 
   return {
