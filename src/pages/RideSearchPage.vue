@@ -169,8 +169,6 @@ const originOptions: Ref<string[]> = ref([])
 const origin = ref<Place>(ls.getDefaultHomeLocation())
 const destination = ref<Place>(ls.getDefaultSapienzaLocation())
 
-// const allLocations = computed<Location[]>(() => ls.sapienzaLocations.concat(ls.otherLocations))
-
 function filterOrigins (val: string, update: (fn: () => void) => void, abort: () => void): void {
   if (val.length < 2) {
     abort()
@@ -179,7 +177,7 @@ function filterOrigins (val: string, update: (fn: () => void) => void, abort: ()
 
   update(() => {
     const needle = val.toLowerCase()
-    originOptions.value = ls.otherLocations.filter(v => v.Address.toLowerCase().indexOf(needle) > -1).map(l => l.Address)
+    originOptions.value = ls.favouriteLocations.filter(v => v.Address.toLowerCase().indexOf(needle) > -1).map(l => l.Address)
   })
 }
 

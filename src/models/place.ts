@@ -11,4 +11,8 @@ export interface SapienzaPlace extends Place {
   Avatar: string
 }
 
+export interface FavouritePlace extends Place {
+  Icon: string
+}
+
 export const isSapienzaPlace = (place: Place): place is SapienzaPlace => (place as SapienzaPlace).Avatar !== undefined

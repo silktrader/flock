@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
-import { Place, SapienzaPlace } from 'src/models/place'
+import { FavouritePlace, Place, SapienzaPlace } from 'src/models/place'
 import { fakerIT as faker } from '@faker-js/faker'
 
 export const useLocationStore = defineStore('location-store', () => {
@@ -26,25 +26,31 @@ export const useLocationStore = defineStore('location-store', () => {
     Avatar: 'https://web.uniroma1.it/sapienzasport/sites/default/files/styles/photonew/public/IMG_20200601_161308.jpg?itok=RdXs2U6g'
   }])
 
-  const otherLocations = ref<Place[]>([{
+  const favouriteLocations = ref<FavouritePlace[]>([{
     Label: 'Home',
-    Address: 'Via Archimede, 110'
+    Address: 'Via Archimede, 110',
+    Icon: 'las la-home'
   }, {
-    Label: 'Home',
-    Address: 'Viale Africa, 25'
+    Label: 'Dad\'s Flat',
+    Address: 'Viale Africa, 25',
+    Icon: 'las la-building'
   }, {
-    Label: 'Home',
-    Address: 'Viale degli Estensi, 3'
+    Label: 'Stazione Termini',
+    Address: 'Via Giovanni Giolitti, 40',
+    Icon: 'las la-train'
   }])
 
   const getDefaultSapienzaLocation = (): Place => sapienzaLocations.value[0]
 
-  const getDefaultHomeLocation = (): Place => (otherLocations.value[0])
+  const getDefaultHomeLocation = (): Place => (favouriteLocations.value[0])
 
-  const randomAddresses = new Map<string, string[]>()
+  const prevSearches = new Map<string, string[]>()
 
   // contains all previously generated addresses for quick lookups; might grow large
   const prevAddresses = new Set<string>()
+
+  // contains all previously selected places to populate a history list
+  const recentAddresses: Array<string> = []
 
   // Checks if a location is among Sapienza's facilities
   const isSapLocation = (location: Place): boolean => sapienzaLocations.value.some(l => l.Address === location.Address)
@@ -52,16 +58,16 @@ export const useLocationStore = defineStore('location-store', () => {
   // Generate unique address names, including prefixes, and memoize results for consistency
   function genAddresses (stem: string): ReadonlyArray<string> {
     // check if addresses were already generated
-    let addresses = randomAddresses.get(stem)
+    let addresses = prevSearches.get(stem)
     if (addresses !== undefined) {
       return addresses
     }
 
-    const places: Set<Place> = new Set()
+    const places: Set<string> = new Set()
     const maxPlaces = 5
 
     // browse previous random results to improve consistency
-    for (const address: string of prevAddresses) {
+    for (const address of prevAddresses) {
       if (address.includes(stem)) {
         places.add(address)
         if (places.size >= maxPlaces) break
@@ -84,17 +90,36 @@ export const useLocationStore = defineStore('location-store', () => {
 
     // memoize results
     addresses = Array.from(places)
-    randomAddresses.set(stem, addresses)
+    prevSearches.set(stem, addresses)
 
     return addresses
   }
 
+  // Add places to a stack like array, to fetch recently searched places
+  function addRecentAddress (address: string): void {
+    // check if the recent place already exists to avoid duplicates
+    const existingItemIndex = recentAddresses.indexOf(address)
+    if (existingItemIndex >= 0) {
+      const firstItem = recentAddresses[0]
+      recentAddresses[0] = address
+      recentAddresses[existingItemIndex] = firstItem
+      return
+    }
+
+    recentAddresses.unshift(address)
+    if (recentAddresses.length > 4) {
+      recentAddresses.pop()
+    }
+  }
+
   return {
     sapienzaLocations: readonly(sapienzaLocations),
-    otherLocations: readonly(otherLocations),
+    favouriteLocations: readonly(favouriteLocations),
+    recentAddresses: readonly(recentAddresses),
     getDefaultSapienzaLocation,
     getDefaultHomeLocation,
     isSapLocation,
-    genAddresses
+    genAddresses,
+    addRecentAddress
   }
 })

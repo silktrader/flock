@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
 import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
+import { Place } from 'src/models/place'
 
 const props = defineProps<{ target: 'origin' | 'destination' }>()
 const router = useRouter()
@@ -11,9 +12,7 @@ const rs = useRideStore()
 const ls = useLocationStore()
 
 const locationInput = ref<string>()
-const places = ref<ReadonlyArray<string>>([])
-
-// const preSelectedStreet = ref<string | null>(null)
+const addresses = ref<ReadonlyArray<string>>([])
 
 function sanitiseAddress (address: string): string {
   return address.replace(/^(Via|Largo|Borgo|Contrada|Strada|Vicolo|Piazza)\s+|\s+\d+$/gi, '').trim()
@@ -31,14 +30,17 @@ function closeModal (): void {
   router.replace('/search-results')
 }
 
-function selectPlace (address: string): void {
-  // determine if the address is missing a number and assign a default if necessary
-  if (!captureNumber(address)) address = `${address}, 1`
-
-  const place = {
+function selectAddress (address: string): void {
+  selectPlace({
     Address: address,
     Label: ''
-  }
+  })
+}
+
+function selectPlace (place: Place): void {
+  // determine if the address is missing a number and assign a default if necessary
+  if (!captureNumber(place.Address)) place.Address = `${place.Address}, 1`
+
   if (props.target === 'destination') {
     rs.updateParameters({ Destination: place })
   } else if (props.target === 'origin') {
@@ -46,17 +48,18 @@ function selectPlace (address: string): void {
   } else {
     throw new Error('invalid parameter while selecting location')
   }
+
+  ls.addRecentAddress(place.Address)
   router.replace('/search-results')
 }
 
 watch(locationInput, (newValue, oldValue) => {
   if (newValue === undefined || newValue.length < 3) {
-    places.value = []
+    addresses.value = []
   } else if (newValue !== oldValue) {
     // extract number and append it to randomly generated addresses
     const number = captureNumber(newValue)
-    const addresses = ls.genAddresses(sanitiseAddress(newValue))
-    places.value = addresses.map(a => a + (number === null ? '' : `, ${number}`))
+    addresses.value = ls.genAddresses(sanitiseAddress(newValue)).map(a => a + (number === null ? '' : `, ${number}`))
   }
 })
 
@@ -86,27 +89,42 @@ watch(locationInput, (newValue, oldValue) => {
       />
     </section>
 
-    <q-list class="locations-list" padding separator>
+    <q-list class="locations-list" padding>
 
-      <q-item v-if="places.length === 0" v-ripple clickable
-              @click="selectPlace({Label: 'Gamification Lab', Address: 'Via dei Volsci, 122'})">
-        <q-item-section avatar>
-          <q-avatar icon="my_location"/>
-        </q-item-section>
-        <q-item-section no-wrap>
-          <q-item-label lines="1">Use current location</q-item-label>
-        </q-item-section>
-        <q-item-section side>
-          <q-icon color="primary" name="navigate_next" size="lg"/>
-        </q-item-section>
-      </q-item>
+      <template v-if="!addresses.length">
+        <q-item v-ripple clickable @click="selectPlace({Label: 'Gamification Lab', Address: 'Via dei Volsci, 122'})">
+          <q-item-section avatar>
+            <q-avatar icon="my_location"/>
+          </q-item-section>
+          <q-item-section no-wrap>
+            <q-item-label lines="1">Use current location</q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-icon color="primary" name="navigate_next" size="lg"/>
+          </q-item-section>
+        </q-item>
 
-      <q-item v-for="place in places" :key="place" v-ripple clickable @click="selectPlace(place)">
+        <q-item-label header>Recent Searches</q-item-label>
+        <q-item v-for="address in ls.recentAddresses" :key="address" v-ripple clickable @click="selectAddress(address)">
+          <q-item-section avatar>
+            <q-avatar icon="las la-history"/>
+          </q-item-section>
+          <q-item-section no-wrap>
+            <q-item-label lines="1">{{ address }}</q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-icon color="primary" name="navigate_next" size="lg"/>
+          </q-item-section>
+        </q-item>
+
+      </template>
+
+      <q-item v-for="address in addresses" :key="address" v-ripple clickable @click="selectAddress(address)">
         <q-item-section avatar>
           <q-avatar icon="location_on"/>
         </q-item-section>
         <q-item-section no-wrap>
-          <q-item-label lines="1">{{ place }}</q-item-label>
+          <q-item-label lines="1">{{ address }}</q-item-label>
         </q-item-section>
         <q-item-section side>
           <q-icon color="primary" name="navigate_next" size="lg"/>
