@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { computed, ref, watch } from 'vue'
 import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
-import { Place } from 'src/models/place'
+import { FavouritePlace, Place } from 'src/models/place'
 import { QInput } from 'quasar'
 
 const props = defineProps<{ target: 'origin' | 'destination' }>()
@@ -13,9 +13,19 @@ const rs = useRideStore()
 const ls = useLocationStore()
 
 const formInput = ref<QInput>()
-const locationInput = ref<string | null>(null)
+const locationInput = ref<string>('')
 const addressHint = ref<string>('')
 const suggestedAddresses = ref<ReadonlyArray<string>>([])
+
+const filteredFavourites = computed<ReadonlyArray<FavouritePlace>>(() => {
+  const input = locationInput.value.toLowerCase()
+  return input ? ls.favouritePlaces.filter(f => f.Address.toLowerCase().includes(input)) : ls.favouritePlaces
+})
+
+const filteredRecentAddresses = computed<ReadonlyArray<string>>(() => {
+  const input = locationInput.value // must cache it to avoid closures capturing the wrong value
+  return !input.length ? ls.recentAddresses : ls.recentAddresses.filter(a => a.toLowerCase().includes(input.toLowerCase()))
+})
 
 function sanitiseAddress (address: string): string {
   return address.replace(/^(Via|Largo|Vicolo|Piazza)\s+|\s+\d+$/gi, '').trim()
@@ -42,9 +52,7 @@ function fillAddress (address: string): void {
 
 const isCompleteAddress = (address: string): boolean => (/^(\w+)\s[A-Za-z]+\s\d+$/).test(address)
 
-const completeAddress = computed<boolean>(() =>
-  (locationInput.value === null || !locationInput.value.length) ? false : isCompleteAddress(locationInput.value)
-)
+const completeAddress = computed<boolean>(() => isCompleteAddress(locationInput.value))
 
 function removeHint (): void {
   addressHint.value = ''
@@ -82,7 +90,7 @@ watch(locationInput, (newValue, oldValue) => {
   // don't generate random addresses when:
   // there aren't enough characters to generate sensible suggestions
   // the currently input one is of good form
-  if (newValue === null || newValue.length < 3 || isCompleteAddress(newValue)) {
+  if (newValue.length < 3 || isCompleteAddress(newValue)) {
     suggestedAddresses.value = []
     removeHint()
   } else if (newValue !== oldValue) {
@@ -112,18 +120,21 @@ watch(locationInput, (newValue, oldValue) => {
       <q-input ref="formInput"
                v-model="locationInput"
                :shadow-text="addressHint"
-               clearable
                debounce="300"
                maxlength="25"
                outlined
                placeholder="Street or square name"
                rounded
-      />
+      >
+        <template v-if="locationInput.length" v-slot:append>
+          <q-icon class="cursor-pointer" name="cancel" @click.stop.prevent="locationInput = ''"/>
+        </template>
+      </q-input>
     </section>
 
     <q-list class="locations-list" padding>
 
-      <template v-if="completeAddress && locationInput">
+      <template v-if="completeAddress">
         <q-item v-ripple clickable @click="selectAddress(locationInput)">
           <q-item-section avatar>
             <q-avatar class="address-icon" icon="pin_drop"/>
@@ -154,22 +165,25 @@ watch(locationInput, (newValue, oldValue) => {
         </q-item>
       </template>
 
-      <q-item-label header>Current Location</q-item-label>
-      <q-item v-ripple clickable @click="selectPlace({Label: 'Gamification Lab', Address: 'Via dei Volsci, 122'})">
-        <q-item-section avatar>
-          <q-avatar class="address-icon" icon="my_location"/>
-        </q-item-section>
-        <q-item-section class="address-section">
-          <q-item-label>Use Current Location</q-item-label>
-        </q-item-section>
-        <q-item-section side>
-          <q-icon color="secondary" name="arrow_forward_ios"/>
-        </q-item-section>
-      </q-item>
+      <template v-if="!locationInput.length">
+        <q-item-label header>Current Location</q-item-label>
+        <q-item v-ripple clickable @click="selectPlace({Label: 'Gamification Lab', Address: 'Via dei Volsci, 122'})">
+          <q-item-section avatar>
+            <q-avatar class="address-icon" icon="my_location"/>
+          </q-item-section>
+          <q-item-section class="address-section">
+            <q-item-label>Use Current Location</q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-icon color="secondary" name="arrow_forward_ios"/>
+          </q-item-section>
+        </q-item>
+      </template>
 
-      <template v-if="!suggestedAddresses.length && ls.recentAddresses.length && !completeAddress">
+      <template v-if="filteredRecentAddresses.length">
         <q-item-label header>Recent Searches</q-item-label>
-        <q-item v-for="address in ls.recentAddresses" :key="address" v-ripple clickable @click="selectAddress(address)">
+        <q-item v-for="address in filteredRecentAddresses" :key="address" v-ripple clickable
+                @click="selectAddress(address)">
           <q-item-section avatar>
             <q-avatar class="address-icon" icon="las la-history"/>
           </q-item-section>
@@ -182,9 +196,9 @@ watch(locationInput, (newValue, oldValue) => {
         </q-item>
       </template>
 
-      <template v-if="ls.favouritePlaces.length && !suggestedAddresses.length && !completeAddress">
+      <template v-if="filteredFavourites.length">
         <q-item-label header>Favourite Places</q-item-label>
-        <q-item v-for="place in ls.favouritePlaces" :key="place.Address" v-ripple clickable @click="selectPlace(place)">
+        <q-item v-for="place in filteredFavourites" :key="place.Address" v-ripple clickable @click="selectPlace(place)">
           <q-item-section avatar>
             <q-avatar :icon="place.Icon" class="address-icon"/>
           </q-item-section>
