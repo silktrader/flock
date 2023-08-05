@@ -109,20 +109,22 @@ watch(locationInput, (newValue, oldValue) => {
   <main class="container">
 
     <section class="search-box">
-      <q-btn flat icon="arrow_back"/>
-      <q-input ref="formInput"
-               v-model="locationInput"
-               :placeholder="placeholder"
-               :shadow-text="addressHint"
-               borderless
-               class="search-box-input"
-               debounce="300"
-               maxlength="25"
-      >
-        <template v-if="locationInput.length" v-slot:append>
-          <q-icon class="cursor-pointer" name="cancel" @click.stop.prevent="locationInput = ''"/>
-        </template>
-      </q-input>
+      <q-btn flat icon="arrow_back" @click="closeModal()"/>
+      <q-form autofocus class="search-box-form" @submit="selectAddress(locationInput)">
+        <q-input ref="formInput"
+                 v-model="locationInput"
+                 :placeholder="placeholder"
+                 :shadow-text="addressHint"
+                 borderless
+                 class="search-box-input"
+                 debounce="300"
+                 maxlength="25"
+        >
+          <template v-if="locationInput.length" v-slot:append>
+            <q-icon class="cursor-pointer" name="cancel" @click.stop.prevent="locationInput = ''"/>
+          </template>
+        </q-input>
+      </q-form>
     </section>
 
     <q-list class="locations-list" padding>
@@ -159,7 +161,6 @@ watch(locationInput, (newValue, oldValue) => {
       </template>
 
       <template v-if="!locationInput.length">
-        <q-item-label header>Current Location</q-item-label>
         <q-item v-ripple clickable @click="selectPlace({Label: 'Gamification Lab', Address: 'Via dei Volsci, 122'})">
           <q-item-section avatar>
             <q-avatar class="address-icon" icon="my_location"/>
@@ -215,14 +216,17 @@ watch(locationInput, (newValue, oldValue) => {
 @import "src/css/quasar.variables.scss";
 
 .search-box {
+  display: flex;
   color: $on-surface-variant;
   background-color: $surface-variant;
-  display: flex;
   border-radius: 8px;
   margin: 8px;
   padding-right: 16px;
   width: calc(100% - 32px);
-  justify-content: space-between;
+}
+
+.search-box-form {
+  flex: 5;
 }
 
 .search-box-input {
