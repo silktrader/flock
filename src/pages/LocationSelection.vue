@@ -17,6 +17,8 @@ const locationInput = ref<string>('')
 const addressHint = ref<string>('')
 const suggestedAddresses = ref<ReadonlyArray<string>>([])
 
+const placeholder = computed<string>(() => `Enter a ${props.target === 'origin' ? 'starting point' : 'destination'}`)
+
 const filteredFavourites = computed<ReadonlyArray<FavouritePlace>>(() => {
   const input = locationInput.value.toLowerCase()
   return input ? ls.favouritePlaces.filter(f => f.Address.toLowerCase().includes(input)) : ls.favouritePlaces
@@ -106,25 +108,16 @@ watch(locationInput, (newValue, oldValue) => {
 <template>
   <main class="container">
 
-    <header class="modal-header">
-      <div class="modal-header-spacer"></div>
-      <section class="modal-header-title">
-        <span>Select a location</span>
-      </section>
-      <section>
-        <q-btn aria-label="Close" flat icon="close" size="lg" @click="closeModal()"/>
-      </section>
-    </header>
-
     <section class="search-box">
+      <q-btn flat icon="arrow_back"/>
       <q-input ref="formInput"
                v-model="locationInput"
+               :placeholder="placeholder"
                :shadow-text="addressHint"
+               borderless
+               class="search-box-input"
                debounce="300"
                maxlength="25"
-               outlined
-               placeholder="Street or square name"
-               rounded
       >
         <template v-if="locationInput.length" v-slot:append>
           <q-icon class="cursor-pointer" name="cancel" @click.stop.prevent="locationInput = ''"/>
@@ -222,14 +215,19 @@ watch(locationInput, (newValue, oldValue) => {
 @import "src/css/quasar.variables.scss";
 
 .search-box {
-  color: $on-secondary-container;
-  background-color: $secondary-container;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-bottom: 16px;
-  width: 100%;
-  justify-content: center;
+  color: $on-surface-variant;
+  background-color: $surface-variant;
+  display: flex;
+  border-radius: 8px;
+  margin: 8px;
+  padding-right: 16px;
+  width: calc(100% - 32px);
+  justify-content: space-between;
+}
+
+.search-box-input {
   font-size: medium;
+  flex-grow: 5;
 }
 
 .container {
@@ -240,6 +238,7 @@ watch(locationInput, (newValue, oldValue) => {
 }
 
 .locations-list {
+  padding-right: 16px; // matches the search box' clear button alignment
   font-size: medium;
   width: 100%;
 }
