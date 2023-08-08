@@ -55,23 +55,11 @@
         <q-icon name="schedule" size="18px"/>
       </q-btn>
 
-      <q-btn class="outline-button" outline>
+      <q-btn class="outline-button" outline @click="editFilters()">
         <span>Filters</span>
         <!--        <q-icon name="las la-filter"/>-->
       </q-btn>
 
-      <!--      <div class="pickup-time">-->
-      <!--        <span>Pickup Time</span>-->
-      <!--        <q-btn-toggle-->
-      <!--          v-model="maxPickupTime"-->
-      <!--          :options="pickupOptions"-->
-      <!--          class="pickup-time-toggle"-->
-      <!--          no-caps-->
-      <!--          no-wrap-->
-      <!--          toggle-color="primary"-->
-      <!--          toggle-text-color="light-green-10"-->
-      <!--        />-->
-      <!--      </div>-->
     </section>
 
   </section>
@@ -96,18 +84,6 @@ const wantsArrive = computed<boolean>(() => rs.searchParameters.DateMode === Dat
 const searchTimeLabel = computed<string>(() => ExtractTime(rs.searchParameters.Date))
 const searchDateLabel = computed<string>(() => FormatShortDate(rs.searchParameters.Date))
 
-// const maxPickupTime = ref<number>(10)
-// const pickupOptions: ReadonlyArray<{ label: string, value: number }> = [{
-//   label: '10',
-//   value: 10
-// }, {
-//   label: '20',
-//   value: 20
-// }, {
-//   label: '30',
-//   value: 30
-// }]
-
 function switchLocations (): void {
   rs.updateParameters({
     Destination: rs.searchParameters.Origin,
@@ -117,6 +93,10 @@ function switchLocations (): void {
 
 function selectDate (): void {
   router.push('/date-select')
+}
+
+function editFilters (): void {
+  router.push('/filters')
 }
 
 function selectDestination (): void {
@@ -228,13 +208,6 @@ function selectOrigin (): void {
   flex-direction: row;
   font-size: medium;
   justify-content: space-between;
-}
-
-.pickup-time {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
 }
 
 .time em {

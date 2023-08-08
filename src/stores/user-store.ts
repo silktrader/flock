@@ -69,9 +69,9 @@ export const useUserStore = defineStore('user', () => {
     return validIds[RandomInt(0, validIds.length)]
   }
 
-  function configureNewUser (avoidAvatars: ReadonlySet<number>): UserConfig {
+  function configureNewUser (avoidAvatars: ReadonlySet<number>, forceFemale: boolean): UserConfig {
     // choose gender first for naming and avatar purposes
-    const isFemale = Boolean(RandomInt(0, 2))
+    const isFemale = forceFemale ?? Boolean(RandomInt(0, 2))
 
     return {
       Id: RandomId(),
@@ -88,8 +88,8 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  function generateUser (avoidAvatars: ReadonlySet<number>): User {
-    return new User(configureNewUser(avoidAvatars))
+  function generateUser (avoidAvatars: ReadonlySet<number>, forceFemale = false): User {
+    return new User(configureNewUser(avoidAvatars, forceFemale))
   }
 
   function generateDriver (avoidAvatars: ReadonlySet<number>): Driver {

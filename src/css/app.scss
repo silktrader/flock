@@ -40,10 +40,32 @@
 }
 
 .button-toggle {
-  border: 1px solid $primary;
+  border: 1px solid $outline;
   border-radius: 24px;
-  color: $primary;
+  background-color: $background;
   box-shadow: none;
+
+  span {
+    color: $on-background !important;
+    text-transform: none;
+    min-width: 3ch;
+  }
+
+  .bg-primary {
+    background-color: $secondary-container !important;
+  }
+
+  .bg-primary span {
+    color: $on-secondary-container !important;
+  }
+
+  .q-btn {
+    border-right: 1px solid $outline;
+  }
+
+  .q-btn:last-of-type {
+    border-right: none;
+  }
 }
 
 .q-btn__content {

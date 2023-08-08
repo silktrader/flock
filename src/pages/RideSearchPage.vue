@@ -203,7 +203,7 @@ const friendlyDate = computed(() => {
 const bus = ref(true)
 const subway = ref(true)
 const pickupTimeLimit = 30
-const maxPickupTime = ref(15)
+const maxPickupTime = ref(20)
 
 function search (): void {
   // prevent submission when missing fields
@@ -221,8 +221,8 @@ function search (): void {
       Destination: destination.value,
       Date: date.extractDate(`${arrivalDate.value} ${arrivalTime.value}`, 'YYYY/MM/DD HH:mm'),
       ReachTime: maxPickupTime.value,
-      BusAllowed: bus.value,
-      SubwayAllowed: subway.value
+      busAllowed: bus.value,
+      subwayAllowed: subway.value
     })
     router.push('/search-results')
   }

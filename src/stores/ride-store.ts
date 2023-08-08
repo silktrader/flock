@@ -79,8 +79,10 @@ export interface SearchParameters {
   Date: Date;
   DateMode: DateMode;
   ReachTime: number;
-  BusAllowed: boolean;
-  SubwayAllowed: boolean;
+  busAllowed: boolean;
+  subwayAllowed: boolean;
+  ladiesOnly: boolean;
+  freeSeats: number;
 }
 
 export interface RideSearch {
@@ -104,8 +106,10 @@ export const useRideStore = defineStore('ride',
       DateMode: DateMode.Arrive,
       Destination: ls.getDefaultSapienzaLocation(),
       ReachTime: 15,
-      BusAllowed: false,
-      SubwayAllowed: true
+      busAllowed: false,
+      subwayAllowed: true,
+      ladiesOnly: false,
+      freeSeats: 1
     }
 
     const searchParameters = ref<SearchParameters>(defaultParameters)
@@ -126,8 +130,8 @@ export const useRideStore = defineStore('ride',
         Date: toRaw(parameters.Date),
         DateMode: parameters.DateMode,
         ReachTime: parameters.ReachTime,
-        BusAllowed: parameters.BusAllowed,
-        SubwayAllowed: parameters.SubwayAllowed
+        BusAllowed: parameters.busAllowed,
+        SubwayAllowed: parameters.subwayAllowed
       })
     }
 
@@ -165,7 +169,8 @@ export const useRideStore = defineStore('ride',
         Destination: destination,
         Date: date,
         DateMode: dateMode,
-        ReachTime: reachTime
+        ReachTime: reachTime,
+        ladiesOnly
       } = searchParameters.value
 
       // signal which addresses should be removed from newly randomly generated ones
@@ -211,7 +216,7 @@ export const useRideStore = defineStore('ride',
         const passengers = []
         const passengerAvatarIds: Set<number> = new Set()
         for (let occupiedSeats = RandomInt(0, car.Seats - 1); occupiedSeats > 0; occupiedSeats--) {
-          const user = us.generateUser(passengerAvatarIds)
+          const user = us.generateUser(passengerAvatarIds, ladiesOnly)
           passengerAvatarIds.add(user.AvatarId)
           passengers.push(user)
         }
@@ -263,10 +268,10 @@ export const useRideStore = defineStore('ride',
     function generatePickup (departure: Date, pickupDelay: number, avoidAddresses: ReadonlyArray<string>): Pickup {
       // determine which means of transport the user can rely on to get to a pickup
       const eligibleTransports = [Transport.None]
-      if (searchParameters.value.BusAllowed && pickupDelay > 5) {
+      if (searchParameters.value.busAllowed && pickupDelay > 5) {
         eligibleTransports.push(Transport.Bus)
       }
-      if (searchParameters.value.SubwayAllowed && pickupDelay > 10) {
+      if (searchParameters.value.subwayAllowed && pickupDelay > 10) {
         eligibleTransports.push(Transport.Subway)
       }
 

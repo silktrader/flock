@@ -40,6 +40,10 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/DateSelection.vue')
     },
     {
+      path: 'filters',
+      component: () => import('pages/SearchFilters.vue')
+    },
+    {
       path: 'sap-location-select/:target',
       component: () => import('pages/SapLocationSelection.vue'),
       props: true

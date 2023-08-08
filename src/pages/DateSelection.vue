@@ -62,7 +62,7 @@
             <span class="no-lectures">No Lectures</span>
           </q-item>
 
-          <q-item v-for="lecture in dayLectures" v-else :key="lecture.Date">
+          <q-item v-for="lecture in dayLectures" v-else :key="lecture.Course">
             <q-item-section class="lecture-name">
               <q-item-label lines="2">{{ lecture.Course }}</q-item-label>
             </q-item-section>
