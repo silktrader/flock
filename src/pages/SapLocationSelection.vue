@@ -1,13 +1,10 @@
 <template>
   <main class="container">
 
-    <header class="modal-header">
-      <div class="modal-header-spacer"></div>
+    <header class="secondary-header">
+      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="closeModal()"/>
       <section class="modal-header-title">
-        <span>Select a location</span>
-      </section>
-      <section>
-        <q-btn aria-label="Close" flat icon="close" size="lg" @click="closeModal()"/>
+        <span>Select a {{ props.target === 'origin' ? 'starting point' : 'destination' }}</span>
       </section>
     </header>
 
@@ -30,7 +27,7 @@
           </section>
         </section>
 
-        <q-icon color="primary" name="navigate_next" size="lg"/>
+        <q-icon color="secondary" name="navigate_next" size="lg"/>
 
       </li>
     </ul>
@@ -58,7 +55,7 @@ const places = computed<Array<{ Location: SapienzaPlace, Courses: Set<string> }>
   return ls.sapienzaPlaces.map(location => ({
     Location: location,
     Courses: new Set(us.lectures.filter(l => l.Location.Address === location.Address).map(l => l.Course))
-  }))
+  })).sort((a, b) => b.Courses.size - a.Courses.size || a.Location.Label.localeCompare(b.Location.Label))
 })
 
 function closeModal (): void {
@@ -103,7 +100,7 @@ async function selectPlace (place: SapienzaPlace): Promise<void> {
   position: relative; // needed for ripple effects
   display: flex;
   gap: 16px;
-  padding: 16px;
+  padding: 8px 16px;
   justify-content: space-between;
   align-items: center;
   line-height: normal;
@@ -120,12 +117,13 @@ async function selectPlace (place: SapienzaPlace): Promise<void> {
 
 .location-label {
   font-size: medium;
-  color: $primary;
+  color: $secondary;
 }
 
 .location-address {
+  opacity: 80%;
   font-size: small;
-  color: $secondary;
+  color: $on-background;
 }
 
 .location-lectures {

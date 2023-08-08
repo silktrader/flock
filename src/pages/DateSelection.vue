@@ -2,13 +2,10 @@
 
   <main class="container">
 
-    <header class="modal-header">
-      <div class="modal-header-spacer"></div>
+    <header class="secondary-header">
+      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="closeModal()"/>
       <section class="modal-header-title">
         <span>Date and Time Selection</span>
-      </section>
-      <section>
-        <q-btn aria-label="Close" flat icon="close" size="lg" @click="closeModal()"/>
       </section>
     </header>
 
@@ -58,7 +55,7 @@
       <section style="flex-grow: 2"/>
 
       <section class="lectures">
-        <q-list padding>
+        <q-list>
           <q-item-label header>Lectures of the Day</q-item-label>
 
           <q-item v-if="dayLectures.length === 0">
@@ -227,10 +224,9 @@ const lectureNextWeek = computed<Lecture | null>(
 
 .lectures {
   flex-grow: 3;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 16px;
+  padding-right: 16px;
   min-width: 0;
-  width: 100%;
   height: 200px; // fix height to avoid layout changes when no lectures are included
 }
 

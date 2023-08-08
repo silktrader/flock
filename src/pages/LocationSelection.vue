@@ -198,7 +198,7 @@ watch(locationInput, (newValue, oldValue) => {
           </q-item-section>
           <q-item-section class="address-section">
             <q-item-label>{{ place.Label }}</q-item-label>
-            <q-item-label caption>{{ place.Address }}</q-item-label>
+            <q-item-label caption class="address">{{ place.Address }}</q-item-label>
           </q-item-section>
           <q-item-section side>
             <q-icon color="secondary" name="arrow_forward_ios"/>
@@ -247,16 +247,6 @@ watch(locationInput, (newValue, oldValue) => {
   width: 100%;
 }
 
-.location-label {
-  font-size: medium;
-  color: $primary;
-}
-
-.location-address {
-  font-size: small;
-  color: $secondary;
-}
-
 .address-icon {
   color: $secondary;
 }
@@ -266,6 +256,12 @@ watch(locationInput, (newValue, oldValue) => {
   color: $secondary;
   min-height: 40px;
   font-size: medium;
+}
+
+.address {
+  opacity: 80%;
+  font-size: small;
+  color: $on-background;
 }
 
 </style>

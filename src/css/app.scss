@@ -1,15 +1,25 @@
 // app global css in SCSS form
 @import "src/css/quasar.variables.scss";
 
-.modal-header {
+.modal-header, .secondary-header {
+  display: flex;
+  font-size: medium;
+  width: 100vw;
   padding-top: 8px;
   padding-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-  width: 100vw;
   align-items: center;
+}
+
+.modal-header {
+  justify-content: space-between;
   color: $on-secondary-container;
   background-color: $secondary-container;
+}
+
+.secondary-header {
+  justify-content: flex-start;
+  gap: 16px;
+  color: $on-background;
 }
 
 .modal-header-title {

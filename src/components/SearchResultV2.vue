@@ -1,6 +1,6 @@
 <template>
 
-  <div class="result-container">
+  <div v-ripple class="result-container">
 
     <div v-if="r.Recurring" class="regular-route-header">
       <span>This ride recurs every week.</span>
@@ -119,6 +119,8 @@ function reviewRide (): void {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  cursor: pointer;
+  position: relative;
 }
 
 .regular-route-header {
