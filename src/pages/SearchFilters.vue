@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 
 import { useRouter } from 'vue-router'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useRideStore } from 'stores/ride-store'
 
 const router = useRouter()
 const rs = useRideStore()
 
-const maxPickupTime = ref<number>(rs.searchParameters.ReachTime)
+const maxPickupTime = ref<number>(rs.searchParameters.reachTime)
 const pickupOptions: Array<{ label: string, value: number }> = [{
   label: '5',
   value: 5
@@ -42,25 +42,13 @@ const masksOnly = ref<boolean>(false)
 
 function closeModal (): void {
   router.replace('/search-results')
+  rs.updateParameters({
+    reachTime: maxPickupTime.value,
+    busAllowed: busAllowed.value,
+    subwayAllowed: subwayAllowed.value,
+    ladiesOnly: ladiesOnly.value
+  })
 }
-
-watch(maxPickupTime, (value) => {
-  if (value !== rs.searchParameters.ReachTime) {
-    rs.updateParameters({ ReachTime: value })
-  }
-})
-
-watch(busAllowed, value => {
-  if (value !== rs.searchParameters.busAllowed) {
-    rs.updateParameters({ busAllowed: busAllowed.value })
-  }
-})
-
-watch(subwayAllowed, value => {
-  if (value !== rs.searchParameters.subwayAllowed) {
-    rs.updateParameters({ busAllowed: subwayAllowed.value })
-  }
-})
 
 </script>
 

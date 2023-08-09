@@ -109,3 +109,11 @@ $border-radius: 12px;
   color: $secondary;
   min-height: 40px;
 }
+
+.fab-button {
+  background-color: $primary-container;
+  color: $on-primary-container;
+  text-transform: none;
+  min-height: 40px;
+  border-radius: 12px !important;
+}

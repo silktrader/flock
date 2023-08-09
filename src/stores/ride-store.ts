@@ -78,7 +78,7 @@ export interface SearchParameters {
   Destination: Place;
   Date: Date;
   DateMode: DateMode;
-  ReachTime: number;
+  reachTime: number;
   busAllowed: boolean;
   subwayAllowed: boolean;
   ladiesOnly: boolean;
@@ -105,7 +105,7 @@ export const useRideStore = defineStore('ride',
       Date: new Date(),
       DateMode: DateMode.Arrive,
       Destination: ls.getDefaultSapienzaLocation(),
-      ReachTime: 15,
+      reachTime: 20,
       busAllowed: false,
       subwayAllowed: true,
       ladiesOnly: false,
@@ -125,13 +125,14 @@ export const useRideStore = defineStore('ride',
     // This horrible expedient is required to bypass JS maps equalities.
     function serialiseParameters (parameters: SearchParameters): string {
       return JSON.stringify({
-        Origin: toRaw(parameters.Origin),
-        Destination: toRaw(parameters.Destination),
-        Date: toRaw(parameters.Date),
-        DateMode: parameters.DateMode,
-        ReachTime: parameters.ReachTime,
-        BusAllowed: parameters.busAllowed,
-        SubwayAllowed: parameters.subwayAllowed
+        origin: toRaw(parameters.Origin),
+        destination: toRaw(parameters.Destination),
+        date: toRaw(parameters.Date),
+        dateMode: parameters.DateMode,
+        reachTime: parameters.reachTime,
+        busAllowed: parameters.busAllowed,
+        subwayAllowed: parameters.subwayAllowed,
+        ladiesOnly: parameters.ladiesOnly
       })
     }
 
@@ -169,7 +170,7 @@ export const useRideStore = defineStore('ride',
         Destination: destination,
         Date: date,
         DateMode: dateMode,
-        ReachTime: reachTime,
+        reachTime,
         ladiesOnly
       } = searchParameters.value
 
@@ -208,7 +209,7 @@ export const useRideStore = defineStore('ride',
         const pickup = generatePickup(departure, pickupMinutes, usedAddresses)
 
         // generate a suitable driver
-        const driver = us.generateDriver(avoidAvatarIds)
+        const driver = us.generateDriver(avoidAvatarIds, ladiesOnly)
         avoidAvatarIds.add(driver.AvatarId)
 
         // determine random number of total and available seats

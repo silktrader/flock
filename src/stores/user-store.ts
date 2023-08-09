@@ -92,9 +92,9 @@ export const useUserStore = defineStore('user', () => {
     return new User(configureNewUser(avoidAvatars, forceFemale))
   }
 
-  function generateDriver (avoidAvatars: ReadonlySet<number>): Driver {
+  function generateDriver (avoidAvatars: ReadonlySet<number>, forceFemale = false): Driver {
     return new Driver({
-      ...generateUser(avoidAvatars),
+      ...generateUser(avoidAvatars, forceFemale),
       Rating: RandomFloat(2.9, 4.9)
     })
   }

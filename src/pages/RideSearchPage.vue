@@ -220,7 +220,7 @@ function search (): void {
       Origin: origin.value,
       Destination: destination.value,
       Date: date.extractDate(`${arrivalDate.value} ${arrivalTime.value}`, 'YYYY/MM/DD HH:mm'),
-      ReachTime: maxPickupTime.value,
+      reachTime: maxPickupTime.value,
       busAllowed: bus.value,
       subwayAllowed: subway.value
     })
