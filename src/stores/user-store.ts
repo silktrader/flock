@@ -7,10 +7,7 @@ import { Lecture } from 'src/models/lecture'
 import { date } from 'quasar'
 import { readonly } from 'vue'
 import { useLocationStore } from 'stores/location-store'
-
-const femaleNames = ['Federica', 'Agnese', 'Francesca', 'Guinevere', 'Desdemona', 'Eva', 'Anna-Laura', 'Katalyn', 'So-Jin', 'Daphne', 'Rachel', 'Barbara']
-const maleNames = ['Francesco', 'Alessandro', 'Lorenzo', 'Benjamin', 'Carlo', 'Konstantin', 'Gianfranco', 'Ubaldo', 'Ignazio', 'Paulo', 'Gabriel Omar']
-const lastNames = ['Nicolai', 'Misoponia', 'Tonetto', 'Perrotta', 'Spinazzola', 'Uribe', 'Borghese', 'Scozzafava', 'Jordan', 'Sbrojavacca', 'Domacavallo', 'Young', 'Keitel', 'Aldobrandini', 'Ercolani', 'de l\'Isle-Adam', 'Richemont', 'Green']
+import { fakerIT as faker } from '@faker-js/faker'
 
 export const useUserStore = defineStore('user', () => {
   const femaleAvatarIds = [1, 5, 9, 10, 16, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 34, 35, 36, 38, 39,
@@ -71,12 +68,12 @@ export const useUserStore = defineStore('user', () => {
 
   function configureNewUser (avoidAvatars: ReadonlySet<number>, forceFemale: boolean): UserConfig {
     // choose gender first for naming and avatar purposes
-    const isFemale = forceFemale ?? Boolean(RandomInt(0, 2))
+    const isFemale = forceFemale || Boolean(RandomInt(0, 2))
 
     return {
       Id: RandomId(),
-      FirstName: isFemale ? femaleNames[RandomInt(0, femaleNames.length)] : maleNames[RandomInt(0, maleNames.length)],
-      LastName: lastNames[RandomInt(0, lastNames.length)],
+      FirstName: faker.person.firstName(isFemale ? 'female' : 'male'),
+      LastName: faker.person.lastName(isFemale ? 'female' : 'male'),
       AvatarId: getRandomAvatar(isFemale, avoidAvatars),
       Age: RandomInt(18, 39),
       Degree: Degrees[RandomInt(0, Degrees.length - 1)].Label,
@@ -88,11 +85,11 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  function generateUser (avoidAvatars: ReadonlySet<number>, forceFemale = false): User {
+  function generateUser (avoidAvatars: ReadonlySet<number>, forceFemale): User {
     return new User(configureNewUser(avoidAvatars, forceFemale))
   }
 
-  function generateDriver (avoidAvatars: ReadonlySet<number>, forceFemale = false): Driver {
+  function generateDriver (avoidAvatars: ReadonlySet<number>, forceFemale): Driver {
     return new Driver({
       ...generateUser(avoidAvatars, forceFemale),
       Rating: RandomFloat(2.9, 4.9)
