@@ -2,7 +2,15 @@ import { date } from 'quasar'
 
 export type IsoDate = string
 
-const today = new Date()
+export const today: Readonly<Date> = getToday()
+
+function getToday (): Readonly<Date> {
+  const now = new Date()
+  now.setHours(0)
+  now.setMinutes(0)
+  now.setMilliseconds(0)
+  return now
+}
 
 export enum DateMode {
   Arrive = 'arrive',
@@ -20,6 +28,14 @@ export function FormatFriendlyDate (d: Date): string {
     if (today.getDate() === d.getDate() - 1) return 'tomorrow'
   }
   return date.formatDate(d, 'dddd, [the] Do [of] MMMM')
+}
+
+export function FormatLongDate (d: Date): string {
+  if (today.getFullYear() === d.getFullYear() || today.getMonth() === d.getMonth()) {
+    if (today.getDate() === d.getDate()) return 'Today'
+    if (today.getDate() === d.getDate() - 1) return 'Tomorrow'
+  }
+  return date.formatDate(d, 'dddd, DD MMMM')
 }
 
 export const IsoDateFromDate = (d: Date): IsoDate => (date.formatDate(d, 'YYYY-MM-DD'))

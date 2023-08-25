@@ -72,3 +72,15 @@
   gap: 8px !important; // add a gap between elements in buttons, as in: https://m3.material.io/components/buttons/specs
   min-width: 0; // reset min-width which defaults to max-content, so to work with children's text-overflow
 }
+
+.card {
+  background-color: #23261e;
+  color: rgb(228, 227, 221);
+}
+
+.card-header {
+  font-size: medium;
+  color: $on-surface-variant;
+  background-color: $surface-variant;
+  text-align: center;
+}

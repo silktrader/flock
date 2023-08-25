@@ -14,7 +14,7 @@
         <section class="driver">
           <div class="driver-avatar">
             <q-avatar size="100px">
-              <img :src="r.Driver.AvatarUrl"/>
+              <img :src="r.Driver.avatarUrl" alt="Driver's Avatar"/>
             </q-avatar>
             <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
           </div>

@@ -21,8 +21,8 @@
           <span class="location-label">{{ item.Location.Label }}</span>
           <span class="location-address">{{ item.Location.Address }}</span>
           <section class="location-lectures">
-            <q-chip v-for="course in item.Courses" :key="course" class="chip">
-              {{ us.getCourseAcro(course) }}
+            <q-chip v-for="id in item.CourseIds" :key="id" class="chip">
+              {{ us.getCourseById(id) }}
             </q-chip>
           </section>
         </section>
@@ -51,11 +51,11 @@ const rs = useRideStore()
 
 const props = defineProps<{ target: 'origin' | 'destination' }>()
 
-const places = computed<Array<{ Location: SapienzaPlace, Courses: Set<string> }>>(() => {
+const places = computed<Array<{ Location: SapienzaPlace, CourseIds: Set<string> }>>(() => {
   return ls.sapienzaPlaces.map(location => ({
     Location: location,
-    Courses: new Set(us.lectures.filter(l => l.Location.Address === location.Address).map(l => l.Course))
-  })).sort((a, b) => b.Courses.size - a.Courses.size || a.Location.Label.localeCompare(b.Location.Label))
+    CourseIds: new Set(us.lectures.filter(l => l.location.Address === location.Address).map(l => l.courseId))
+  })).sort((a, b) => b.CourseIds.size - a.CourseIds.size || a.Location.Label.localeCompare(b.Location.Label))
 })
 
 function closeModal (): void {

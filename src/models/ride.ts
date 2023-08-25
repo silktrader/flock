@@ -5,6 +5,7 @@ import { User } from 'src/models/user'
 import { Driver } from 'src/models/driver'
 import { Place } from 'src/models/place'
 import { Car } from 'src/models/car'
+import { Lecture } from 'src/models/lecture'
 
 /* Interface extensions would be an ideal substitute to actual classes in this case
  but TS has no explicit support for them, requiring prototype pollution. */
@@ -21,7 +22,9 @@ export interface RideConfig {
   Pickup: Pickup,
   Expense: number,
   Passengers: ReadonlyArray<User>,
-  Recurring: boolean
+  Recurring: boolean,
+  before?: Lecture,
+  after?: Lecture
 }
 
 export class Ride {
@@ -37,6 +40,8 @@ export class Ride {
   readonly Expense: number
   readonly Passengers: ReadonlyArray<User>
   readonly Recurring: boolean
+  readonly before?: Lecture
+  readonly after?: Lecture
   Requested = false
 
   constructor (
@@ -64,6 +69,8 @@ export class Ride {
     this.Expense = config.Expense
     this.Passengers = config.Passengers
     this.Recurring = config.Recurring
+    this.before = config.before
+    this.after = config.after
   }
 
   get PickupDuration (): number {

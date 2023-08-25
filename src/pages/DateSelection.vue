@@ -23,15 +23,15 @@
       <section class="hints">
         <template v-if="dateMode === DateMode.Arrive">
           <q-btn v-if='nextLectureToday' class="outline-button" outline rounded
-                 @click="updateDate(nextLectureToday?.Date)">
+                 @click="updateDate(nextLectureToday?.date)">
             Next lecture today
           </q-btn>
           <q-btn v-if="firstLectureTomorrow" class="outline-button"
-                 outline rounded @click="updateDate(firstLectureTomorrow?.Date)">
+                 outline rounded @click="updateDate(firstLectureTomorrow?.date)">
             First lecture tomorrow
           </q-btn>
           <q-btn v-if="lectureNextWeek" class="outline-button"
-                 outline rounded @click="updateDate(lectureNextWeek?.Date)">
+                 outline rounded @click="updateDate(lectureNextWeek?.date)">
             First lecture next week
           </q-btn>
         </template>
@@ -62,20 +62,20 @@
             <span class="no-lectures">No Lectures</span>
           </q-item>
 
-          <q-item v-for="lecture in dayLectures" v-else :key="lecture.Course">
+          <q-item v-for="lecture in dayLectures" v-else :key="lecture.courseId">
             <q-item-section class="lecture-name">
-              <q-item-label lines="2">{{ lecture.Course }}</q-item-label>
+              <q-item-label lines="2">{{ lecture.courseId }}</q-item-label>
             </q-item-section>
             <q-item-section class="lecture-details">
               <q-item-label lines="1">
                 <q-icon name="schedule"/>
                 {{
-                  ExtractTime(lecture.Date)
-                }} - {{ ExtractTime(date.addToDate(lecture.Date, { minute: lecture.Duration })) }}
+                  ExtractTime(lecture.date)
+                }} - {{ ExtractTime(date.addToDate(lecture.date, { minute: lecture.duration })) }}
               </q-item-label>
               <q-item-label caption lines="1">
                 <q-icon name="map"/>
-                {{ lecture.Location.Label }}
+                {{ lecture.location.Label }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -139,7 +139,7 @@ const actionLabelDate = computed<string>(() => {
 })
 
 const dayLectures = computed<Array<Lecture>>(() => {
-  return us.lectures.filter(lecture => date.getDateDiff(dateValue.value, lecture.Date) === 0)
+  return us.lectures.filter(lecture => date.getDateDiff(dateValue.value, lecture.date) === 0)
 })
 
 function updateDate (date: Date): void {
@@ -159,25 +159,25 @@ function selectDate (): void {
 const nextLectureToday = computed<Lecture | null>(
   () => {
     const now = new Date()
-    return us.lectures.find(lecture => lecture.Date > now && date.getDateDiff(lecture.Date, now) === 0) ?? null
+    return us.lectures.find(lecture => lecture.date > now && date.getDateDiff(lecture.date, now) === 0) ?? null
   }
 )
 
 // informs whether there's a lecture the next day
 const firstLectureTomorrow = computed<Lecture | null>(
-  () => us.lectures.filter(lecture => date.getDateDiff(lecture.Date, tomorrow) === 0).sort((a, b) => +(a.Date > b.Date))[0] ?? null
+  () => us.lectures.filter(lecture => date.getDateDiff(lecture.date, tomorrow) === 0).sort((a, b) => +(a.date > b.date))[0] ?? null
 )
 
 const endLectureTomorrow = computed<Date | null>(
   () => {
-    const lecture: Lecture | null = us.lectures.filter(lecture => date.getDateDiff(lecture.Date, tomorrow) === 0).sort((a, b) => +(b.Date > a.Date))[0] ?? null
-    return addToDate(lecture.Date, { minutes: lecture.Duration })
+    const lecture: Lecture | null = us.lectures.filter(lecture => date.getDateDiff(lecture.date, tomorrow) === 0).sort((a, b) => +(b.date > a.date))[0] ?? null
+    return addToDate(lecture.date, { minutes: lecture.duration })
   })
 
 const endLectureToday = computed<Date | null>(
   () => {
-    const lecture: Lecture | null = us.lectures.filter(lecture => date.getDateDiff(lecture.Date, today) === 0).sort((a, b) => +(b.Date > a.Date))[0] ?? null
-    return addToDate(lecture.Date, { minutes: lecture.Duration })
+    const lecture: Lecture | null = us.lectures.filter(lecture => date.getDateDiff(lecture.date, today) === 0).sort((a, b) => +(b.date > a.date))[0] ?? null
+    return addToDate(lecture.date, { minutes: lecture.duration })
   })
 
 const lectureNextWeek = computed<Lecture | null>(
@@ -185,8 +185,8 @@ const lectureNextWeek = computed<Lecture | null>(
     const sameDayNextWeek = date.addToDate(today, { days: 7 })
     const day = sameDayNextWeek.getDate()
     const month = sameDayNextWeek.getMonth()
-    return us.lectures.filter(lecture => lecture.Date.getDate() === day && lecture.Date.getMonth() === month)
-      .sort((a, b) => +(a.Date > b.Date))[0] ?? null
+    return us.lectures.filter(lecture => lecture.date.getDate() === day && lecture.date.getMonth() === month)
+      .sort((a, b) => +(a.date > b.date))[0] ?? null
   }
 )
 

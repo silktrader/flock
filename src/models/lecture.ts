@@ -1,8 +1,10 @@
 import { Place } from 'src/models/place'
 
 export interface Lecture {
-  readonly Date: Date
-  readonly Duration: number
-  readonly Course: string
-  readonly Location: Place
+  readonly id: string;
+  readonly date: Date
+  readonly duration: number
+  readonly courseId: string
+  readonly location: Place
+  readonly ridesAvailable?: number
 }

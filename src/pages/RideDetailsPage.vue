@@ -54,7 +54,7 @@
         </q-timeline-entry>
 
         <!-- Pickup -->
-        <q-timeline-entry :avatar="ride.Driver.AvatarUrl" color="yellow-7">
+        <q-timeline-entry :avatar="ride.Driver.avatarUrl" color="yellow-7">
           <template v-slot:title>
             <div class="timeline-header">
               <span>Meet {{ ride.Driver.DisplayName }}</span>
@@ -126,7 +126,7 @@
 
           <q-item-section>
             <q-avatar size="80px">
-              <q-img :src="ride.Driver.AvatarUrl"/>
+              <q-img :src="ride.Driver.avatarUrl"/>
               <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
             </q-avatar>
           </q-item-section>
@@ -134,7 +134,7 @@
           <q-item-section>
             <div class="driver-details">
               <span>{{ ride.Driver.DisplayName }}</span>
-              <span class="degree driver-degree">{{ ride.Driver.Degree }}</span>
+              <span class="degree driver-degree">{{ ride.Driver.degree }}</span>
               <!--              <div class="rating">-->
               <!--                <q-rating-->
               <!--                  v-model="ride.Driver.Rating"-->
@@ -161,18 +161,18 @@
 
         <q-item-label header>Passengers</q-item-label>
 
-        <q-item v-for="passenger in ride.Passengers" :key="passenger.Id">
+        <q-item v-for="passenger in ride.Passengers" :key="passenger.id">
 
           <q-item-section>
             <q-avatar size="64px">
-              <q-img :src="passenger.AvatarUrl"/>
+              <q-img :src="passenger.avatarUrl"/>
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
             <div class="passenger-details">
               <span>{{ passenger.DisplayName }}</span>
-              <span class="degree">{{ passenger.Degree }}</span>
+              <span class="degree">{{ passenger.degree }}</span>
             </div>
           </q-item-section>
 

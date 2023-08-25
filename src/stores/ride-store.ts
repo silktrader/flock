@@ -95,9 +95,29 @@ export const useRideStore = defineStore('ride',
     const ls = useLocationStore()
     const us = useUserStore()
 
-    const rides = ref<Ride[]>([])
-    const ride = ref<Ride>()
-    const searches = ref<Map<string, RideSearch>>(new Map())
+    // replace this with faker tk
+    const randomAddresses = [
+      'Via Marco Polo',
+      'Corso Magellano',
+      'Largo Colombo',
+      'Viale Costantino',
+      'Viale Traiano',
+      'Piazza Giulio Cesare',
+      'Corso Impero',
+      'Viale dei Giardini',
+      'Vicolo Stretto',
+      'Viale Vesuvio',
+      'Piazza Dante',
+      'Corso Raffaello',
+      'Bastioni Gran Sasso',
+      'Piazza Euclide',
+      'Via Maupassant',
+      'Corso Balzac',
+      'Largo Zola'
+    ]
+
+    const carModels = ['Toyota Yaris', 'Fiat 500', 'Lancia Ypsilon', 'Mazda 2', 'Lamborghini Murcielago', 'Renault Clio', 'Ford Fiesta']
+    const electricCarModels = ['Tesla Model 3', 'Nissan Leaf', 'Polestar 2']
 
     // setup default parameters for easy testing while avoiding undefined state
     const defaultParameters: Readonly<SearchParameters> = {
@@ -113,6 +133,18 @@ export const useRideStore = defineStore('ride',
     }
 
     const searchParameters = ref<SearchParameters>(defaultParameters)
+
+    // contains the rides returned by the user search
+    const rides = ref<Ride[]>([])
+
+    // holds a reference to the selected ride ready to be inspected
+    const ride = ref<Ride>()
+
+    // contains a history of previous searches
+    const searches = ref<Map<string, RideSearch>>(new Map())
+
+    // contains all the rides a user booked, include an initial sample
+    const bookedRides = ref<ReadonlyArray<Ride>>(generateBookedRides())
 
     // Clears existing rides, selected ride and parameters.
     function reset (): void {
@@ -163,6 +195,71 @@ export const useRideStore = defineStore('ride',
       updateSearch()
     }
 
+    function generateBookedRides (): ReadonlyArray<Ride> {
+      // generate a couple of rides related to the user's home and lectures
+      const rides: Array<Ride> = []
+
+      // pick a random lecture
+      const now = new Date()
+      const soon = date.addToDate(now, { day: 10 })
+      const nextLectures = us.lectures.filter(l => l.date >= now && l.date < soon)
+      for (let i = RandomInt(1, 3); i >= 0; i--) {
+        // pick a random lecture
+        const lecture = nextLectures[RandomInt(0, nextLectures.length)]
+
+        // from home to the lecture
+        const arrival = subtractFromDate(lecture.date, { minutes: RandomInt(3, 20) })
+        const departure = subtractFromDate(arrival, { minutes: RandomInt(25, 90) })
+
+        // determine random number of total and available seats
+        const passengers = []
+        const passengerAvatars: Set<string> = new Set()
+        for (let occupiedSeats = RandomInt(0, 2); occupiedSeats > 0; occupiedSeats--) {
+          const user = us.generateUser(passengerAvatars, false)
+          passengerAvatars.add(user.avatarUrl)
+          passengers.push(user)
+        }
+
+        rides.push(new Ride({
+          Id: RandomId(),
+          Origin: defaultParameters.Origin,
+          Destination: lecture.location,
+          Arrival: arrival,
+          Departure: departure,
+          Driver: us.generateDriver(passengerAvatars, false),
+          Car: generateCar(),
+          Drop: generateDrop(arrival, RandomInt(3, 10), [lecture.location.Address, defaultParameters.Origin.Address]),
+          Pickup: generatePickup(departure, RandomInt(3, 15), []),
+          Expense: RandomInt(0, 4),
+          Passengers: passengers,
+          Recurring: false,
+          before: lecture
+        }))
+
+        if (RandomFloat(0, 1) > 0.5) {
+          const departure = date.addToDate(lecture.date, { minute: lecture.duration + 15 })
+          const arrival = date.addToDate(departure, { minute: RandomInt(20, 45) })
+          rides.push(new Ride({
+            Id: RandomId(),
+            Origin: lecture.location,
+            Destination: defaultParameters.Origin,
+            Arrival: arrival,
+            Departure: departure,
+            Driver: us.generateDriver(passengerAvatars, false),
+            Car: generateCar(),
+            Drop: generateShortDrop(arrival, defaultParameters.Origin.Address),
+            Pickup: generateShortPickup(departure, lecture.location.Address),
+            Expense: RandomInt(0, 4),
+            Passengers: passengers,
+            Recurring: false,
+            after: lecture
+          }))
+        }
+      }
+
+      return rides
+    }
+
     function generateNewRides (): ReadonlyArray<Ride> {
       // needs not track variable through changes
       const {
@@ -178,7 +275,7 @@ export const useRideStore = defineStore('ride',
       const usedAddresses: ReadonlyArray<string> = [origin.Address, destination.Address]
 
       // avoid creating rides whose drivers share the same avatar
-      const avoidAvatarIds: Set<number> = new Set()
+      const avoidAvatars: Set<string> = new Set()
 
       // flag the creation of at least one recurring ride, if any ride at all is to be generated
       let hasRecurringRide = false
@@ -209,16 +306,16 @@ export const useRideStore = defineStore('ride',
         const pickup = generatePickup(departure, pickupMinutes, usedAddresses)
 
         // generate a suitable driver
-        const driver = us.generateDriver(avoidAvatarIds, ladiesOnly)
-        avoidAvatarIds.add(driver.AvatarId)
+        const driver = us.generateDriver(avoidAvatars, ladiesOnly)
+        avoidAvatars.add(driver.avatarUrl)
 
         // determine random number of total and available seats
         const car = generateCar()
         const passengers = []
-        const passengerAvatarIds: Set<number> = new Set()
+        const passengerAvatars: Set<string> = new Set()
         for (let occupiedSeats = RandomInt(0, car.Seats - 1); occupiedSeats > 0; occupiedSeats--) {
-          const user = us.generateUser(passengerAvatarIds, ladiesOnly)
-          passengerAvatarIds.add(user.AvatarId)
+          const user = us.generateUser(passengerAvatars, ladiesOnly)
+          passengerAvatars.add(user.avatarUrl)
           passengers.push(user)
         }
 
@@ -245,9 +342,6 @@ export const useRideStore = defineStore('ride',
       return rides
     }
 
-    const carModels = ['Toyota Yaris', 'Fiat 500', 'Lancia Ypsilon', 'Mazda 2', 'Lamborghini Murcielago', 'Renault Clio', 'Ford Fiesta']
-    const electricCarModels = ['Tesla Model 3', 'Nissan Leaf', 'Polestar 2']
-
     function generateCar (): Car {
       const electric = Math.random() < 0.2
       return {
@@ -263,6 +357,13 @@ export const useRideStore = defineStore('ride',
       return {
         Address: getRandomAddress(avoidAddresses),
         Date: subtractFromDate(arrival, { minutes: RandomInt(1, availableMinutes) })
+      }
+    }
+
+    function generateShortDrop (arrival: Date, closeAddress: string): Drop {
+      return {
+        Address: closeAddress + RandomInt(1, 10),
+        Date: subtractFromDate(arrival, { minutes: RandomInt(1, 6) })
       }
     }
 
@@ -289,25 +390,13 @@ export const useRideStore = defineStore('ride',
       }
     }
 
-    const randomAddresses = [
-      'Via Marco Polo',
-      'Corso Magellano',
-      'Largo Colombo',
-      'Viale Costantino',
-      'Viale Traiano',
-      'Piazza Giulio Cesare',
-      'Corso Impero',
-      'Viale dei Giardini',
-      'Vicolo Stretto',
-      'Viale Vesuvio',
-      'Piazza Dante',
-      'Corso Raffaello',
-      'Bastioni Gran Sasso',
-      'Piazza Euclide',
-      'Via Maupassant',
-      'Corso Balzac',
-      'Largo Zola'
-    ]
+    function generateShortPickup (departure: Date, closeAddress: string): Pickup {
+      return {
+        Address: `${closeAddress}${RandomInt(1, 8)}`,
+        Date: addToDate(departure, { minutes: RandomInt(2, 6) }),
+        Transport: Transport.None
+      }
+    }
 
     function getRandomAddress (avoidAddresses: ReadonlyArray<string>): string {
       const address = randomAddresses[RandomInt(0, randomAddresses.length)]
@@ -335,6 +424,7 @@ export const useRideStore = defineStore('ride',
 
     return {
       rides: readonly(rides),
+      bookedRides: readonly(bookedRides),
       ride: readonly(ride),
       searchParameters: readonly(searchParameters),
       updateParameters,
@@ -342,6 +432,5 @@ export const useRideStore = defineStore('ride',
       requestSelectedRide,
       reset,
       colourCodePickup
-      // updateSearch
     }
   })

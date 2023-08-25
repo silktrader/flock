@@ -1,37 +1,36 @@
 export interface UserConfig {
-  Id: string,
-  FirstName: string,
-  LastName: string,
-  AvatarId: number,
-  Age: number,
-  Degree: string,
-  Badges: ReadonlyArray<string>
+  id: string,
+  firstName: string,
+  lastName: string,
+  avatarUrl: string,
+  age: number,
+  degree: string,
+  badges: ReadonlyArray<string>
+  followedCourses?: ReadonlyArray<string>
 }
 
 export class User {
-  readonly Id: string
-  readonly FirstName: string
-  readonly LastName: string
-  readonly AvatarId: number
-  readonly Age: number
-  readonly Degree: string
-  readonly Badges: ReadonlyArray<string>
+  readonly id: string
+  readonly firstName: string
+  readonly lastName: string
+  readonly avatarUrl: string
+  readonly age: number
+  readonly degree: string
+  readonly badges: ReadonlyArray<string>
+  readonly followedCourses: ReadonlyArray<string>
 
   constructor (config: UserConfig) {
-    this.Id = config.Id
-    this.FirstName = config.FirstName
-    this.LastName = config.LastName
-    this.AvatarId = config.AvatarId
-    this.Age = config.Age
-    this.Degree = config.Degree
-    this.Badges = config.Badges
-  }
-
-  get AvatarUrl (): string {
-    return `https://i.pravatar.cc/150?img=${this.AvatarId}`
+    this.id = config.id
+    this.firstName = config.firstName
+    this.lastName = config.lastName
+    this.avatarUrl = config.avatarUrl
+    this.age = config.age
+    this.degree = config.degree
+    this.badges = config.badges
+    this.followedCourses = config.followedCourses ?? []
   }
 
   get DisplayName (): string {
-    return `${this.FirstName} ${this.LastName[0]}.`
+    return `${this.firstName} ${this.lastName[0]}.`
   }
 }
