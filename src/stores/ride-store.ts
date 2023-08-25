@@ -352,6 +352,12 @@ export const useRideStore = defineStore('ride',
       }
     }
 
+    function generateCloseAddress (baseAddress: string): string {
+      const closeAddress = baseAddress.replace(/\b\d+\b/g, RandomInt(1, 300))
+      if (closeAddress === baseAddress) return generateCloseAddress()
+      return closeAddress
+    }
+
     // Create a drop with a random address and sensible date, close to arrival time
     function generateDrop (arrival: Date, availableMinutes: number, avoidAddresses: string[]): Drop {
       return {
@@ -360,9 +366,9 @@ export const useRideStore = defineStore('ride',
       }
     }
 
-    function generateShortDrop (arrival: Date, closeAddress: string): Drop {
+    function generateShortDrop (arrival: Date, address: string): Drop {
       return {
-        Address: closeAddress + RandomInt(1, 10),
+        Address: generateCloseAddress(address),
         Date: subtractFromDate(arrival, { minutes: RandomInt(1, 6) })
       }
     }
@@ -390,9 +396,9 @@ export const useRideStore = defineStore('ride',
       }
     }
 
-    function generateShortPickup (departure: Date, closeAddress: string): Pickup {
+    function generateShortPickup (departure: Date, address: string): Pickup {
       return {
-        Address: `${closeAddress}${RandomInt(1, 8)}`,
+        Address: generateCloseAddress(address),
         Date: addToDate(departure, { minutes: RandomInt(2, 6) }),
         Transport: Transport.None
       }
