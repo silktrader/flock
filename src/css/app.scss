@@ -22,11 +22,25 @@
   color: $on-background;
 }
 
+.secondary-header-title {
+  display: flex;
+  flex-direction: column;
+  font-size: large;
+  justify-content: center;
+  flex-grow: 1;
+}
+
 .modal-header-title {
   display: flex;
   flex-direction: column;
   font-size: large;
   justify-content: center;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.modal-header-spacer {
+  flex-grow: 1;
 }
 
 .modal-header-subtitle {

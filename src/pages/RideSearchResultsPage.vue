@@ -3,10 +3,11 @@
   <main class="results-container">
 
     <header class="modal-header">
-      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
+      <!--      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>-->
+      <div class="modal-header-spacer"/>
       <section class="modal-header-title">
         <span>Ride Search</span>
-        <span class="modal-header-subtitle">Results</span>
+        <!--        <span class="modal-header-subtitle">Results</span>-->
       </section>
       <section>
         <q-btn aria-label="Close" flat icon="las la-bug" size="sm" @click="showOptions = true"/>

@@ -3,7 +3,7 @@
 
     <header class="secondary-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="closeModal()"/>
-      <section class="modal-header-title">
+      <section class="secondary-header-title">
         <span>Select a {{ props.target === 'origin' ? 'starting point' : 'destination' }}</span>
       </section>
     </header>
@@ -22,7 +22,7 @@
           <span class="location-address">{{ item.Location.Address }}</span>
           <section class="location-lectures">
             <q-chip v-for="id in item.CourseIds" :key="id" class="chip">
-              {{ us.getCourseById(id) }}
+              {{ us.getCourseById(id).acro }}
             </q-chip>
           </section>
         </section>
