@@ -4,7 +4,7 @@
 
     <header class="secondary-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="closeModal()"/>
-      <section class="modal-header-title">
+      <section class="secondary-header-title">
         <span>Date and Time Selection</span>
       </section>
     </header>
@@ -64,7 +64,7 @@
 
           <q-item v-for="lecture in dayLectures" v-else :key="lecture.courseId">
             <q-item-section class="lecture-name">
-              <q-item-label lines="2">{{ lecture.courseId }}</q-item-label>
+              <q-item-label lines="2">{{ us.getCourseById(lecture.courseId).name }}</q-item-label>
             </q-item-section>
             <q-item-section class="lecture-details">
               <q-item-label lines="1">
