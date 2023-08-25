@@ -64,7 +64,7 @@
 
           <div class="timeline-pickup">
             <span>{{ ride.Pickup.Address }}</span>
-            <div style="display: flex">
+            <div v-if="!ride.accepted" style="display: flex">
               <q-btn class="tonal-button" label="Change" rounded style="flex-grow: 1"/>
               <div style="flex-grow: 5"></div>
             </div>
@@ -312,7 +312,8 @@
     </section>
 
     <footer>
-      <span v-if="ride.Requested">Ride requested, pending approval</span>
+      <span v-if="ride.Requested && !ride.accepted">Ride requested, pending approval</span>
+      <q-btn v-else-if="ride.accepted" class="filled-button" label="Cancel Ride" no-caps rounded size="lg"/>
       <q-btn v-else class="filled-button" label="Request Ride" no-caps rounded size="lg"
              @click="RequestRide()"/>
     </footer>

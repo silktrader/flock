@@ -233,7 +233,8 @@ export const useRideStore = defineStore('ride',
           Expense: RandomInt(0, 4),
           Passengers: passengers,
           Recurring: false,
-          before: lecture
+          before: lecture,
+          accepted: true
         }))
 
         if (RandomFloat(0, 1) > 0.5) {
@@ -252,7 +253,8 @@ export const useRideStore = defineStore('ride',
             Expense: RandomInt(0, 4),
             Passengers: passengers,
             Recurring: false,
-            after: lecture
+            after: lecture,
+            accepted: true
           }))
         }
       }
@@ -353,8 +355,8 @@ export const useRideStore = defineStore('ride',
     }
 
     function generateCloseAddress (baseAddress: string): string {
-      const closeAddress = baseAddress.replace(/\b\d+\b/g, RandomInt(1, 300))
-      if (closeAddress === baseAddress) return generateCloseAddress()
+      const closeAddress = baseAddress.replace(/\b\d+\b/g, String(RandomInt(1, 300)))
+      if (closeAddress === baseAddress) return generateCloseAddress(baseAddress)
       return closeAddress
     }
 

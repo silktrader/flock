@@ -25,6 +25,7 @@ export interface RideConfig {
   Recurring: boolean,
   before?: Lecture,
   after?: Lecture
+  accepted?: boolean,
 }
 
 export class Ride {
@@ -42,7 +43,12 @@ export class Ride {
   readonly Recurring: boolean
   readonly before?: Lecture
   readonly after?: Lecture
+
+  // Tells whether the ride was requested by the user.
   Requested = false
+
+  // Tells whether the ride was requested by the user and accepted by the driver.
+  accepted = false
 
   constructor (
     config: RideConfig
@@ -71,6 +77,7 @@ export class Ride {
     this.Recurring = config.Recurring
     this.before = config.before
     this.after = config.after
+    this.accepted = config.accepted || this.accepted
   }
 
   get PickupDuration (): number {
