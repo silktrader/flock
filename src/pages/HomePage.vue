@@ -55,7 +55,7 @@ const upcomingRides = computed<ReadonlyArray<Ride>>(() => rs.bookedRides.filter(
 
         <main class="tab-sections">
 
-          <section class="upcoming-lectures">
+          <section class="upcoming-cards-container">
             <span class="section-title">Upcoming Rides</span>
             <div class="upcoming-cards">
               <div class="card-spacer"/>
@@ -64,7 +64,7 @@ const upcomingRides = computed<ReadonlyArray<Ride>>(() => rs.bookedRides.filter(
             </div>
           </section>
 
-          <section class="upcoming-rides">
+          <section class="upcoming-cards-container">
             <span class="section-title">Upcoming Lectures</span>
             <div class="upcoming-cards">
               <div class="card-spacer"/>
@@ -126,14 +126,12 @@ const upcomingRides = computed<ReadonlyArray<Ride>>(() => rs.bookedRides.filter(
 .tab-sections {
   display: flex;
   flex-direction: column;
-  gap: 24px;
 }
 
-.upcoming-lectures {
+.upcoming-cards-container {
   display: flex;
   flex-direction: column;
-  margin-top: 16px;
-  gap: 8px;
+  margin-top: 24px;
 }
 
 .section-title {
