@@ -8,7 +8,7 @@
           <q-btn aria-label="Close" flat icon="close" size="lg" @click="abort()"/>
         </div>
         <div style="flex-grow: 3"></div>
-        <q-img fit="contain" height="200px" src="src/assets/success-car.svg"/>
+        <q-img fit="contain" height="200px" src="~/assets/success-car.svg"/>
         <div style="flex-grow: 3"></div>
       </header>
 

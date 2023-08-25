@@ -18,7 +18,7 @@
 
     <section class="route">
 
-      <q-img class="route-image shadow-7" fit="cover" spinner-color="white" src="src/assets/route-map.svg"/>
+      <q-img class="route-image shadow-7" fit="cover" spinner-color="white" src="~/assets/route-map.svg"/>
 
       <q-timeline class="timeline" color="secondary" layout="dense">
 
@@ -222,7 +222,7 @@
 
           <q-item-section>
             <q-avatar size="64px">
-              <img src="/src/assets/cars/clio.jpg" style="object-fit: cover">
+              <img alt="Car Avatar" src="/images/clio.jpg" style="object-fit: cover">
             </q-avatar>
 
           </q-item-section>

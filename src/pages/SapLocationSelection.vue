@@ -14,7 +14,7 @@
 
         <section class="location-image">
           <!--            <img :src="item.Location.Avatar">-->
-          <q-img src="/src/assets/SapLogo.png" width="64px"/>
+          <q-img src="~/assets/sapienza-logo.png" width="64px"/>
         </section>
 
         <section class="location-description">

@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user', () => {
     firstName: 'Christiane',
     lastName: 'F.',
     age: 22,
-    avatarUrl: 'src/assets/christiane.png',
+    avatarUrl: 'images/christiane.png',
     badges: [],
     degree: 'ACSAI',
     followedCourses: ['HCI', 'DBM', 'CAR', 'STA', 'CLC']
