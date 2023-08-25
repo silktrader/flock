@@ -53,5 +53,9 @@ export function FormatShortDate (d: Date): string {
 export const FormatISODate = (d: Date): string =>
   `${date.formatDate(d, 'YYYY-MM-DD')}`
 
-export const FormatDuration = (earliest: Date, latest: Date): string =>
-  `${Math.abs(date.getDateDiff(earliest, latest, 'minutes'))} min.`
+export const FormatDuration = (earliest: Date, latest: Date): string => {
+  const minutes = Math.abs(date.getDateDiff(earliest, latest, 'minutes'))
+  if (minutes < 60) return `${minutes}m`
+  const hours = Math.floor(minutes / 60)
+  return `${hours}h ${minutes - hours * 60}m`
+}
