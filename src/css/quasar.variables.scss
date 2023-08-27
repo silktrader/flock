@@ -63,6 +63,16 @@ $carpool: #fad7a1;
 
 $border-radius: 12px;
 
+// shorthand colours
+
+.text-tertiary {
+  color: $tertiary-container !important;
+}
+
+.bg-tertiary {
+  background: $tertiary-container !important;
+}
+
 // the follow classes follow Google's Material 3 guidelines for buttons
 // as illustrated on: https://m3.material.io/components/buttons/overview
 
@@ -72,7 +82,7 @@ $border-radius: 12px;
   color: $on-primary;
   text-transform: none;
   min-height: 40px;
-  border-radius: 12px !important;
+  border-radius: 20px !important;
 }
 
 .tonal-button {
@@ -81,7 +91,7 @@ $border-radius: 12px;
   background-color: $secondary-container;
   text-transform: none;
   min-height: 40px;
-  border-radius: 12px !important;
+  border-radius: 20px !important;
 }
 
 .accent-button {
@@ -90,16 +100,17 @@ $border-radius: 12px;
   background-color: $tertiary-container;
   text-transform: none;
   min-height: 40px;
-  border-radius: 12px !important;
+  border-radius: 20px !important;
 }
 
 .outline-button {
   -webkit-font-smoothing: antialiased;
-  border-color: $outline;
+  border: 1px solid $outline;
   color: $primary;
   text-transform: none;
   min-height: 40px;
-  border-radius: 12px !important;
+  width: max-content;
+  border-radius: 20px !important;
   box-shadow: none;
 }
 

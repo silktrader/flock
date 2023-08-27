@@ -4,15 +4,12 @@
 
     <header class="modal-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
-      <section class="modal-header-title">
+      <section class="secondary-header-title">
         <span>{{
             `${ride.Origin.Label ?? ride.Origin.Address}
             to ${ride.Destination.Label ?? ride.Destination.Address}`
           }}</span>
         <span class="modal-header-subtitle">{{ ExtractDate(ride.Departure) }}</span>
-      </section>
-      <section>
-        <q-btn aria-label="Close" flat icon="close" size="lg" @click="abort()"/>
       </section>
     </header>
 
@@ -22,7 +19,7 @@
 
       <q-timeline class="timeline" color="secondary" layout="dense">
 
-        <q-timeline-entry icon="location_on">
+        <q-timeline-entry color="tertiary" icon="location_on">
 
           <!-- Departure -->
           <template v-slot:title>
@@ -64,10 +61,10 @@
 
           <div class="timeline-pickup">
             <span>{{ ride.Pickup.Address }}</span>
-            <div v-if="!ride.accepted" style="display: flex">
-              <q-btn class="tonal-button" label="Change" rounded style="flex-grow: 1"/>
-              <div style="flex-grow: 5"></div>
-            </div>
+            <!--            <div v-if="!ride.accepted" style="display: flex">-->
+            <!--              <q-btn class="tonal-button" label="Change" rounded style="flex-grow: 1"/>-->
+            <!--              <div style="flex-grow: 5"></div>-->
+            <!--            </div>-->
             <div class="timeline-instruction carpool">
               <q-icon name="directions_car" size="sm"/>
               <span>Carpool for {{ ride.CarpoolDuration }} min.</span>
@@ -77,7 +74,7 @@
         </q-timeline-entry>
 
         <!-- Drop off-->
-        <q-timeline-entry icon="directions_car">
+        <q-timeline-entry class="carpool-entry" color="tertiary" icon="directions_car">
           <template v-slot:title>
             <div class="timeline-header">
               <span>{{ ride.Driver.DisplayName }} drops you</span>
@@ -98,7 +95,7 @@
         </q-timeline-entry>
 
         <!-- Arrival -->
-        <q-timeline-entry icon="flag">
+        <q-timeline-entry color="tertiary" icon="flag">
           <template v-slot:title>
             <div class="timeline-header">
               <span>{{ ride.Destination.Address }}</span>
@@ -108,13 +105,16 @@
             </div>
           </template>
 
-          <!--          <div class="timeline-address">-->
-          <!--            <span>{{ ride.Destination.Address }}</span>-->
-          <!--          </div>-->
-
         </q-timeline-entry>
 
       </q-timeline>
+
+      <div v-if="!ride.accepted && !ride.Requested" class="pickup-prompt">
+            <span class="pickup-prompt-notice">Propose a different place and time for meeting {{
+                ride.Driver.firstName
+              }}.</span>
+        <q-btn class="outline-button" flat>Change Pickup</q-btn>
+      </div>
 
       <q-separator/>
 
@@ -135,16 +135,6 @@
             <div class="driver-details">
               <span>{{ ride.Driver.DisplayName }}</span>
               <span class="degree driver-degree">{{ ride.Driver.degree }}</span>
-              <!--              <div class="rating">-->
-              <!--                <q-rating-->
-              <!--                  v-model="ride.Driver.Rating"-->
-              <!--                  color="orange"-->
-              <!--                  icon-half="star_half"-->
-              <!--                  readonly-->
-              <!--                  size="small"-->
-              <!--                />-->
-              <!--                <span class="rating-number">{{ ride.Driver.Rating.toFixed(1) }}</span>-->
-              <!--              </div>-->
             </div>
           </q-item-section>
 
@@ -177,14 +167,12 @@
           </q-item-section>
 
           <q-item-section side>
-            <!--            <div class="list-action">-->
             <q-btn color="secondary" flat no-caps rounded>
               <div class="list-action-contents">
                 <q-icon name="las la-user-check"/>
                 <span>View</span>
               </div>
             </q-btn>
-            <!--            </div>-->
           </q-item-section>
 
         </q-item>
@@ -205,14 +193,12 @@
           </q-item-section>
 
           <q-item-section side>
-            <!--            <div class="list-action">-->
             <q-btn v-if="ride.FreeSeats > 1" color="secondary" flat no-caps rounded>
               <div class="list-action-contents">
                 <q-icon name="las la-user-plus"/>
                 <span>Invite</span>
               </div>
             </q-btn>
-            <!--            </div>-->
           </q-item-section>
         </q-item>
 
@@ -251,7 +237,7 @@
           <aside class="expense-none-notice">
             <q-icon name="las la-mug-hot" size="md"/>
             <span>
-              You can still tip {{ ride.Driver.DisplayName }} when the ride's over. <br/>
+              You can tip {{ ride.Driver.DisplayName }} when the ride's over. It's up to you. <br/>
               Donuts and coffee are welcome too!
               </span>
           </aside>
@@ -301,7 +287,7 @@
               <q-icon name="las la-calendar-week" size="lg"/>
               <span>
               {{ ride.Driver.DisplayName }} drives to <b>{{ ride.Destination.Label ?? ride.Destination.Address }}</b> every
-              <b>{{ ExtractDay(ride.Departure) }}</b> arriving at <b>{{ ExtractTime(ride.Arrival) }}</b>.
+              <b>{{ ExtractDay(ride.Departure) }}</b>, arriving at <b>{{ ExtractTime(ride.Arrival) }}</b>.
                 </span>
             </div>
           </q-item-section>
@@ -313,9 +299,8 @@
 
     <footer>
       <span v-if="ride.Requested && !ride.accepted">Ride requested, pending approval</span>
-      <q-btn v-else-if="ride.accepted" class="filled-button" label="Cancel Ride" no-caps rounded size="lg"/>
-      <q-btn v-else class="filled-button" label="Request Ride" no-caps rounded size="lg"
-             @click="RequestRide()"/>
+      <q-btn v-else-if="ride.accepted" class="filled-button" label="Cancel Ride" size="lg"/>
+      <q-btn v-else class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
     </footer>
 
     <q-page-scroller :offset="[8, 8]" :scroll-offset="20" position="bottom-right" reverse>
@@ -348,11 +333,6 @@ function RequestRide (): void {
   router.push('/request-sent')
 }
 
-async function abort (): Promise<void> {
-  await router.replace('/')
-  rs.reset()
-}
-
 </script>
 
 <style lang="scss">
@@ -374,6 +354,21 @@ async function abort (): Promise<void> {
 .route-image {
   height: 300px;
   object-fit: cover;
+}
+
+.pickup-prompt {
+  display: flex;
+  flex-direction: column;
+  margin-left: 48px;
+  margin-right: 48px;
+  gap: 8px;
+  align-items: center;
+}
+
+.pickup-prompt-notice {
+  font-size: small;
+  text-align: center;
+  font-style: italic;
 }
 
 .driver-details, .passenger-details, .car-model {
@@ -471,9 +466,6 @@ footer {
   align-items: center;
 }
 
-.footer-button {
-}
-
 .timeline-header {
   display: flex;
   flex-direction: row;
@@ -506,6 +498,25 @@ footer {
 .carpool {
   background-color: #fdd835;
   color: #1f4e4c;
+}
+
+.q-timeline__dot::after {
+  opacity: 0.7 !important;
+}
+
+.carpool-entry {
+  .q-timeline__dot {
+
+    color: #fdd835 !important;
+
+    .q-icon {
+      color: $tertiary-container !important;
+    }
+  }
+
+  .q-timeline__dot::after {
+    color: $tertiary-container;
+  }
 }
 
 .shuttle {

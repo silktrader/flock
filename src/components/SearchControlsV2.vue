@@ -181,7 +181,7 @@ function selectOrigin (): void {
 }
 
 .address {
-  font-size: xx-small;
+  font-size: small;
   font-style: italic;
   padding-right: 2px; // solves issues with overflow clipping content
 }
