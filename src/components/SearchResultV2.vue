@@ -3,8 +3,8 @@
   <div v-ripple class="result-container">
 
     <div v-if="r.Recurring" class="regular-route-header">
-      <span>This ride recurs every week.</span>
-      <q-icon name="info" size="sm"></q-icon>
+      <span>{{ r.Driver.firstName }} drives this route every {{ ExtractDay(r.Departure) }}</span>
+      <q-icon name="event_repeat" size="xs"></q-icon>
     </div>
 
     <div v-ripple class="card" @click="reviewRide()">
@@ -68,7 +68,7 @@
               <q-icon name="directions_walk" size="sm"></q-icon>
             </div>
 
-            <div class="expense">
+            <div class="result-expense">
               {{ r.Expense }} €
             </div>
 
@@ -87,7 +87,7 @@
 import { Transport, useRideStore } from 'stores/ride-store'
 import { useRouter } from 'vue-router'
 import { Ride } from 'src/models/ride'
-import { ExtractTime, FormatDuration } from '../tools/date-tools'
+import { ExtractDay, ExtractTime, FormatDuration } from '../tools/date-tools'
 import { computed } from 'vue'
 
 const rs = useRideStore()
@@ -177,11 +177,12 @@ function reviewRide (): void {
   left: -12px;
   height: 48px;
   width: 48px;
+  padding-top: 3px;
   background-image: url(/src/assets/star.png);
   background-size: 48px 48px;
   background-repeat: no-repeat;
   text-align: center;
-  font-size: xx-small;
+  font-size: small;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -213,9 +214,10 @@ function reviewRide (): void {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 50px;
 }
 
-.ride-detail, .expense {
+.ride-detail, .result-expense {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -252,7 +254,7 @@ function reviewRide (): void {
   font-size: xx-small;
 }
 
-.expense {
+.result-expense {
   border: 2px solid $secondary;
 }
 

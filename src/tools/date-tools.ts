@@ -56,6 +56,7 @@ export const FormatISODate = (d: Date): string =>
 export const FormatDuration = (earliest: Date, latest: Date): string => {
   const minutes = Math.abs(date.getDateDiff(earliest, latest, 'minutes'))
   if (minutes < 60) return `${minutes}m`
+  if (minutes === 60) return '1h'
   const hours = Math.floor(minutes / 60)
   return `${hours}h ${minutes - hours * 60}m`
 }
