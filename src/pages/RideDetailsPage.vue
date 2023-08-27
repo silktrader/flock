@@ -109,7 +109,7 @@
 
       </q-timeline>
 
-      <div v-if="!ride.accepted && !ride.Requested" class="pickup-prompt">
+      <div v-if="!ride.accepted && !ride.requested" class="pickup-prompt">
             <span class="pickup-prompt-notice">Propose a different place and time for meeting {{
                 ride.Driver.firstName
               }}.</span>
@@ -181,9 +181,9 @@
           <q-item-section>
             <div class="free-seats">
               <q-avatar
-                v-for="index in ride.FreeSeats"
-                :key="index"
-                class="free-seat"
+                  v-for="index in ride.FreeSeats"
+                  :key="index"
+                  class="free-seat"
               >
               </q-avatar>
             </div>
@@ -298,7 +298,7 @@
     </section>
 
     <footer>
-      <span v-if="ride.Requested && !ride.accepted">Ride requested, pending approval</span>
+      <span v-if="ride.requested && !ride.accepted">Ride requested, pending approval</span>
       <q-btn v-else-if="ride.accepted" class="filled-button" label="Cancel Ride" size="lg"/>
       <q-btn v-else class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
     </footer>
@@ -330,6 +330,7 @@ const ride = computed<Ride>(() => {
 })
 
 function RequestRide (): void {
+  rs.requestSelectedRide()
   router.push('/request-sent')
 }
 

@@ -52,6 +52,10 @@ const routes: RouteRecordRaw[] = [
       path: 'location-select/:target',
       component: () => import('pages/LocationSelection.vue'),
       props: true
+    },
+    {
+      path: 'pending-ride-requests',
+      component: () => import('pages/PendingRequests.vue')
     }
     ]
   },

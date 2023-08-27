@@ -20,10 +20,20 @@ function searchRides (): void {
   router.replace('/search-results')
 }
 
-// assume lectures are already sorted
 const now = new Date()
-const upcomingLectures = computed<ReadonlyArray<Lecture>>(() => us.lectures.filter(l => l.date >= now).slice(0, 5))
-const upcomingRides = computed<ReadonlyArray<Ride>>(() => rs.bookedRides.filter(r => r.Departure >= now).sort((a, b) => Number(a.Departure > b.Departure)))
+
+// assume lectures are already sorted
+const upcomingLectures = computed<ReadonlyArray<Lecture>>(
+  () => us.lectures
+    .filter(l => l.date >= now)
+    .slice(0, 5))
+
+const upcomingRides = computed<ReadonlyArray<Ride>>(
+  () => rs.bookedRides
+    .filter(r => r.Departure >= now)
+    .sort((a, b) => Number(a.Departure > b.Departure)))
+
+const pendingRequests = computed<number>(() => rs.bookedRides.filter(r => r.requested && !r.accepted).length)
 
 </script>
 
@@ -54,6 +64,16 @@ const upcomingRides = computed<ReadonlyArray<Ride>>(() => rs.bookedRides.filter(
       <q-tab-panel name="rides">
 
         <main class="tab-sections">
+
+          <section v-if="pendingRequests" class="pending-requests-container">
+
+            <q-icon name="las la-stamp" size="lg"/>
+
+            <span>You have <b>{{ pendingRequests }}</b> pending ride request {{ pendingRequests > 1 ? 's' : '' }} waiting to be approved.</span>
+
+            <q-btn dense flat icon="arrow_forward_ios" to="/pending-ride-requests"/>
+
+          </section>
 
           <section class="upcoming-cards-container">
             <span class="section-title">Upcoming Rides</span>
@@ -126,6 +146,19 @@ const upcomingRides = computed<ReadonlyArray<Ride>>(() => rs.bookedRides.filter(
 .tab-sections {
   display: flex;
   flex-direction: column;
+}
+
+.pending-requests-container {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  color: $on-tertiary-container;
+  background-color: $tertiary-container;
+  align-items: center;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 16px 24px 0;
+  min-height: 30px;
 }
 
 .upcoming-cards-container {

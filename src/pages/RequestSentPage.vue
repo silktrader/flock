@@ -39,10 +39,6 @@
           <span class="action-comment">* on the same day, at the end of your last lecture</span>
         </div>
 
-        <div class="text-action">
-          <q-btn color="accent" label="View your Pending Requests" outline rounded/>
-        </div>
-
       </section>
 
     </div>
@@ -68,8 +64,6 @@ const ride = computed<Ride>(() => {
   }
   return rs.ride
 })
-
-rs.requestSelectedRide()
 
 async function abort (): Promise<void> {
   await router.replace('/')

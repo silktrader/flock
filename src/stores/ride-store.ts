@@ -144,7 +144,7 @@ export const useRideStore = defineStore('ride',
     const searches = ref<Map<string, RideSearch>>(new Map())
 
     // contains all the rides a user booked, include an initial sample
-    const bookedRides = ref<ReadonlyArray<Ride>>(generateBookedRides())
+    const bookedRides = ref<Array<Ride>>(generateBookedRides())
 
     // Clears existing rides, selected ride and parameters.
     function reset (): void {
@@ -195,7 +195,7 @@ export const useRideStore = defineStore('ride',
       updateSearch()
     }
 
-    function generateBookedRides (): ReadonlyArray<Ride> {
+    function generateBookedRides (): Array<Ride> {
       // generate a couple of rides related to the user's home and lectures
       const rides: Array<Ride> = []
 
@@ -299,12 +299,7 @@ export const useRideStore = defineStore('ride',
         }
 
         // determine pickup details
-        let pickupMinutes: number
-        if (ls.isSapLocation(origin)) {
-          pickupMinutes = RandomInt(1, 6)
-        } else {
-          pickupMinutes = RandomInt(Math.max(1, reachTime * 0.8), reachTime - 3)
-        }
+        const pickupMinutes = ls.isSapLocation(origin) ? RandomInt(1, 6) : RandomInt(Math.max(1, reachTime * 0.8), reachTime - 3)
         const pickup = generatePickup(departure, pickupMinutes, usedAddresses)
 
         // generate a suitable driver
@@ -415,19 +410,19 @@ export const useRideStore = defineStore('ride',
       ride.value = newRide
     }
 
-    function requestSelectedRide (): void {
-      if (ride.value) {
-        ride.value.Requested = true
-      } else {
-        throw new Error('No ride to request')
-      }
-    }
-
     function colourCodePickup (minutes: number): string {
       if (minutes < PickupThreshold.Minimal) return 'green-3'
       if (minutes < PickupThreshold.Short) return 'yellow-3'
       if (minutes < PickupThreshold.Average) return 'orange-3'
       return 'red-3'
+    }
+
+    function requestSelectedRide (): void {
+      if (ride.value === undefined) {
+        throw new Error('No ride to request')
+      }
+      ride.value = new Ride({ ...ride.value, requested: new Date() })
+      bookedRides.value.push(ride.value)
     }
 
     return {
@@ -437,8 +432,8 @@ export const useRideStore = defineStore('ride',
       searchParameters: readonly(searchParameters),
       updateParameters,
       selectRide,
-      requestSelectedRide,
       reset,
-      colourCodePickup
+      colourCodePickup,
+      requestSelectedRide
     }
   })

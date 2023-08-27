@@ -165,6 +165,9 @@ export const useUserStore = defineStore('user', () => {
   }
 
   function generateLectures (): Array<Lecture> {
+    // decide on a random rides distribution
+    const lecturesRides = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3]
+
     const lectures: Array<Lecture> = []
     // generate about three months worth of lectures for each followed course, going back a few days from today
     let cursorDate: Date = date.subtractFromDate(today, { days: RandomInt(3, 8) })
@@ -183,7 +186,7 @@ export const useUserStore = defineStore('user', () => {
             date: actualDate,
             duration: [120, 100, 90][RandomInt(0, 3)],
             location: course.location,
-            ridesAvailable: RandomFloat(0, 1) > 0.6 ? RandomInt(1, 4) : 0
+            ridesAvailable: lecturesRides[RandomInt(0, lecturesRides.length)]
           })
         }
       }
