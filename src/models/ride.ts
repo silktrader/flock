@@ -82,6 +82,11 @@ export class Ride {
     this.requested = config.requested ?? null
   }
 
+  // Provides an estimate of the trip's duration, including pick-up, drop-off and carpooling times.
+  get TotalDuration (): number {
+    return MinutesDiff(this.Departure, this.Arrival)
+  }
+
   get PickupDuration (): number {
     return MinutesDiff(this.Pickup.Date, this.Departure)
   }

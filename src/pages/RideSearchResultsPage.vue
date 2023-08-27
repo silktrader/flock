@@ -40,11 +40,11 @@
           <q-item dense>
             <q-item-section>
               <q-btn-toggle
-                v-model="searchControlsVersion"
-                :options="[{label: 'Initial', value: 'a'}, {label: 'Expanded', value: 'b'}]"
-                outline
-                rounded
-                toggle-color="primary"
+                  v-model="searchControlsVersion"
+                  :options="[{label: 'Initial', value: 'a'}, {label: 'Expanded', value: 'b'}]"
+                  outline
+                  rounded
+                  toggle-color="primary"
               />
             </q-item-section>
           </q-item>
@@ -53,11 +53,11 @@
           <q-item dense>
             <q-item-section>
               <q-btn-toggle
-                v-model="resultCardVersion"
-                :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
-                outline
-                rounded
-                toggle-color="primary"
+                  v-model="resultCardVersion"
+                  :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
+                  outline
+                  rounded
+                  toggle-color="primary"
               />
             </q-item-section>
           </q-item>
@@ -92,11 +92,13 @@ const showOptions = ref<boolean>(false)
 const resultCardVersion = ref<string>('b')
 const searchControlsVersion = ref<string>('b')
 
-const rides = computed<ReadonlyArray<Ride>>(() => [...rs.rides].sort(sortByRecurring))
+// parade rides starting from the ones users are most interested in; the shortest
+const rides = computed<ReadonlyArray<Ride>>(() => [...rs.rides].sort(sortByDurationThenRecurring))
 
-function sortByRecurring (a: Ride, b: Ride): number {
-  if (a.Recurring && !b.Recurring) return -1
-  if (b.Recurring && !a.Recurring) return 1
+function sortByDurationThenRecurring (a: Ride, b: Ride): number {
+  if (a.TotalDuration > b.TotalDuration) return -1
+  if (a.TotalDuration < b.TotalDuration) return 1
+  if (!a.Recurring && b.Recurring) return -1
   return 0
 }
 
