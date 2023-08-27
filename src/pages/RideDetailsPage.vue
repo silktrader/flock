@@ -279,27 +279,26 @@
 
       <q-separator spaced/>
 
-      <template v-if="ride.Recurring">
+      <div v-if="ride.Recurring && !ride.requested" class="notice-box">
+        <q-icon name="las la-calendar-week" size="lg"/>
+        <span>
+              {{ ride.Driver.firstName }} drives to {{ ride.Destination.Label ?? ride.Destination.Address }} every
+              {{ ExtractDay(ride.Departure) }}, arriving at {{ ExtractTime(ride.Arrival) }}.
+        </span>
+      </div>
 
-        <q-item>
-          <q-item-section>
-            <div id="recurring-information">
-              <q-icon name="las la-calendar-week" size="lg"/>
-              <span>
-              {{ ride.Driver.DisplayName }} drives to <b>{{ ride.Destination.Label ?? ride.Destination.Address }}</b> every
-              <b>{{ ExtractDay(ride.Departure) }}</b>, arriving at <b>{{ ExtractTime(ride.Arrival) }}</b>.
-                </span>
-            </div>
-          </q-item-section>
-
-        </q-item>
-      </template>
+      <div v-if="ride.requested && !ride.accepted" class="notice-box">
+        <q-icon name="las la-stamp" size="sm"/>
+        <span>You requested this ride {{ FormatShortDate(ride.requested).toLowerCase() }}. <br/>
+          {{ ride.Driver.firstName }} has yet to accept it.</span>
+      </div>
 
     </section>
 
     <footer>
-      <span v-if="ride.requested && !ride.accepted">Ride requested, pending approval</span>
-      <q-btn v-else-if="ride.accepted" class="filled-button" label="Cancel Ride" size="lg"/>
+      <q-btn v-if="ride.accepted" class="filled-button" label="Cancel Ride" size="lg"/>
+      <q-btn v-else-if="ride.requested" class="filled-button" label="Cancel Request" size="lg"
+             @click="CancelRequest()"/>
       <q-btn v-else class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
     </footer>
 
@@ -315,7 +314,7 @@
 
 import { Transport, useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
-import { ExtractDate, ExtractDay, ExtractTime } from 'src/tools/date-tools'
+import { ExtractDate, ExtractDay, ExtractTime, FormatShortDate } from 'src/tools/date-tools'
 import { Ride } from 'src/models/ride'
 import { useRouter } from 'vue-router'
 
@@ -332,6 +331,11 @@ const ride = computed<Ride>(() => {
 function RequestRide (): void {
   rs.requestSelectedRide()
   router.push('/request-sent')
+}
+
+function CancelRequest (): void {
+  rs.cancelSelectedRequest()
+  router.push('/')
 }
 
 </script>
@@ -591,19 +595,6 @@ small {
   display: flex;
   flex-direction: row;
   gap: 8px;
-}
-
-#recurring-information {
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  font-size: medium;
-  width: 100%;
-  background-color: $tertiary-container;
-  color: $on-tertiary-container
 }
 
 .driver-rating {

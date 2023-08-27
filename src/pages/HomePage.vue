@@ -65,11 +65,11 @@ const pendingRequests = computed<number>(() => rs.bookedRides.filter(r => r.requ
 
         <main class="tab-sections">
 
-          <section v-if="pendingRequests" class="pending-requests-container">
+          <section v-if="pendingRequests" class="notice-box">
 
             <q-icon name="las la-stamp" size="lg"/>
 
-            <span>You have <b>{{ pendingRequests }}</b> pending ride request {{ pendingRequests > 1 ? 's' : '' }} waiting to be approved.</span>
+            <span>You have <b>{{ pendingRequests }}</b> pending ride request{{ pendingRequests > 1 ? 's' : '' }} waiting to be approved.</span>
 
             <q-btn dense flat icon="arrow_forward_ios" to="/pending-ride-requests"/>
 
@@ -146,19 +146,6 @@ const pendingRequests = computed<number>(() => rs.bookedRides.filter(r => r.requ
 .tab-sections {
   display: flex;
   flex-direction: column;
-}
-
-.pending-requests-container {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  color: $on-tertiary-container;
-  background-color: $tertiary-container;
-  align-items: center;
-  border-radius: 12px;
-  padding: 12px;
-  margin: 16px 24px 0;
-  min-height: 30px;
 }
 
 .upcoming-cards-container {

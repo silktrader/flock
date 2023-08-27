@@ -98,3 +98,16 @@
   background-color: $surface-variant;
   text-align: center;
 }
+
+.notice-box {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  color: $on-tertiary-container;
+  background-color: $tertiary-container;
+  align-items: center;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 16px 24px 0;
+  min-height: 30px;
+}

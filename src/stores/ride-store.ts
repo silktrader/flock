@@ -425,6 +425,16 @@ export const useRideStore = defineStore('ride',
       bookedRides.value.push(ride.value)
     }
 
+    function cancelSelectedRequest (): void {
+      if (ride.value === undefined) {
+        throw new Error('No ride to cancel')
+      }
+      // unnecessary null navigator, side steps language server issues
+      const rideIndex = bookedRides.value.findIndex(r => r.Id === ride.value?.Id)
+      bookedRides.value.splice(rideIndex, 1)
+      ride.value = new Ride({ ...ride.value, requested: null })
+    }
+
     return {
       rides: readonly(rides),
       bookedRides: readonly(bookedRides),
@@ -434,6 +444,7 @@ export const useRideStore = defineStore('ride',
       selectRide,
       reset,
       colourCodePickup,
-      requestSelectedRide
+      requestSelectedRide,
+      cancelSelectedRequest
     }
   })
