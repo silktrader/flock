@@ -6,9 +6,9 @@ import { useLocationStore } from 'stores/location-store'
 import { Ride } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
 import { useUserStore } from 'stores/user-store'
-import { Place } from 'src/models/place'
 import { DateMode } from 'src/tools/date-tools'
 import { Car } from 'src/models/car'
+import { SearchParameters } from 'src/models/search-parameters'
 import subtractFromDate = date.subtractFromDate
 import addToDate = date.addToDate
 
@@ -72,19 +72,6 @@ export interface Drop {
   Date: Date;
 }
 
-// tk add validation (reach time must be > 5)
-export interface SearchParameters {
-  Origin: Place;
-  Destination: Place;
-  Date: Date;
-  DateMode: DateMode;
-  reachTime: number;
-  busAllowed: boolean;
-  subwayAllowed: boolean;
-  ladiesOnly: boolean;
-  freeSeats: number;
-}
-
 export interface RideSearch {
   Date: Date,
   Rides: ReadonlyArray<Ride>
@@ -143,7 +130,8 @@ export const useRideStore = defineStore('ride',
         reachTime: parameters.reachTime,
         busAllowed: parameters.busAllowed,
         subwayAllowed: parameters.subwayAllowed,
-        ladiesOnly: parameters.ladiesOnly
+        ladiesOnly: parameters.ladiesOnly,
+        results: parameters.results
       })
     }
 
@@ -264,7 +252,7 @@ export const useRideStore = defineStore('ride',
       const rides: Array<Ride> = []
 
       // create a random number of new rides
-      for (let results = RandomInt(0, 7); results > 0; results--) {
+      for (let results = searchParameters.value.results ?? RandomInt(0, 7); results > 0; results--) {
         let arrival: Date, departure: Date
         const tripDuration = RandomInt(25, maxDurationDistribution[RandomInt(0, maxDurationDistribution.length)])
 

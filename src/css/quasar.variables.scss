@@ -111,7 +111,10 @@ $border-radius: 12px;
   min-height: 40px;
   width: max-content;
   border-radius: 20px !important;
-  box-shadow: none;
+}
+
+.outline-button::before {
+  box-shadow: none !important;
 }
 
 .flat-button {

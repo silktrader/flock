@@ -1,23 +1,41 @@
 <script lang="ts" setup>
 
 import { Lecture } from 'src/models/lecture'
-import { ExtractTime, FormatShortDate } from '../tools/date-tools'
+import { DateMode, ExtractTime, FormatShortDate } from '../tools/date-tools'
 import { computed } from 'vue'
 import { Course } from 'src/models/course'
 import { useUserStore } from 'stores/user-store'
-import { date } from 'quasar'
+import { useRideStore } from 'stores/ride-store'
+import { useLocationStore } from 'stores/location-store'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{ lecture: Lecture }>()
 
 const us = useUserStore()
+const rs = useRideStore()
+const ls = useLocationStore()
+const router = useRouter()
 
 const course = computed<Course>(() => us.getCourseById(props.lecture.courseId))
+
+function searchRides (): void {
+  rs.updateParameters({
+    Date: props.lecture.date,
+    DateMode: DateMode.Arrive,
+    Origin: ls.getDefaultHomeLocation(),
+    Destination: props.lecture.location,
+    results: props.lecture.ridesAvailable
+  })
+  router.push('/search-results')
+}
 
 </script>
 
 <template>
 
-  <q-card class="lecture-card card" flat>
+  <q-card v-ripple class="lecture-card card cursor-pointer q-hoverable" flat @click="searchRides()">
+    <!--    sets up the ripple effect-->
+    <span class="q-focus-helper"/>
     <q-card-section class="card-header">
       <span>{{ FormatShortDate(lecture.date) }}</span>
     </q-card-section>
@@ -25,19 +43,15 @@ const course = computed<Course>(() => us.getCourseById(props.lecture.courseId))
     <q-card-section class="lecture-details">
       <div :style="`background-color: ${course.color}`" class="lecture-course">{{ course.acro }}</div>
       <section class="lecture-schedule">
-        <span class="lecture-schedule-time">{{
-            ExtractTime(lecture.date)
-          }} — {{ ExtractTime(date.addToDate(lecture.date, { minute: lecture.duration })) }}</span>
+        <div class="lecture-schedule-time">
+          <q-icon name="schedule" size="xs"/>
+          <span>{{ ExtractTime(lecture.date) }}</span>
+        </div>
       </section>
       <section v-if="lecture.ridesAvailable" class="lecture-rides">
         <q-icon name="las la-car-side" size="sm"/>
         <span>{{ lecture.ridesAvailable }}</span>
       </section>
-      <!--      <section v-else class="lecture-no-rides">-->
-      <!--        <q-icon name="las la-car-side" size="sm"/>-->
-      <!--        <span>no rides yet</span>-->
-      <!--      </section>-->
-      <!--        <span class="lecture-address">{{ lecture.location.Address }}</span>-->
     </q-card-section>
 
   </q-card>
@@ -58,7 +72,7 @@ const course = computed<Course>(() => us.getCourseById(props.lecture.courseId))
   justify-content: space-between;
   align-items: center;
   font-size: small;
-  gap: 8px;
+  gap: 12px;
 }
 
 .lecture-schedule {
@@ -69,7 +83,17 @@ const course = computed<Course>(() => us.getCourseById(props.lecture.courseId))
 }
 
 .lecture-schedule-time {
-  white-space: nowrap;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  max-width: 140px;
+
+  span {
+    font-family: "Roboto Mono", monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .lecture-course {

@@ -113,7 +113,7 @@
             <span class="pickup-prompt-notice">Propose a different place and time for meeting {{
                 ride.Driver.firstName
               }}.</span>
-        <q-btn class="outline-button" flat>Change Pickup</q-btn>
+        <q-btn class="outline-button">Change Pickup</q-btn>
       </div>
 
       <q-separator/>
@@ -181,9 +181,9 @@
           <q-item-section>
             <div class="free-seats">
               <q-avatar
-                  v-for="index in ride.FreeSeats"
-                  :key="index"
-                  class="free-seat"
+                v-for="index in ride.FreeSeats"
+                :key="index"
+                class="free-seat"
               >
               </q-avatar>
             </div>

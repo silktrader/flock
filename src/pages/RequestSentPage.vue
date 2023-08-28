@@ -49,11 +49,12 @@
 
 <script lang="ts" setup>
 
-import { SearchParameters, useRideStore } from 'stores/ride-store'
+import { useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { Ride } from 'src/models/ride'
 import { date } from 'quasar'
 import { useRouter } from 'vue-router'
+import { SearchParameters } from 'src/models/search-parameters'
 
 const rs = useRideStore()
 const router = useRouter()

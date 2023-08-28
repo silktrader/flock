@@ -33,7 +33,8 @@ function reviewRide (): void {
 
 <template>
 
-  <q-card v-ripple class="ride-card card" flat @click="reviewRide()">
+  <q-card v-ripple class="ride-card card q-hoverable cursor-pointer" flat @click="reviewRide()">
+    <span class="q-focus-helper"/>
 
     <q-card-section class="card-header">
       <span>{{ FormatLongDate(ride.Departure) }}</span>
@@ -114,7 +115,7 @@ function reviewRide (): void {
 
 .directions-locations {
   span {
-    max-width: 25ch;
+    max-width: 24ch;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

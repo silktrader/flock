@@ -22,16 +22,13 @@
 
       <section class="hints">
         <template v-if="dateMode === DateMode.Arrive">
-          <q-btn v-if='nextLectureToday' class="outline-button" outline rounded
-                 @click="updateDate(nextLectureToday?.date)">
+          <q-btn v-if='nextLectureToday' class="outline-button" @click="updateDate(nextLectureToday?.date)">
             Next lecture today
           </q-btn>
-          <q-btn v-if="firstLectureTomorrow" class="outline-button"
-                 outline rounded @click="updateDate(firstLectureTomorrow?.date)">
+          <q-btn v-if="firstLectureTomorrow" class="outline-button" @click="updateDate(firstLectureTomorrow?.date)">
             First lecture tomorrow
           </q-btn>
-          <q-btn v-if="lectureNextWeek" class="outline-button"
-                 outline rounded @click="updateDate(lectureNextWeek?.date)">
+          <q-btn v-if="lectureNextWeek" class="outline-button" @click="updateDate(lectureNextWeek?.date)">
             First lecture next week
           </q-btn>
         </template>

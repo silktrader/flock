@@ -49,13 +49,13 @@
     </div>
 
     <section class="date-time-controls">
-      <q-btn class="outline-button" outline @click="selectDate()">
+      <q-btn class="outline-button" @click="selectDate()">
         <span v-if="wantsArrive">Arrive {{ searchDateLabel }} by {{ searchTimeLabel }}</span>
         <span v-else>Leave {{ searchDateLabel }} at {{ searchTimeLabel }}</span>
         <q-icon name="schedule" size="18px"/>
       </q-btn>
 
-      <q-btn class="outline-button" outline @click="editFilters()">
+      <q-btn class="outline-button" @click="editFilters()">
         <span>Filters</span>
         <!--        <q-icon name="las la-filter"/>-->
       </q-btn>
