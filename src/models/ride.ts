@@ -100,7 +100,7 @@ export class Ride {
   }
 
   get WalkDuration (): number {
-    return this.DropDuration + this.Pickup.Transport === Transport.None ? this.PickupDuration : 0
+    return this.DropDuration + (this.Pickup.Transport === Transport.None ? this.PickupDuration : 0)
   }
 
   get FreeSeats (): number {
