@@ -56,16 +56,16 @@
 
             <div v-if="r.Pickup.Transport === Transport.Subway"
                  :class="['ride-detail', pickupClass]">
-              <q-icon name="directions_subway" size="sm"></q-icon>
+              <q-icon name="las la-train" size="md"/>
             </div>
 
             <div v-else-if="r.Pickup.Transport === Transport.Bus"
                  :class="['ride-detail', pickupClass]">
-              <q-icon name="directions_bus" size="sm"></q-icon>
+              <q-icon name="las la-bus" size="md"/>
             </div>
 
             <div :class="['ride-detail', walkClass]">
-              <q-icon name="directions_walk" size="sm"></q-icon>
+              <q-icon name="las la-walking" size="md"/>
             </div>
 
             <div class="result-expense">
@@ -98,11 +98,11 @@ const props = defineProps<{
 }>()
 
 const pickupClass = computed<string>(() =>
-  `bg-${rs.colourCodePickup(props.r.PickupDuration)}`
+    `bg-${rs.colourCodePickup(props.r.PickupDuration)}`
 )
 
 const walkClass = computed<string>(() =>
-  `bg-${rs.colourCodePickup(props.r.WalkDuration)}`
+    `bg-${rs.colourCodePickup(props.r.WalkDuration)}`
 )
 
 function reviewRide (): void {

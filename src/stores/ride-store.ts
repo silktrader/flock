@@ -126,7 +126,7 @@ export const useRideStore = defineStore('ride',
       DateMode: DateMode.Arrive,
       Destination: ls.getDefaultSapienzaLocation(),
       reachTime: 20,
-      busAllowed: false,
+      busAllowed: true,
       subwayAllowed: true,
       ladiesOnly: false,
       freeSeats: 1
@@ -282,24 +282,27 @@ export const useRideStore = defineStore('ride',
       // flag the creation of at least one recurring ride, if any ride at all is to be generated
       let hasRecurringRide = false
 
+      // the most frequent durations are more desirable
+      const maxDurationDistribution = [30, 30, 60, 90]
+
       const rides: Array<Ride> = []
 
-      // tk allow for 0 rides generated!! remember
       // create a random number of new rides
-      for (let results = RandomInt(2, 7); results > 0; results--) {
+      for (let results = RandomInt(0, 7); results > 0; results--) {
         let arrival: Date, departure: Date
+        const tripDuration = RandomInt(25, maxDurationDistribution[RandomInt(0, maxDurationDistribution.length)])
 
         // determine arrival and departure times
         if (dateMode === DateMode.Arrive) {
           arrival = subtractFromDate(date, { minutes: RandomInt(3, 20) })
-          departure = subtractFromDate(arrival, { minutes: RandomInt(25, 90) })
+          departure = subtractFromDate(arrival, { minutes: tripDuration })
         } else {
           departure = addToDate(date, { minutes: RandomInt(3, 20) })
-          arrival = addToDate(departure, { minutes: RandomInt(25, 90) })
+          arrival = addToDate(departure, { minutes: tripDuration })
         }
 
         // determine pickup details
-        const pickupMinutes = ls.isSapLocation(origin) ? RandomInt(1, 6) : RandomInt(Math.max(1, reachTime * 0.8), reachTime - 3)
+        const pickupMinutes = ls.isSapLocation(origin) ? RandomInt(1, 6) : RandomInt(Math.max(tripDuration * 0.33, reachTime - 6), reachTime - 3)
         const pickup = generatePickup(departure, pickupMinutes, usedAddresses)
 
         // generate a suitable driver
@@ -370,13 +373,16 @@ export const useRideStore = defineStore('ride',
       }
     }
 
-    function generatePickup (departure: Date, pickupDelay: number, avoidAddresses: ReadonlyArray<string>): Pickup {
+    function generatePickup (departure: Date, minutes: number, avoidAddresses: ReadonlyArray<string>): Pickup {
       // determine which means of transport the user can rely on to get to a pickup
-      const eligibleTransports = [Transport.None]
-      if (searchParameters.value.busAllowed && pickupDelay > 5) {
+      const eligibleTransports = []
+      if (minutes < 20 || (!searchParameters.value.busAllowed && !searchParameters.value.subwayAllowed)) {
+        eligibleTransports.push(Transport.None)
+      }
+      if (searchParameters.value.busAllowed && minutes > 5) {
         eligibleTransports.push(Transport.Bus)
       }
-      if (searchParameters.value.subwayAllowed && pickupDelay > 10) {
+      if (searchParameters.value.subwayAllowed && minutes > 10) {
         eligibleTransports.push(Transport.Subway)
       }
 
@@ -387,7 +393,7 @@ export const useRideStore = defineStore('ride',
 
       return {
         Address: getRandomAddress(avoidAddresses),
-        Date: addToDate(departure, { minutes: pickupDelay }),
+        Date: addToDate(departure, { minutes }),
         Transport: chosenTransport,
         TransportId: chosenTransportId
       }
@@ -411,9 +417,9 @@ export const useRideStore = defineStore('ride',
     }
 
     function colourCodePickup (minutes: number): string {
-      if (minutes < PickupThreshold.Minimal) return 'green-3'
-      if (minutes < PickupThreshold.Short) return 'yellow-3'
-      if (minutes < PickupThreshold.Average) return 'orange-3'
+      if (minutes <= PickupThreshold.Minimal) return 'green-3'
+      if (minutes <= PickupThreshold.Short) return 'yellow-3'
+      if (minutes <= PickupThreshold.Average) return 'orange-3'
       return 'red-3'
     }
 
