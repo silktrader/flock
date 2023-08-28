@@ -1,4 +1,5 @@
 import { uid } from 'quasar'
+import { faker } from '@faker-js/faker/locale/it'
 
 export const RandomId = (): string => uid()
 
@@ -22,4 +23,14 @@ export function RandomInt (min: number, max: number): number {
 
 export const RandomFloat = (min: number, max: number): number => {
   return Math.random() * (max - min) + min
+}
+
+const avoidList = ['Contrada', 'Rotonda', 'Borgo', 'Strada', 'Incrocio']
+
+export function getRandomAddress (): string {
+  // avoid these modifiers when generating random addresses
+  const address = faker.location.street()
+  return avoidList.some(avoid => address.startsWith(avoid))
+    ? getRandomAddress()
+    : (`${address}, ${faker.location.buildingNumber()}`)
 }
