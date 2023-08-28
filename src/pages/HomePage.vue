@@ -8,17 +8,16 @@ import UpcomingLectureCard from 'components/UpcomingLectureCard.vue'
 import { Lecture } from 'src/models/lecture'
 import UpcomingRideCard from 'components/UpcomingRideCard.vue'
 import { Ride } from 'src/models/ride'
+import { useNavigationStore } from 'stores/navigation-store'
 
 const tab = ref<'rides' | 'drives'>('rides')
 
 const router = useRouter()
 const rs = useRideStore()
 const us = useUserStore()
+const ns = useNavigationStore()
 
-function searchRides (): void {
-  rs.updateParameters({})
-  router.replace('/search-results')
-}
+const slide = ref<string>('introduction')
 
 const now = new Date()
 
@@ -35,81 +34,170 @@ const upcomingRides = computed<ReadonlyArray<Ride>>(
 
 const pendingRequests = computed<number>(() => rs.bookedRides.filter(r => r.requested && !r.accepted).length)
 
+function quitIntroduction (): void {
+  slide.value = 'introduction'
+  ns.skipIntroduction()
+  ns.toggleFullscreen()
+}
+
+function searchRides (): void {
+  rs.updateParameters({})
+  router.replace('/search-results')
+}
+
 </script>
 
 <template>
   <q-page>
 
-    <header class="home-header">
-      <span>Flock</span>
+    <template v-if="ns.firstUse">
 
-      <section class="home-header-actions">
-        <q-btn flat icon="chat" round></q-btn>
-        <q-btn flat icon="notifications" round></q-btn>
-
-        <q-btn flat round>
-          <q-avatar size="xl">
-            <img :src="us.user.avatarUrl" alt="User Avatar"/>
+      <q-carousel
+        v-model="slide"
+        animated
+        class="introduction-carousel"
+        control-color="primary"
+        control-type="flat"
+        height="100vh"
+        navigation
+        padding
+        swipeable
+        transition-next="slide-left"
+        transition-prev="slide-right"
+      >
+        <q-carousel-slide class="column no-wrap flex-center" name="introduction">
+          <q-icon color="primary" name="las la-car-side" size="100px"/>
+          <div class="q-mt-md text-center">
+            <p>Ciao cavia!</p>
+            <p>We're developing <b>Flock</b> to encourage carpooling among Sapienza students wanting to save time,
+              pennies and lessen traffic around campus.</p>
+            <p>You're looking at a rudimentary user interface. We need testers! Can you help?</p>
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide class="column no-wrap flex-center" name="instructions">
+          <q-avatar size="120px">
+            <img :src="us.user.avatarUrl" alt="Christiane F. picture"/>
           </q-avatar>
-        </q-btn>
-      </section>
-    </header>
+          <div class="q-mt-md text-center">
+            <p>You impersonate <b>Christiane F.</b> — an ACSAI
+              <q-icon name="info" size="xs">
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  ACSAI stands for "Applied Computer Science and Artificial Intelligence".
+                </q-tooltip>
+              </q-icon>
+              student living near Rome's zoo, at Via Aldrovandi, tired
+              of long campus commutes.
+            </p>
 
-    <q-tabs v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
-      <q-tab label="Rides" name="rides"/>
-      <q-tab label="Drives" name="drives"/>
-    </q-tabs>
+            <p>Feel free to explore the app and consider its perks or drawbacks. Your tasks are:</p>
+            <ul class="carousel-tasks">
+              <li>Book a comfy ride from home to Sapienza, in time for Monday's "Human Computer Interaction" lecture,
+                at 10:00.
+              </li>
+              <li>Arrange a ride to Sapienza's Sport Center for the next Sunday morning. Fingers crossed for a clear
+                sky!
+              </li>
+            </ul>
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide class="column no-wrap flex-center" name="thanks">
+          <q-icon color="primary" name="accessibility_new" size="100px"/>
+          <div class="q-mt-md text-center">
+            <p>Please, comment aloud your actions and thoughts as you go — even throw in the occasional curse. We
+              can
+              take it!
+            </p>
+            <p>Thanks for your feedback.</p>
 
-    <q-tab-panels v-model="tab" animated class="tab-container">
-      <q-tab-panel name="rides">
+            <q-btn class="filled-button quit-introduction-button" @click="quitIntroduction()">Let's start!</q-btn>
+          </div>
+        </q-carousel-slide>
+      </q-carousel>
+    </template>
 
-        <main class="tab-sections">
+    <template v-else>
 
-          <section v-if="pendingRequests" class="notice-box">
+      <header class="home-header">
+        <span>Flock</span>
 
-            <q-icon name="las la-stamp" size="lg"/>
+        <section class="home-header-actions">
+          <q-btn flat icon="chat" round></q-btn>
+          <q-btn flat icon="notifications" round></q-btn>
 
-            <span>You have <b>{{ pendingRequests }}</b> pending ride request{{ pendingRequests > 1 ? 's' : '' }} waiting to be approved.</span>
+          <q-btn flat round>
+            <q-avatar size="xl">
+              <img :src="us.user.avatarUrl" alt="User Avatar"/>
+            </q-avatar>
+          </q-btn>
+        </section>
+      </header>
 
-            <q-btn dense flat icon="arrow_forward_ios" to="/pending-ride-requests"/>
+      <q-tabs v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
+        <q-tab label="Rides" name="rides"/>
+        <q-tab label="Drives" name="drives"/>
+      </q-tabs>
 
-          </section>
+      <q-tab-panels v-model="tab" animated class="tab-container">
+        <q-tab-panel name="rides">
 
-          <section class="upcoming-cards-container">
-            <span class="section-title">Upcoming Rides</span>
-            <div class="upcoming-cards">
-              <div class="card-spacer"/>
-              <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
-              <div class="card-spacer"/>
-            </div>
-          </section>
+          <main class="tab-sections">
 
-          <section class="upcoming-cards-container">
-            <span class="section-title">Upcoming Lectures</span>
-            <div class="upcoming-cards">
-              <div class="card-spacer"/>
-              <UpcomingLectureCard v-for="lecture in upcomingLectures" :key="lecture.id" :lecture="lecture"/>
-              <div class="card-spacer"/>
-            </div>
-          </section>
+            <section v-if="pendingRequests" class="notice-box">
 
-        </main>
+              <q-icon name="las la-stamp" size="lg"/>
 
-        <q-page-sticky :offset="[18, 18]" position="bottom-right">
-          <q-btn class="fab-button" fab icon="search" @click="searchRides()"/>
-        </q-page-sticky>
-      </q-tab-panel>
+              <span>You have <b>{{ pendingRequests }}</b> pending ride request{{ pendingRequests > 1 ? 's' : '' }} waiting to be approved.</span>
 
-      <q-tab-panel name="drives">
-      </q-tab-panel>
+              <q-btn dense flat icon="arrow_forward_ios" to="/pending-ride-requests"/>
 
-    </q-tab-panels>
+            </section>
+
+            <section class="upcoming-cards-container">
+              <span class="section-title">Upcoming Rides</span>
+              <div class="upcoming-cards">
+                <div class="card-spacer"/>
+                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
+                <div class="card-spacer"/>
+              </div>
+            </section>
+
+            <section class="upcoming-cards-container">
+              <span class="section-title">Upcoming Lectures</span>
+              <div class="upcoming-cards">
+                <div class="card-spacer"/>
+                <UpcomingLectureCard v-for="lecture in upcomingLectures" :key="lecture.id" :lecture="lecture"/>
+                <div class="card-spacer"/>
+              </div>
+            </section>
+
+          </main>
+
+          <q-page-sticky :offset="[18, 18]" position="bottom-right">
+            <q-btn class="fab-button" fab icon="search" @click="searchRides()"/>
+          </q-page-sticky>
+        </q-tab-panel>
+
+        <q-tab-panel name="drives">
+        </q-tab-panel>
+
+      </q-tab-panels>
+    </template>
 
   </q-page>
 </template>
 
 <style lang="scss" scoped>
 @import "src/css/quasar.variables.scss";
+
+.introduction-carousel {
+  color: $on-surface-variant;
+  background-color: $surface-variant;
+  font-size: medium;
+}
+
+.carousel-tasks li {
+  margin-top: 8px;
+}
 
 .home-header {
   display: flex;
@@ -124,6 +212,11 @@ const pendingRequests = computed<number>(() => rs.bookedRides.filter(r => r.requ
   span {
     font-weight: bold;
   }
+}
+
+.quit-introduction-button {
+  margin-top: 24px;
+  font-size: medium;
 }
 
 .home-header-actions {

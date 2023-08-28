@@ -156,6 +156,10 @@ function selectOrigin (): void {
   min-height: 60px;
 }
 
+.location-button::before {
+  box-shadow: none !important;
+}
+
 .location-button-container {
   display: flex;
   flex-direction: row;

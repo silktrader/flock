@@ -87,9 +87,14 @@
   min-width: 0; // reset min-width which defaults to max-content, so to work with children's text-overflow
 }
 
+.q-carousel__navigation--bottom {
+  margin-bottom: 70px !important;
+}
+
 .card {
   background-color: #23261e;
   color: rgb(228, 227, 221);
+  border-radius: 12px;
 }
 
 .card-header {
@@ -97,6 +102,8 @@
   color: $on-surface-variant;
   background-color: $surface-variant;
   text-align: center;
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
 }
 
 .notice-box {

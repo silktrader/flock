@@ -28,7 +28,7 @@ export const useLocationStore = defineStore('location-store', () => {
 
   const favouritePlaces = ref<FavouritePlace[]>([{
     Label: 'Home',
-    Address: 'Via Archimede, 110',
+    Address: 'Via Aldrovandi, 3',
     Icon: 'las la-home'
   }, {
     Label: 'Dad\'s Flat',
