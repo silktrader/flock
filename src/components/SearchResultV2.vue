@@ -75,9 +75,7 @@
           </section>
         </section>
       </div>
-
     </div>
-
   </div>
 
 </template>

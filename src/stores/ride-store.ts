@@ -112,6 +112,9 @@ export const useRideStore = defineStore('ride',
     // contains all the rides a user booked, include an initial sample
     const bookedRides = ref<Array<Ride>>(generateBookedRides())
 
+    // mocks a hypothetical round trip to a database
+    const searching = ref<boolean>(false)
+
     // Clears existing rides, selected ride and parameters.
     function reset (): void {
       rides.value.splice(0)
@@ -152,6 +155,11 @@ export const useRideStore = defineStore('ride',
         // when the search is repeated populate the results with old rides
         rides.value.splice(0, rides.value.length, ...oldSearch.Rides)
       }
+
+      searching.value = true
+      setTimeout(() => {
+        searching.value = false
+      }, RandomInt(1000, 2000))
     }
 
     function updateParameters (newParameters: Partial<SearchParameters>): void {
@@ -411,6 +419,7 @@ export const useRideStore = defineStore('ride',
       bookedRides: readonly(bookedRides),
       ride: readonly(ride),
       searchParameters: readonly(searchParameters),
+      searching: readonly(searching),
       updateParameters,
       selectRide,
       reset,

@@ -196,14 +196,12 @@ function selectOrigin (): void {
 
 .switch-button {
   -webkit-font-smoothing: antialiased;
-  //border: 1px solid $secondary-container;
   position: absolute;
   right: 16px;
   top: 120px;
   height: 40px;
   width: 40px;
   padding-right: 4px;
-  //border: 1px solid red;
   font-size: 16px;
   color: $primary;
   background-color: $secondary-container;

@@ -20,14 +20,25 @@
 
     <q-separator/>
 
-    <div v-if="resultCardVersion === 'a'" class="ride-cards">
+    <div v-if="rs.searching" class="loading-spinner">
+      <span>searching for rides ...</span>
+      <q-spinner color="accent" size="50px"/>
+    </div>
+
+    <div v-else-if="resultCardVersion === 'a'" class="ride-cards">
       <search-result-v1 v-for='ride in rides' :key='ride.Id' :r="ride"/>
     </div>
 
     <div v-else-if="resultCardVersion === 'b'" class="ride-cards">
-      <search-result-v2 v-for='ride in rides' :key='ride.Id' :r="ride"/>
+      <transition-group
+        appear
+        enter-active-class="animated slideInUp"
+        leave-active-class="animated slideOutDown">
+        <search-result-v2 v-for='ride in rides' :key='ride.Id' :r="ride"/>
+      </transition-group>
     </div>
 
+    <!--    Debug prompt offering components versions choice-->
     <q-dialog v-model="showOptions">
       <q-card class="dialog">
         <q-card-section>
@@ -125,6 +136,17 @@ async function abort (): Promise<void> {
   padding: 1rem;
   gap: 1rem;
   overflow: auto;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  font-style: italic;
+  color: $on-background;
 }
 
 .dialog {
