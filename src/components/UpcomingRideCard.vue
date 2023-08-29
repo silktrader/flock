@@ -26,7 +26,7 @@ const afterCourse = computed<Course | null>(
 
 function reviewRide (): void {
   rs.selectRide(props.ride)
-  router.push('/ride-details')
+  router.push('/rides/details')
 }
 
 </script>

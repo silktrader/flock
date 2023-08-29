@@ -31,7 +31,7 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/DateSelection.vue')
     },
     {
-      path: '/rides/pending-requests',
+      path: '/rides/requests',
       component: () => import('pages/PendingRequests.vue')
     },
     {
@@ -39,7 +39,7 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/RideDetailsPage.vue')
     },
     {
-      path: 'request-sent',
+      path: '/rides/search/request-sent',
       component: () => import('pages/RequestSentPage.vue')
     },
     {

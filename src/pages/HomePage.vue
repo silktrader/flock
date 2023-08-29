@@ -150,7 +150,7 @@ function searchRides (): void {
 
               <span>You have <b>{{ pendingRequests }}</b> pending ride request{{ pendingRequests > 1 ? 's' : '' }} waiting to be approved.</span>
 
-              <q-btn dense flat icon="arrow_forward_ios" to="/pending-ride-requests"/>
+              <q-btn dense flat icon="arrow_forward_ios" to="/rides/requests"/>
 
             </section>
 

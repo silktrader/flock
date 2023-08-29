@@ -332,7 +332,7 @@ const ride = computed<Ride>(() => {
 
 function RequestRide (): void {
   rs.requestSelectedRide()
-  router.push('/request-sent')
+  router.push('/rides/search/request-sent')
 }
 
 function CancelRequest (): void {

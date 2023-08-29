@@ -98,16 +98,16 @@ const props = defineProps<{
 }>()
 
 const pickupClass = computed<string>(() =>
-    `bg-${rs.colourCodePickup(props.r.PickupDuration)}`
+  `bg-${rs.colourCodePickup(props.r.PickupDuration)}`
 )
 
 const walkClass = computed<string>(() =>
-    `bg-${rs.colourCodePickup(props.r.WalkDuration)}`
+  `bg-${rs.colourCodePickup(props.r.WalkDuration)}`
 )
 
 function reviewRide (): void {
   rs.selectRide(props.r)
-  router.push('/ride-details')
+  router.push('/rides/details')
 }
 
 </script>

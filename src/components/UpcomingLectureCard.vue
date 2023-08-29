@@ -26,7 +26,7 @@ function searchRides (): void {
     Destination: props.lecture.location,
     results: props.lecture.ridesAvailable
   })
-  router.push('/search-results')
+  router.push('/rides/search')
 }
 
 </script>

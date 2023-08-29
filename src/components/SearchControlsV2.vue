@@ -35,16 +35,17 @@
               </template>
               <span v-else class="label">{{ destination.Address }}</span>
             </div>
-            <!--          <q-img fit="scale-down" src="/src/assets/SapLogo.png" width="32px"/>-->
             <q-icon v-if="isSapienzaPlace(destination)" class="sapienza-icon" name="school" size="sm"/>
           </div>
         </q-btn>
 
+        <q-btn class="switch-button" icon="las la-arrows-alt-v" @click="switchLocations()"/>
+
       </div>
 
-      <aside class="locations-switch">
-        <q-btn color="primary" flat icon="swap_vert" round size="xl" @click="switchLocations()"/>
-      </aside>
+      <!--      <aside class="locations-switch">-->
+      <!--       -->
+      <!--      </aside>-->
 
     </div>
 
@@ -57,7 +58,6 @@
 
       <q-btn class="outline-button" @click="editFilters()">
         <span>Filters</span>
-        <!--        <q-icon name="las la-filter"/>-->
       </q-btn>
 
     </section>
@@ -194,6 +194,29 @@ function selectOrigin (): void {
   color: $on-primary;
 }
 
+.switch-button {
+  -webkit-font-smoothing: antialiased;
+  //border: 1px solid $secondary-container;
+  position: absolute;
+  right: 16px;
+  top: 120px;
+  height: 40px;
+  width: 40px;
+  padding-right: 4px;
+  //border: 1px solid red;
+  font-size: 16px;
+  color: $primary;
+  background-color: $secondary-container;
+  text-transform: none;
+  border-radius: 50px !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.switch-button::before {
+  box-shadow: none !important;
+}
+
 .route {
   position: relative;
   background-image: url(//maps.gstatic.com/consumer/images/icons/1x/route_3dots_grey650_24dp.png);
@@ -204,7 +227,6 @@ function selectOrigin (): void {
 .locations-switch {
   display: flex;
   justify-content: center;
-  width: 32px;
 }
 
 .date-time-controls {

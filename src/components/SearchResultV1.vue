@@ -125,7 +125,7 @@ const props = defineProps<{
 
 function reviewRide (): void {
   rs.selectRide(props.r)
-  router.push('/ride-details')
+  router.push('/rides/details')
 }
 
 </script>
