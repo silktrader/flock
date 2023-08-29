@@ -7,16 +7,35 @@ const routes: RouteRecordRaw[] = [
     children: [{
       path: '',
       component: () => import('pages/HomePage.vue')
-    }, {
-      path: 'ride-search',
-      component: () => import('pages/RideSearchPage.vue')
     },
     {
-      path: 'search-results',
+      path: '/rides/search',
       component: () => import('pages/RideSearchResultsPage.vue')
     },
     {
-      path: 'ride-details',
+      path: '/rides/search/filters',
+      component: () => import('pages/SearchFilters.vue')
+    },
+    {
+      path: '/rides/search/sap-location-select/:target',
+      component: () => import('pages/SapLocationSelection.vue'),
+      props: true
+    },
+    {
+      path: '/rides/search/location-select/:target',
+      component: () => import('pages/LocationSelection.vue'),
+      props: true
+    },
+    {
+      path: '/rides/search/date-select',
+      component: () => import('pages/DateSelection.vue')
+    },
+    {
+      path: '/rides/pending-requests',
+      component: () => import('pages/PendingRequests.vue')
+    },
+    {
+      path: '/rides/details', // tk change
       component: () => import('pages/RideDetailsPage.vue')
     },
     {
@@ -30,32 +49,6 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/create-ride',
       component: () => import('pages/CreateRide.vue')
-    },
-    {
-      path: 'search',
-      component: () => import('pages/SearchingPage.vue')
-    },
-    {
-      path: 'date-select',
-      component: () => import('pages/DateSelection.vue')
-    },
-    {
-      path: 'filters',
-      component: () => import('pages/SearchFilters.vue')
-    },
-    {
-      path: 'sap-location-select/:target',
-      component: () => import('pages/SapLocationSelection.vue'),
-      props: true
-    },
-    {
-      path: 'location-select/:target',
-      component: () => import('pages/LocationSelection.vue'),
-      props: true
-    },
-    {
-      path: 'pending-ride-requests',
-      component: () => import('pages/PendingRequests.vue')
     }
     ]
   },

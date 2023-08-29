@@ -1,6 +1,14 @@
 <template>
 
-  <main class="results-container">
+  <q-page class="results-container">
+
+    <!--    <transition-->
+    <!--      appear-->
+    <!--      enter-active-class="animated slideInRight"-->
+    <!--      leave-active-class="animated slideOut"-->
+    <!--      mode="out-in"-->
+    <!--    >-->
+    <!--    <main key="search-results" class="results-container">-->
 
     <header class="modal-header">
       <!--      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>-->
@@ -40,11 +48,11 @@
           <q-item dense>
             <q-item-section>
               <q-btn-toggle
-                  v-model="searchControlsVersion"
-                  :options="[{label: 'Initial', value: 'a'}, {label: 'Expanded', value: 'b'}]"
-                  outline
-                  rounded
-                  toggle-color="primary"
+                v-model="searchControlsVersion"
+                :options="[{label: 'Initial', value: 'a'}, {label: 'Expanded', value: 'b'}]"
+                outline
+                rounded
+                toggle-color="primary"
               />
             </q-item-section>
           </q-item>
@@ -53,11 +61,11 @@
           <q-item dense>
             <q-item-section>
               <q-btn-toggle
-                  v-model="resultCardVersion"
-                  :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
-                  outline
-                  rounded
-                  toggle-color="primary"
+                v-model="resultCardVersion"
+                :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
+                outline
+                rounded
+                toggle-color="primary"
               />
             </q-item-section>
           </q-item>
@@ -70,7 +78,9 @@
       </q-card>
     </q-dialog>
 
-  </main>
+    <!--    </main>-->
+    <!--    </transition>-->
+  </q-page>
 
 </template>
 
@@ -84,13 +94,17 @@ import { useRouter } from 'vue-router'
 import { Ride } from 'src/models/ride'
 import SearchControlsV1 from 'components/SearchControlsV1.vue'
 import SearchControlsV2 from 'components/SearchControlsV2.vue'
+// import { AnimationClass, useNavigationStore } from 'stores/navigation-store'
 
 const rs = useRideStore()
 const router = useRouter()
+// const ns = useNavigationStore()
 
 const showOptions = ref<boolean>(false)
 const resultCardVersion = ref<string>('b')
 const searchControlsVersion = ref<string>('b')
+
+// const animClasses = ref<AnimationClass>(ns.getAnimation(2))
 
 // parade rides starting from the ones users are most interested in; the shortest
 const rides = computed<ReadonlyArray<Ride>>(() => [...rs.rides].sort(sortByDurationThenRecurring))
@@ -103,6 +117,11 @@ function sortByDurationThenRecurring (a: Ride, b: Ride): number {
 }
 
 async function abort (): Promise<void> {
+  // animClasses.value = ns.changePage({
+  //   route: '/',
+  //   rank: 1
+  // })
+  // console.log(animClasses.value.exitClass)
   await router.replace('/')
   rs.reset()
 }

@@ -1,6 +1,6 @@
 <template>
 
-  <main class="container">
+  <main key="date-selection" class="container">
 
     <header class="secondary-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="closeModal()"/>
@@ -124,7 +124,7 @@ const dateMode = ref<DateMode>(DateMode.Arrive)
 const dateValue = ref<Date>(rs.searchParameters.Date)
 
 function closeModal (): void {
-  router.replace('/search-results')
+  router.go(-1)
 }
 
 const actionLabelHour = computed<string>(() => {

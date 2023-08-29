@@ -30,7 +30,7 @@ const upcomingLectures = computed<ReadonlyArray<Lecture>>(
 const upcomingRides = computed<ReadonlyArray<Ride>>(
   () => rs.bookedRides
     .filter(r => r.Departure >= now)
-    .sort((a, b) => Number(a.Departure > b.Departure)))
+    .sort((a, b) => a.Departure.getTime() - b.Departure.getTime()))
 
 const pendingRequests = computed<number>(() => rs.bookedRides.filter(r => r.requested && !r.accepted).length)
 
@@ -42,12 +42,13 @@ function quitIntroduction (): void {
 
 function searchRides (): void {
   rs.updateParameters({})
-  router.replace('/search-results')
+  router.push('/rides/search')
 }
 
 </script>
 
 <template>
+
   <q-page>
 
     <template v-if="ns.firstUse">
@@ -91,7 +92,8 @@ function searchRides (): void {
 
             <p>Feel free to explore the app and consider its perks or drawbacks. Your tasks are:</p>
             <ul class="carousel-tasks">
-              <li>Book a comfy ride from home to Sapienza, in time for Monday's "Human Computer Interaction" lecture,
+              <li>Book a comfy ride from home to Sapienza, in time for Monday's "Human Computer Interaction" lecture
+                (HCI),
                 at 10:00.
               </li>
               <li>Arrange a ride to Sapienza's Sport Center for the next Sunday morning. Fingers crossed for a clear
@@ -117,7 +119,7 @@ function searchRides (): void {
 
     <template v-else>
 
-      <header class="home-header">
+      <header key="header" class="home-header">
         <span>Flock</span>
 
         <section class="home-header-actions">
@@ -132,12 +134,12 @@ function searchRides (): void {
         </section>
       </header>
 
-      <q-tabs v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
+      <q-tabs key="tabs" v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
         <q-tab label="Rides" name="rides"/>
         <q-tab label="Drives" name="drives"/>
       </q-tabs>
 
-      <q-tab-panels v-model="tab" animated class="tab-container">
+      <q-tab-panels key="tab-panels" v-model="tab" animated class="tab-container">
         <q-tab-panel name="rides">
 
           <main class="tab-sections">

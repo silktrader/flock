@@ -59,7 +59,7 @@ const places = computed<Array<{ Location: SapienzaPlace, CourseIds: Set<string> 
 })
 
 function closeModal (): void {
-  router.replace('/search-results')
+  router.go(-1)
 }
 
 async function selectPlace (place: SapienzaPlace): Promise<void> {

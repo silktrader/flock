@@ -41,18 +41,19 @@ const smokersAllowed = ref<boolean>(false)
 const masksOnly = ref<boolean>(false)
 
 function closeModal (): void {
-  router.replace('/search-results')
   rs.updateParameters({
     reachTime: maxPickupTime.value,
     busAllowed: busAllowed.value,
     subwayAllowed: subwayAllowed.value,
     ladiesOnly: ladiesOnly.value
   })
+  router.go(-1)
 }
 
 </script>
 
 <template>
+
   <main class="container">
 
     <header class="secondary-header">

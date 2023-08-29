@@ -1,6 +1,6 @@
 <template>
 
-  <q-page>
+  <q-page key="ride-details">
 
     <header class="modal-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
@@ -55,7 +55,9 @@
           <template v-slot:title>
             <div class="timeline-header">
               <span>Meet {{ ride.Driver.DisplayName }}</span>
-              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.Pickup.Date) }}</span>
+              <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
+                  ExtractTime(ride.Pickup.Date)
+                }}</span>
             </div>
           </template>
 

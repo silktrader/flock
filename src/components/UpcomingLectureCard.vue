@@ -33,28 +33,35 @@ function searchRides (): void {
 
 <template>
 
-  <q-card v-ripple class="lecture-card card cursor-pointer q-hoverable" flat @click="searchRides()">
-    <!--    sets up the ripple effect-->
-    <span class="q-focus-helper"/>
-    <q-card-section class="card-header">
-      <span>{{ FormatShortDate(lecture.date) }}</span>
-    </q-card-section>
+  <transition
+    appear
+    enter-active-class="animated slideInRight"
+  >
 
-    <q-card-section class="lecture-details">
-      <div :style="`background-color: ${course.color}`" class="lecture-course">{{ course.acro }}</div>
-      <section class="lecture-schedule">
-        <div class="lecture-schedule-time">
-          <q-icon name="schedule" size="xs"/>
-          <span>{{ ExtractTime(lecture.date) }}</span>
-        </div>
-      </section>
-      <section v-if="lecture.ridesAvailable" class="lecture-rides">
-        <q-icon name="las la-car-side" size="sm"/>
-        <span>{{ lecture.ridesAvailable }}</span>
-      </section>
-    </q-card-section>
+    <q-card key="upcoming-lecture-card" v-ripple class="lecture-card card cursor-pointer q-hoverable" flat
+            @click="searchRides()">
+      <!--    sets up the ripple effect-->
+      <span class="q-focus-helper"/>
+      <q-card-section class="card-header">
+        <span>{{ FormatShortDate(lecture.date) }}</span>
+      </q-card-section>
 
-  </q-card>
+      <q-card-section class="lecture-details">
+        <div :style="`background-color: ${course.color}`" class="lecture-course">{{ course.acro }}</div>
+        <section class="lecture-schedule">
+          <div class="lecture-schedule-time">
+            <q-icon name="schedule" size="xs"/>
+            <span>{{ ExtractTime(lecture.date) }}</span>
+          </div>
+        </section>
+        <section v-if="lecture.ridesAvailable" class="lecture-rides">
+          <q-icon name="las la-car-side" size="sm"/>
+          <span>{{ lecture.ridesAvailable }}</span>
+        </section>
+      </q-card-section>
+
+    </q-card>
+  </transition>
 
 </template>
 

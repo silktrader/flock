@@ -33,52 +33,59 @@ function reviewRide (): void {
 
 <template>
 
-  <q-card v-ripple class="ride-card card q-hoverable cursor-pointer" flat @click="reviewRide()">
-    <span class="q-focus-helper"/>
+  <transition
+    appear
+    enter-active-class="animated slideInRight"
+  >
 
-    <q-card-section class="card-header">
-      <span>{{ FormatLongDate(ride.Departure) }}</span>
-    </q-card-section>
+    <q-card key="upcoming-ride-card" v-ripple class="ride-card card q-hoverable cursor-pointer" flat
+            @click="reviewRide()">
+      <span class="q-focus-helper"/>
 
-    <q-card-section class="ride-details">
+      <q-card-section class="card-header">
+        <span>{{ FormatLongDate(ride.Departure) }}</span>
+      </q-card-section>
 
-      <section class="directions">
-        <div class="directions-times">
-          <span>{{ ExtractTime(ride.Pickup.Date) }}</span>
-          <span>{{ ExtractTime(ride.Drop.Date) }}</span>
-        </div>
+      <q-card-section class="ride-details">
 
-        <div class="graph">
-          <div class="graph-pickup"/>
-          <div class="graph-route"/>
-          <div class="graph-drop"/>
-        </div>
+        <section class="directions">
+          <div class="directions-times">
+            <span>{{ ExtractTime(ride.Pickup.Date) }}</span>
+            <span>{{ ExtractTime(ride.Drop.Date) }}</span>
+          </div>
 
-        <div class="directions-locations">
-          <span>{{ ride.Pickup.Address }}</span>
-          <span>{{ ride.Drop.Address }}</span>
-        </div>
-      </section>
+          <div class="graph">
+            <div class="graph-pickup"/>
+            <div class="graph-route"/>
+            <div class="graph-drop"/>
+          </div>
 
-      <section class="ride-extra">
-        <span class="ride-extra-prep">with</span>
-        <q-avatar size="50px">
-          <img :src="ride.Driver.avatarUrl" alt="Driver's Avatar"/>
-        </q-avatar>
-        <template v-if="beforeCourse">
-          <span>before</span>
-          <div :style="`background-color: ${beforeCourse.color}`" class="lecture-course">{{ beforeCourse.acro }}</div>
-        </template>
+          <div class="directions-locations">
+            <span>{{ ride.Pickup.Address }}</span>
+            <span>{{ ride.Drop.Address }}</span>
+          </div>
+        </section>
 
-        <template v-if="afterCourse">
-          <span>after</span>
-          <div :style="`background-color: ${afterCourse.color}`" class="lecture-course">{{ afterCourse.acro }}</div>
-        </template>
+        <section class="ride-extra">
+          <span class="ride-extra-prep">with</span>
+          <q-avatar size="50px">
+            <img :src="ride.Driver.avatarUrl" alt="Driver's Avatar"/>
+          </q-avatar>
+          <template v-if="beforeCourse">
+            <span>before</span>
+            <div :style="`background-color: ${beforeCourse.color}`" class="lecture-course">{{ beforeCourse.acro }}</div>
+          </template>
 
-      </section>
+          <template v-if="afterCourse">
+            <span>after</span>
+            <div :style="`background-color: ${afterCourse.color}`" class="lecture-course">{{ afterCourse.acro }}</div>
+          </template>
 
-    </q-card-section>
-  </q-card>
+        </section>
+
+      </q-card-section>
+    </q-card>
+  </transition>
 
 </template>
 

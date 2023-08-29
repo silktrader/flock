@@ -42,7 +42,7 @@ function captureNumber (address: string): number | null {
 }
 
 function closeModal (): void {
-  router.replace('/search-results')
+  router.go(-1)
 }
 
 function fillAddress (address: string): void {
@@ -192,7 +192,8 @@ watch(locationInput, (newValue, oldValue) => {
 
       <template v-if="filteredFavourites.length">
         <q-item-label header>Favourite Places</q-item-label>
-        <q-item v-for="place in filteredFavourites" :key="place.Address" v-ripple clickable @click="selectPlace(place)">
+        <q-item v-for="place in filteredFavourites" :key="place.Address" v-ripple clickable
+                @click="selectPlace(place)">
           <q-item-section avatar>
             <q-avatar :icon="place.Icon" class="address-icon"/>
           </q-item-section>

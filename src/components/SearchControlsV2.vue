@@ -92,19 +92,19 @@ function switchLocations (): void {
 }
 
 function selectDate (): void {
-  router.push('/date-select')
+  router.push('/rides/search/date-select')
 }
 
 function editFilters (): void {
-  router.push('/filters')
+  router.push('/rides/search/filters')
 }
 
 function selectDestination (): void {
-  router.push(`${isSapienzaPlace(destination.value) ? '/sap-location-select' : '/location-select'}/destination`)
+  router.push(`/rides/search/${isSapienzaPlace(destination.value) ? 'sap-location-select' : 'location-select'}/destination`)
 }
 
 function selectOrigin (): void {
-  router.push(`${isSapienzaPlace(origin.value) ? '/sap-location-select' : '/location-select'}/origin`)
+  router.push(`/rides/search/${isSapienzaPlace(origin.value) ? 'sap-location-select' : 'location-select'}/origin`)
 }
 
 </script>
