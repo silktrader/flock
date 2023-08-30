@@ -25,6 +25,42 @@
       <q-spinner color="accent" size="50px"/>
     </div>
 
+    <div v-else-if="rides.length === 0" class="no-results-container">
+      <transition
+        appear
+        enter-active-class="animated tada"
+        leave-active-class="animated fadeOut">
+        <div key="no-results-notice" class="no-results-notice">
+          <div class="no-results-notice-image">
+            <q-img alt="No Results Found" fit="contain" height="60px" src="~/assets/failure-car.svg"/>
+          </div>
+          <span>No rides found!</span>
+        </div>
+      </transition>
+      <transition
+        v-if="!ridesNotified"
+        appear
+        enter-active-class="animated zoomIn"
+        leave-active-class="animated zoomOut"
+        mode="out-in">
+        <div key="no-results-prompt" class="no-results-prompt">
+          <span>Should we notify you when somebody arranges such a ride?</span>
+          <q-btn class="tonal-button" label="Notify Me" @click="notifyRide()"/>
+        </div>
+      </transition>
+      <transition
+        v-else
+        appear
+        enter-active-class="animated zoomIn"
+        leave-active-class="animated zoomOut"
+        mode="out-in">
+        <div key="no-results-notified" class="no-results-prompt">
+          <q-icon name="notification_add" size="md"/>
+          <span>We'll tell you once someone schedules this ride.</span>
+        </div>
+      </transition>
+    </div>
+
     <div v-else-if="resultCardVersion === 'a'" class="ride-cards">
       <search-result-v1 v-for='ride in rides' :key='ride.Id' :r="ride"/>
     </div>
@@ -33,7 +69,8 @@
       <transition-group
         appear
         enter-active-class="animated slideInUp"
-        leave-active-class="animated slideOutDown">
+        leave-active-class="animated slideOutDown"
+        mode="out-in">
         <search-result-v2 v-for='ride in rides' :key='ride.Id' :r="ride"/>
       </transition-group>
     </div>
@@ -95,8 +132,11 @@ import { useRouter } from 'vue-router'
 import { Ride } from 'src/models/ride'
 import SearchControlsV1 from 'components/SearchControlsV1.vue'
 import SearchControlsV2 from 'components/SearchControlsV2.vue'
+import { useUserStore } from 'stores/user-store'
+import { date } from 'quasar'
 
 const rs = useRideStore()
+const us = useUserStore()
 const router = useRouter()
 
 const showOptions = ref<boolean>(false)
@@ -105,6 +145,16 @@ const searchControlsVersion = ref<string>('b')
 
 // parade rides starting from the ones users are most interested in; the shortest
 const rides = computed<ReadonlyArray<Ride>>(() => [...rs.rides].sort(sortByDurationThenRecurring))
+
+const ridesNotified = computed<boolean>(function () {
+  const params = rs.searchParameters
+  return us.rideNotifications.some(n =>
+    date.getDateDiff(n.Date, params.Date, 'minutes') < 10 &&
+    n.DateMode === params.DateMode &&
+    n.Origin === params.Origin &&
+    n.Destination === params.Destination
+  )
+})
 
 function sortByDurationThenRecurring (a: Ride, b: Ride): number {
   if (a.TotalDuration > b.TotalDuration) return -1
@@ -118,6 +168,10 @@ async function abort (): Promise<void> {
   rs.reset()
 }
 
+function notifyRide (): void {
+  us.notifyRide(rs.searchParameters)
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -128,6 +182,52 @@ async function abort (): Promise<void> {
   flex-direction: column;
   height: 100vh;
   margin: 0;
+}
+
+.no-results-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-top: 50px;
+  gap: 16px;
+  color: $on-background;
+}
+
+.no-results-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: max-content;
+  align-items: center;
+  text-align: center;
+  //color: $on-secondary-container;
+  color: $warning;
+  font-size: medium;
+}
+
+.no-results-notice-image {
+  display: flex;
+  align-items: center;
+  height: 120px;
+  width: 120px;
+  background-color: $warning;
+  border-radius: 100%;
+  padding: 8px;
+}
+
+.no-results-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 64px;
+  align-items: center;
+  text-align: center;
+  color: $on-background;
+
+  i {
+    color: $on-background;
+  }
 }
 
 .ride-cards {

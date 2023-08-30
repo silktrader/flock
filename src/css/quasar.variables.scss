@@ -90,6 +90,7 @@ $border-radius: 12px;
   color: $on-secondary-container;
   background-color: $secondary-container;
   text-transform: none;
+  width: max-content;
   min-height: 40px;
   border-radius: 20px !important;
 }

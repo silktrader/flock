@@ -5,11 +5,12 @@ import { User, UserConfig } from 'src/models/user'
 import { Driver } from 'src/models/driver'
 import { Lecture } from 'src/models/lecture'
 import { date } from 'quasar'
-import { readonly } from 'vue'
+import { readonly, ref } from 'vue'
 import { useLocationStore } from 'stores/location-store'
 import { fakerIT as faker } from '@faker-js/faker'
 import { today } from 'src/tools/date-tools'
 import { Course } from 'src/models/course'
+import { SearchParameters } from 'src/models/search-parameters'
 
 export const useUserStore = defineStore('user', () => {
   const femaleAvatars: ReadonlyArray<string> =
@@ -85,6 +86,9 @@ export const useUserStore = defineStore('user', () => {
     }]
 
   const lectures: ReadonlyArray<Lecture> = generateLectures()
+
+  // user added notifications about new rides at desired dates
+  const rideNotifications = ref<Array<SearchParameters>>([])
 
   function getRandomAvatar (isFemale: boolean, avoidAvatars: ReadonlySet<string>): string {
     const validAvatars = (isFemale ? femaleAvatars : maleAvatars).filter(id => !avoidAvatars.has(id))
@@ -195,11 +199,17 @@ export const useUserStore = defineStore('user', () => {
     return lectures
   }
 
+  function notifyRide (params: SearchParameters): void {
+    rideNotifications.value.push(params)
+  }
+
   return {
     lectures: readonly(lectures),
+    rideNotifications: readonly(rideNotifications),
     user,
     generateUser,
     generateDriver,
-    getCourseById
+    getCourseById,
+    notifyRide
   }
 })
