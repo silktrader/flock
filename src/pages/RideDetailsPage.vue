@@ -15,7 +15,8 @@
 
     <section class="route">
 
-      <q-img class="route-image shadow-7" fit="cover" spinner-color="white" src="~/assets/route-map.svg"/>
+      <q-img class="route-image shadow-3" fit="cover" height="260px" spinner-color="white"
+             src="~/assets/route-map.svg"/>
 
       <q-timeline class="timeline" color="secondary" layout="dense">
 
@@ -453,24 +454,20 @@ function CancelRequest (): void {
   font-size: small;
 }
 
-.car-icon {
-  display: flex;
-  align-items: center;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  border: 2px solid maroon;
-  /*background-color: lightgray;*/
-  color: maroon;
-}
+// reduced size footer, holding small button
+//footer {
+//  display: flex;
+//  flex-direction: column;
+//  width: 100%;
+//  margin-bottom: 24px;
+//  margin-top: 24px;
+//  align-items: center;
+//}
 
 footer {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  margin-bottom: 24px;
-  margin-top: 24px;
-  align-items: center;
+  margin: 24px;
 }
 
 .timeline-header {

@@ -70,7 +70,7 @@ async function selectPlace (place: SapienzaPlace): Promise<void> {
   } else {
     throw new Error('invalid parameter while selecting location')
   }
-  await router.replace('/search-results')
+  router.go(-1)
 }
 
 </script>
