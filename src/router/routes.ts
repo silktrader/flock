@@ -25,7 +25,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
       path: '/profile',
-      component: () => import('pages/AnotherProfile.vue')
+      component: () => import('pages/ProfilePage.vue')
     },
     {
       path: '/create-ride',
