@@ -85,7 +85,7 @@ function selectPlace (place: Place): void {
   }
 
   ls.addRecentAddress(place.Address)
-  router.replace('/search-results')
+  router.go(-1)
 }
 
 watch(locationInput, (newValue, oldValue) => {
