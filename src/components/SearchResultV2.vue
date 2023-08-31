@@ -18,7 +18,7 @@
             </q-avatar>
             <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
           </div>
-          <span class="driver-details">{{ r.Driver.DisplayName }}</span>
+          <span class="driver-details">{{ r.Driver.displayName }}</span>
         </section>
 
         <section class="schedule">
@@ -83,13 +83,13 @@
 <script lang="ts" setup>
 
 import { Transport, useRideStore } from 'stores/ride-store'
-import { useRouter } from 'vue-router'
 import { Ride } from 'src/models/ride'
 import { ExtractDay, ExtractTime, FormatDuration } from '../tools/date-tools'
 import { computed } from 'vue'
+import { useNavigationStore } from 'stores/navigation-store'
 
 const rs = useRideStore()
-const router = useRouter()
+const ns = useNavigationStore()
 
 const props = defineProps<{
   r: Ride // webstorm will complain if the instance is named after the interface (bug)
@@ -105,7 +105,7 @@ const walkClass = computed<string>(() =>
 
 function reviewRide (): void {
   rs.selectRide(props.r)
-  router.push('/rides/details')
+  ns.goDetailsPage()
 }
 
 </script>

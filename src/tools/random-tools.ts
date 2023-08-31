@@ -25,6 +25,11 @@ export const RandomFloat = (min: number, max: number): number => {
   return Math.random() * (max - min) + min
 }
 
+export const RandomPercent = (): number => {
+  const int = window.crypto.getRandomValues(new Uint32Array(1))[0]
+  return int / 2 ** 32
+}
+
 const avoidList = ['Contrada', 'Rotonda', 'Borgo', 'Strada', 'Incrocio']
 
 export function getRandomAddress (): string {

@@ -145,23 +145,14 @@
 
 import { computed, Ref, ref } from 'vue'
 import { date, useQuasar } from 'quasar'
-import { LeftButton, useNavigationStore } from 'stores/navigation-store'
 import { useRouter } from 'vue-router'
 import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
 import { Place } from 'src/models/place'
 
-const ns = useNavigationStore()
-const rs = useRideStore()
 const ls = useLocationStore()
 const router = useRouter()
 const q = useQuasar()
-
-// tk remove these
-ns.setTitle('Ride Search')
-ns.setSubtitle('')
-ns.setButton(LeftButton.Menu)
-rs.reset()
 
 // location
 const originOptions: Ref<string[]> = ref([])

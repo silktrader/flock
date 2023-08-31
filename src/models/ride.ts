@@ -11,22 +11,24 @@ import { Lecture } from 'src/models/lecture'
  but TS has no explicit support for them, requiring prototype pollution. */
 
 export interface RideConfig {
-  Id: string,
-  Origin: Place,
-  Destination: Place,
-  Arrival: Date,
-  Departure: Date,
-  Driver: Driver,
-  Car: Car,
-  Drop: Drop,
-  Pickup: Pickup,
-  Expense: number,
-  Passengers: ReadonlyArray<User>,
-  Recurring: boolean,
-  before?: Lecture,
+  Id: string
+  Origin: Place
+  Destination: Place
+  Arrival: Date
+  Departure: Date
+  Driver: Driver
+  Car: Car
+  Drop: Drop
+  Pickup: Pickup
+  Expense: number
+  Passengers: ReadonlyArray<User>
+  rules: ReadonlyArray<string>
+  Recurring: boolean
+  before?: Lecture
   after?: Lecture
-  requested?: Date | null,
-  accepted?: boolean,
+  comment?: string
+  requested?: Date | null
+  accepted?: boolean
 }
 
 export class Ride {
@@ -44,6 +46,8 @@ export class Ride {
   readonly Recurring: boolean
   readonly before?: Lecture
   readonly after?: Lecture
+  readonly comment?: string
+  readonly rules: ReadonlyArray<string>
 
   // Tells whether the ride was requested by the user.
   readonly requested: Date | null
@@ -75,11 +79,13 @@ export class Ride {
     this.Pickup = config.Pickup
     this.Expense = config.Expense
     this.Passengers = config.Passengers
+    this.rules = config.rules
     this.Recurring = config.Recurring
     this.before = config.before
     this.after = config.after
     this.accepted = config.accepted ?? false
     this.requested = config.requested ?? null
+    this.comment = config.comment
   }
 
   // Provides an estimate of the trip's duration, including pick-up, drop-off and carpooling times.
@@ -104,6 +110,6 @@ export class Ride {
   }
 
   get FreeSeats (): number {
-    return this.Car.Seats - this.Passengers.length
+    return this.Car.seats - this.Passengers.length
   }
 }

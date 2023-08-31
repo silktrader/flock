@@ -39,6 +39,10 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/RideDetailsPage.vue')
     },
     {
+      path: '/rides/details-alt', // tk change
+      component: () => import('pages/RideDetailsAlt.vue')
+    },
+    {
       path: '/rides/search/request-sent',
       component: () => import('pages/RequestSentPage.vue')
     },

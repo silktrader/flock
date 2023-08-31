@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { RandomFloat, RandomId, RandomInt } from 'src/tools/random-tools'
+import { RandomFloat, RandomId, RandomInt, RandomPercent } from 'src/tools/random-tools'
 import { Badges, Degrees } from 'stores/ride-store'
 import { User, UserConfig } from 'src/models/user'
 import { Driver } from 'src/models/driver'
@@ -32,7 +32,9 @@ export const useUserStore = defineStore('user', () => {
     avatarUrl: 'images/christiane.png',
     badges: [],
     degree: 'ACSAI',
-    followedCourses: ['HCI', 'DBM', 'CAR', 'STA', 'CLC']
+    followedCourses: ['HCI', 'DBM', 'CAR', 'STA', 'CLC'],
+    languages: ['english', 'italian', 'spanish', 'french'],
+    onTime: 0.8
   })
 
   const getRandomSapLocation = () => ls.sapienzaPlaces[RandomInt(0, ls.sapienzaPlaces.length)]
@@ -110,7 +112,9 @@ export const useUserStore = defineStore('user', () => {
         RandomFloat(0, 1) > 0.5 ? Badges[0] : '',
         RandomFloat(0, 1) > 0.7 ? Badges[1] : '',
         RandomFloat(0, 1) > 0.6 ? Badges[2] : '']
-        .filter(i => i !== '')
+        .filter(i => i !== ''),
+      languages: randomLanguages(),
+      onTime: randomOnTime()
     }
   }
 
@@ -125,42 +129,19 @@ export const useUserStore = defineStore('user', () => {
     })
   }
 
-  // function generateRandomLectures (): void {
-  //   // reinitialise store's lectures
-  //   lectures.splice(0, lectures.length)
-  //
-  //   for (const course of courses) {
-  //     for (const [index, day] of course.days.entries()) {
-  //       // find the next day of the week after today
-  //       let startDate = date.adjustDate(today, {
-  //         hours: course.start[index],
-  //         minutes: 0,
-  //         second: 0
-  //       })
-  //       startDate = getNextDayOfTheWeek(day, startDate)
-  //       for (let weeks = 0; weeks <= 6; weeks++) {
-  //         lectures.push({
-  //           id: RandomId(),
-  //           course: course.name,
-  //           location: course.location,
-  //           duration: 120,
-  //           date: date.addToDate(startDate, { days: weeks * 7 })
-  //
-  //         })
-  //       }
-  //     }
-  //   }
-  // }
-  //
-  // function getNextDayOfTheWeek (dayName: string, refDate: Date): Date {
-  //   const weekDay = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].indexOf(dayName)
-  //   if (weekDay < 0) {
-  //     throw new Error('Could not select proper weekday')
-  //   }
-  //   refDate.setDate(refDate.getDate() +
-  //     (weekDay + (7 - refDate.getDay())) % 7)
-  //   return refDate
-  // }
+  function randomLanguages (): ReadonlyArray<string> {
+    const languages = []
+    if (RandomPercent() > 0.15) languages.push('italian')
+    if (RandomPercent() > 0.4) languages.push('english')
+    if (RandomPercent() > 0.7) languages.push('spanish')
+    if (RandomPercent() > 0.9) languages.push('french')
+    return languages
+  }
+
+  function randomOnTime (): number {
+    const minDist = [0.3, 0.5, 0.8]
+    return RandomFloat(minDist[RandomInt(0, minDist.length)], 1)
+  }
 
   function getCourseById (id: string): Course {
     const course = courses.find(c => c.id === id)
