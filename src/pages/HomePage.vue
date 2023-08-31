@@ -45,6 +45,10 @@ function searchRides (): void {
   router.push('/rides/search')
 }
 
+function createRide (): void {
+  router.push('/create-ride')
+}
+
 </script>
 
 <template>
@@ -181,8 +185,17 @@ function searchRides (): void {
 
         <q-tab-panel name="drives">
 
+          <section class="upcoming-cards-container">
+              <span class="section-title">Upcoming Rides</span>
+              <div class="upcoming-cards">
+                <div class="card-spacer"/>
+                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
+                <div class="card-spacer"/>
+              </div>
+            </section>
+
           <q-page-sticky :offset="[18, 18]" position="bottom-right">
-            <q-btn class="pulsingButton fab-button" fab icon="add" />
+            <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
           </q-page-sticky>
 
         </q-tab-panel>
