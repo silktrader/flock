@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 import { useRouter } from 'vue-router'
-import { DateMode, ExtractTime, FormatShortDate } from 'src/tools/date-tools'
+import { DateMode, ExtractTime, FormatShortDate, today } from 'src/tools/date-tools'
 import { date } from 'quasar'
 
 import { computed, ref } from 'vue'
@@ -9,17 +9,11 @@ import { Lecture } from 'src/models/lecture'
 import { useUserStore } from 'stores/user-store'
 import DateSelector from 'components/DateSelector.vue'
 import { useRideStore } from 'stores/ride-store'
-import addToDate = date.addToDate
 
 const router = useRouter()
 const us = useUserStore()
 const rs = useRideStore()
 
-const today = new Date()
-today.setHours(8)
-today.setMinutes(0)
-today.setSeconds(0)
-today.setMilliseconds(0)
 const tomorrow = date.addToDate(today, { day: 1 })
 
 const selectorMinuteStep = 5
@@ -75,13 +69,13 @@ const firstLectureTomorrow = computed<Lecture | null>(
 const endLectureTomorrow = computed<Date | null>(
   () => {
     const lecture = us.lectures.filter(lecture => date.getDateDiff(lecture.date, tomorrow) === 0).sort((a, b) => b.date > a.date ? 1 : -1)[0]
-    return lecture ? addToDate(lecture.date, { minutes: lecture.duration }) : null
+    return lecture ? date.addToDate(lecture.date, { minutes: lecture.duration }) : null
   })
 
 const endLectureToday = computed<Date | null>(
   () => {
     const lecture = us.lectures.filter(lecture => date.getDateDiff(lecture.date, today) === 0).sort((a, b) => b.date > a.date ? 1 : -1)[0]
-    return lecture ? addToDate(lecture.date, { minutes: lecture.duration }) : null
+    return lecture ? date.addToDate(lecture.date, { minutes: lecture.duration }) : null
   })
 
 const lectureNextWeek = computed<Lecture | null>(

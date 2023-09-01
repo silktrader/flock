@@ -194,6 +194,10 @@ export const useUserStore = defineStore('user', () => {
     rideNotifications.value.push(params)
   }
 
+  function getNextLecture (): Lecture | null {
+    return lectures.filter(l => l.date >= today).sort((a, b) => a.date > b.date ? 1 : -1)[0] ?? null
+  }
+
   return {
     lectures: readonly(lectures),
     rideNotifications: readonly(rideNotifications),
@@ -202,6 +206,7 @@ export const useUserStore = defineStore('user', () => {
     generateUser,
     generateDriver,
     getCourseById,
-    notifyRide
+    notifyRide,
+    getNextLecture
   }
 })

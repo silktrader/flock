@@ -6,7 +6,7 @@ import { useLocationStore } from 'stores/location-store'
 import { Ride } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
 import { useUserStore } from 'stores/user-store'
-import { DateMode } from 'src/tools/date-tools'
+import { DateMode, today } from 'src/tools/date-tools'
 import { Car, cars } from 'src/models/car'
 import { SearchParameters } from 'src/models/search-parameters'
 import { faker } from '@faker-js/faker/locale/it'
@@ -88,7 +88,7 @@ export const useRideStore = defineStore('ride',
     // setup default parameters for easy testing while avoiding undefined state
     const defaultParameters: Readonly<SearchParameters> = {
       Origin: ls.getDefaultHomeLocation(),
-      Date: new Date(),
+      Date: us.getNextLecture()?.date ?? today,
       DateMode: DateMode.Arrive,
       Destination: ls.getDefaultSapienzaLocation(),
       reachTime: 20,
