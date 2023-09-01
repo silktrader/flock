@@ -11,7 +11,7 @@
           </q-avatar>
           <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
         </div>
-        <span class="driver-details">{{ r.Driver.DisplayName }}</span>
+        <span class="driver-details">{{ r.Driver.displayName }}</span>
       </section>
 
       <section class="ride-details">
@@ -35,7 +35,7 @@
               <q-icon name="airline_seat_recline_normal" size="sm"></q-icon>
               <div>
                 <span>{{ r.FreeSeats }}</span>
-                <sub class="seats-total">/{{ r.Car.Seats }}</sub>
+                <sub class="seats-total">/{{ r.Car.seats }}</sub>
               </div>
             </div>
 

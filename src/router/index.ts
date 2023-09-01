@@ -34,7 +34,6 @@ export default route(function (/* { store, ssrContext } */) {
     const toDepth = to.path.split('/').length
     const fromDepth = from.path.split('/').length
     to.meta.transition = toDepth < fromDepth ? 'slide-left' : 'slide-right'
-    console.log(to.meta.transition)
   })
 
   return Router

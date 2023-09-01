@@ -9,6 +9,10 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/HomePage.vue')
     },
     {
+      path: '/rides/search-full',
+      component: () => import('pages/RideSearchPage.vue')
+    },
+    {
       path: '/rides/search',
       component: () => import('pages/RideSearchResultsPage.vue')
     },
@@ -35,16 +39,24 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/PendingRequests.vue')
     },
     {
-      path: '/rides/details', // tk change
+      path: '/rides/details',
       component: () => import('pages/RideDetailsPage.vue')
+    },
+    {
+      path: '/rides/details-alt',
+      component: () => import('pages/RideDetailsAlt.vue')
     },
     {
       path: '/rides/search/request-sent',
       component: () => import('pages/RequestSentPage.vue')
     },
     {
+      path: '/settings/debug',
+      component: () => import('pages/DebugOptions.vue')
+    },
+    {
       path: '/profile',
-      component: () => import('pages/AnotherProfile.vue')
+      component: () => import('pages/ProfilePage.vue')
     },
     {
       path: '/create-ride',

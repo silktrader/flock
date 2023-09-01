@@ -36,7 +36,7 @@
   font-size: large;
   justify-content: center;
   text-align: center;
-  flex-grow: 1;
+  flex-grow: 2;
 }
 
 .modal-header-spacer {
@@ -53,7 +53,7 @@
   font-size: small;
 }
 
-.button-toggle {
+.button-toggle, .button-toggle-large {
   border: 1px solid $outline;
   border-radius: 24px;
   background-color: $background;
@@ -79,6 +79,12 @@
 
   .q-btn:last-of-type {
     border-right: none;
+  }
+}
+
+.button-toggle-large {
+  span {
+    font-size: medium;
   }
 }
 
@@ -117,4 +123,13 @@
   padding: 12px;
   margin: 16px 24px 0;
   min-height: 30px;
+}
+
+.chip {
+  width: max-content;
+  border: 1px solid $outline;
+  color: $on-background;
+  background-color: $background;
+  padding: 8px 16px;
+  border-radius: 8px;
 }

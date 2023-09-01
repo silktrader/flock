@@ -1,6 +1,6 @@
 <template>
 
-  <q-page key="ride-details">
+  <q-page>
 
     <header class="modal-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
@@ -55,7 +55,7 @@
         <q-timeline-entry :avatar="ride.Driver.avatarUrl" color="yellow-7">
           <template v-slot:title>
             <div class="timeline-header">
-              <span>Meet {{ ride.Driver.DisplayName }}</span>
+              <span>Meet {{ ride.Driver.displayName }}</span>
               <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
                   ExtractTime(ride.Pickup.Date)
                 }}</span>
@@ -80,7 +80,7 @@
         <q-timeline-entry class="carpool-entry" color="tertiary" icon="directions_car">
           <template v-slot:title>
             <div class="timeline-header">
-              <span>{{ ride.Driver.DisplayName }} drops you</span>
+              <span>{{ ride.Driver.displayName }} drops you</span>
               <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
                   ExtractTime(ride.Drop.Date)
                 }}</span>
@@ -136,7 +136,7 @@
 
           <q-item-section>
             <div class="driver-details">
-              <span>{{ ride.Driver.DisplayName }}</span>
+              <span>{{ ride.Driver.displayName }}</span>
               <span class="degree driver-degree">{{ ride.Driver.degree }}</span>
             </div>
           </q-item-section>
@@ -154,7 +154,7 @@
 
         <q-item-label header>Passengers</q-item-label>
 
-        <q-item v-for="passenger in ride.Passengers" :key="passenger.id">
+        <q-item v-for="passenger in ride.passengers" :key="passenger.id">
 
           <q-item-section>
             <q-avatar size="64px">
@@ -164,7 +164,7 @@
 
           <q-item-section>
             <div class="passenger-details">
-              <span>{{ passenger.DisplayName }}</span>
+              <span>{{ passenger.displayName }}</span>
               <span class="degree">{{ passenger.degree }}</span>
             </div>
           </q-item-section>
@@ -184,9 +184,9 @@
           <q-item-section>
             <div class="free-seats">
               <q-avatar
-                v-for="index in ride.FreeSeats"
-                :key="index"
-                class="free-seat"
+                  v-for="index in ride.FreeSeats"
+                  :key="index"
+                  class="free-seat"
               >
               </q-avatar>
             </div>
@@ -216,7 +216,7 @@
 
           </q-item-section>
 
-          <q-item-section><span class="car-model">{{ ride.Car.Model }}</span></q-item-section>
+          <q-item-section><span class="car-model">{{ ride.Car.model }}</span></q-item-section>
 
           <q-item-section side>
             <q-btn color="secondary" flat no-caps rounded>
@@ -240,7 +240,7 @@
           <aside class="expense-none-notice">
             <q-icon name="las la-mug-hot" size="md"/>
             <span>
-              You can tip {{ ride.Driver.DisplayName }} when the ride's over. It's up to you. <br/>
+              You can tip {{ ride.Driver.displayName }} when the ride's over. It's up to you. <br/>
               Donuts and coffee are welcome too!
               </span>
           </aside>
@@ -602,6 +602,7 @@ small {
   right: -12px;
   height: 48px;
   width: 48px;
+  padding-top: 4px;
   background-image: url(/src/assets/star.png);
   background-size: 48px 48px;
   background-repeat: no-repeat;

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 
-import { useRouter } from 'vue-router'
 import { useRideStore } from 'stores/ride-store'
 import { Ride } from 'src/models/ride'
 import { computed } from 'vue'
 import { ExtractDate, ExtractTime } from '../tools/date-tools'
+import { useNavigationStore } from 'stores/navigation-store'
 
-const router = useRouter()
 const rs = useRideStore()
+const ns = useNavigationStore()
 
 const requests = computed<Array<Ride>>(
   () => rs.bookedRides
@@ -17,11 +17,11 @@ const requests = computed<Array<Ride>>(
 
 function viewRide (ride: Ride): void {
   rs.selectRide(ride)
-  router.push('/ride-details')
+  ns.goDetailsPage()
 }
 
 function closeModal (): void {
-  router.go(-1)
+  ns.goBack()
 }
 
 </script>

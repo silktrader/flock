@@ -42,7 +42,7 @@ function quitIntroduction (): void {
 
 function searchRides (): void {
   rs.updateParameters({})
-  router.push('/rides/search')
+  ns.goSearchRides()
 }
 
 function createRide (): void {
@@ -58,17 +58,17 @@ function createRide (): void {
     <template v-if="ns.firstUse">
 
       <q-carousel
-        v-model="slide"
-        animated
-        class="introduction-carousel"
-        control-color="primary"
-        control-type="flat"
-        height="100vh"
-        navigation
-        padding
-        swipeable
-        transition-next="slide-left"
-        transition-prev="slide-right"
+          v-model="slide"
+          animated
+          class="introduction-carousel"
+          control-color="primary"
+          control-type="flat"
+          height="100vh"
+          navigation
+          padding
+          swipeable
+          transition-next="slide-left"
+          transition-prev="slide-right"
       >
         <q-carousel-slide class="column no-wrap flex-center" name="introduction">
           <q-icon color="primary" name="las la-car-side" size="100px"/>
@@ -130,7 +130,7 @@ function createRide (): void {
           <q-btn flat icon="chat" round></q-btn>
           <q-btn flat icon="notifications" round></q-btn>
 
-          <q-btn flat round>
+          <q-btn flat round @click="ns.goDebugOptions()">
             <q-avatar size="xl">
               <img :src="us.user.avatarUrl" alt="User Avatar"/>
             </q-avatar>

@@ -6,7 +6,9 @@ export interface UserConfig {
   age: number,
   degree: string,
   badges: ReadonlyArray<string>
+  languages: ReadonlyArray<string>
   followedCourses?: ReadonlyArray<string>
+  onTime: number
 }
 
 export class User {
@@ -18,6 +20,8 @@ export class User {
   readonly degree: string
   readonly badges: ReadonlyArray<string>
   readonly followedCourses: ReadonlyArray<string>
+  readonly languages: ReadonlyArray<string>
+  readonly onTime: number
 
   constructor (config: UserConfig) {
     this.id = config.id
@@ -28,9 +32,15 @@ export class User {
     this.degree = config.degree
     this.badges = config.badges
     this.followedCourses = config.followedCourses ?? []
+    this.languages = config.languages
+    this.onTime = config.onTime
   }
 
-  get DisplayName (): string {
+  get onTimeRating (): number {
+    return Math.round(this.onTime / 0.33)
+  }
+
+  get displayName (): string {
     return `${this.firstName} ${this.lastName[0]}.`
   }
 }

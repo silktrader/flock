@@ -13,20 +13,20 @@
         </div>
         <div class="trip-box-fields">
           <q-select
-            v-model="origin"
-            :options="originOptions"
-            behavior="menu"
-            dense
-            fill-input
-            hide-dropdown-icon
-            hide-selected
-            input-debounce="0" label-color="secondary"
-            option-label="Label"
-            option-value="Address"
-            outlined
-            rounded
-            use-input
-            @filter="filterOrigins"
+              v-model="origin"
+              :options="originOptions"
+              behavior="menu"
+              dense
+              fill-input
+              hide-dropdown-icon
+              hide-selected
+              input-debounce="0" label-color="secondary"
+              option-label="Label"
+              option-value="Address"
+              outlined
+              rounded
+              use-input
+              @filter="filterOrigins"
           >
             <template v-if="origin === null" v-slot:selected>
               <div>Enter an address</div>
@@ -41,13 +41,13 @@
           </q-select>
 
           <q-select
-            v-model="destination"
-            :options="ls.sapienzaPlaces"
-            behavior="menu"
-            dense
-            option-label="Label"
-            option-value="Address" outlined
-            rounded/>
+              v-model="destination"
+              :options="ls.sapienzaPlaces"
+              behavior="menu"
+              dense
+              option-label="Label"
+              option-value="Address" outlined
+              rounded/>
         </div>
       </div>
 
@@ -105,24 +105,24 @@
             }} minutes or more</span>
           <span v-else class="time-result">{{ maxPickupTime }} minutes</span>
           <q-slider
-            v-model="maxPickupTime"
-            :label-value="maxPickupTime + ' min.'"
-            :max="30"
-            :min="5"
-            label
-            switch-label-side
+              v-model="maxPickupTime"
+              :label-value="maxPickupTime + ' min.'"
+              :max="30"
+              :min="5"
+              label
+              switch-label-side
           />
         </div>
         <div class="trip-options-toggles">
           <q-toggle
-            v-model="bus"
-            :disable="maxPickupTime === 0"
-            label="I can ride a bus"
+              v-model="bus"
+              :disable="maxPickupTime === 0"
+              label="I can ride a bus"
           />
           <q-toggle
-            v-model="subway"
-            :disable="maxPickupTime === 0"
-            label="I can take the subway"
+              v-model="subway"
+              :disable="maxPickupTime === 0"
+              label="I can take the subway"
           />
         </div>
       </div>
@@ -145,23 +145,14 @@
 
 import { computed, Ref, ref } from 'vue'
 import { date, useQuasar } from 'quasar'
-import { LeftButton, useNavigationStore } from 'stores/navigation-store'
-import { useRouter } from 'vue-router'
 import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
 import { Place } from 'src/models/place'
+import { useNavigationStore } from 'stores/navigation-store'
 
-const ns = useNavigationStore()
-const rs = useRideStore()
 const ls = useLocationStore()
-const router = useRouter()
+const ns = useNavigationStore()
 const q = useQuasar()
-
-// tk remove these
-ns.setTitle('Ride Search')
-ns.setSubtitle('')
-ns.setButton(LeftButton.Menu)
-rs.reset()
 
 // location
 const originOptions: Ref<string[]> = ref([])
@@ -224,7 +215,7 @@ function search (): void {
       busAllowed: bus.value,
       subwayAllowed: subway.value
     })
-    router.push('/search-results')
+    ns.goOldSearchResults()
   }
 }
 
