@@ -10,12 +10,11 @@
         <!--        <span class="modal-header-subtitle">Results</span>-->
       </section>
       <section>
-        <q-btn aria-label="Close" flat icon="las la-bug" size="sm" @click="showOptions = true"/>
         <q-btn aria-label="Close" flat icon="close" size="lg" @click="abort()"/>
       </section>
     </header>
 
-    <search-controls-v1 v-if="searchControlsVersion === 'a'"/>
+    <search-controls-v1 v-if="us.options.debug.searchControls === SearchControls.FullPage"/>
     <search-controls-v2 v-else/>
 
     <q-separator/>
@@ -27,9 +26,9 @@
 
     <div v-else-if="rides.length === 0" class="no-results-container">
       <transition
-        appear
-        enter-active-class="animated tada"
-        leave-active-class="animated fadeOut">
+          appear
+          enter-active-class="animated tada"
+          leave-active-class="animated fadeOut">
         <div key="no-results-notice" class="no-results-notice">
           <div class="no-results-notice-image">
             <q-img alt="No Results Found" fit="contain" height="60px" src="~/assets/failure-car.svg"/>
@@ -38,22 +37,22 @@
         </div>
       </transition>
       <transition
-        v-if="!ridesNotified"
-        appear
-        enter-active-class="animated zoomIn"
-        leave-active-class="animated zoomOut"
-        mode="out-in">
+          v-if="!ridesNotified"
+          appear
+          enter-active-class="animated zoomIn"
+          leave-active-class="animated zoomOut"
+          mode="out-in">
         <div key="no-results-prompt" class="no-results-prompt">
           <span>Should we notify you when somebody arranges such a ride?</span>
           <q-btn class="tonal-button" label="Notify Me" @click="notifyRide()"/>
         </div>
       </transition>
       <transition
-        v-else
-        appear
-        enter-active-class="animated zoomIn"
-        leave-active-class="animated zoomOut"
-        mode="out-in">
+          v-else
+          appear
+          enter-active-class="animated zoomIn"
+          leave-active-class="animated zoomOut"
+          mode="out-in">
         <div key="no-results-notified" class="no-results-prompt">
           <q-icon name="notification_add" size="md"/>
           <span>We'll tell you once someone schedules this ride.</span>
@@ -61,62 +60,19 @@
       </transition>
     </div>
 
-    <div v-else-if="resultCardVersion === 'a'" class="ride-cards">
+    <div v-else-if="us.options.debug.resultCards === ResultCards.Intricate" class="ride-cards">
       <search-result-v1 v-for='ride in rides' :key='ride.Id' :r="ride"/>
     </div>
 
-    <div v-else-if="resultCardVersion === 'b'" class="ride-cards">
+    <div v-else class="ride-cards">
       <transition-group
-        appear
-        enter-active-class="animated slideInUp"
-        leave-active-class="animated slideOutDown"
-        mode="out-in">
+          appear
+          enter-active-class="animated slideInUp"
+          leave-active-class="animated slideOutDown"
+          mode="out-in">
         <search-result-v2 v-for='ride in rides' :key='ride.Id' :r="ride"/>
       </transition-group>
     </div>
-
-    <!--    Debug prompt offering components versions choice-->
-    <q-dialog v-model="showOptions">
-      <q-card class="dialog">
-        <q-card-section>
-          <div class="text-h6">Component Versions</div>
-        </q-card-section>
-
-        <q-list>
-
-          <q-item-label header>Search Controls</q-item-label>
-          <q-item dense>
-            <q-item-section>
-              <q-btn-toggle
-                v-model="searchControlsVersion"
-                :options="[{label: 'Initial', value: 'a'}, {label: 'Expanded', value: 'b'}]"
-                outline
-                rounded
-                toggle-color="primary"
-              />
-            </q-item-section>
-          </q-item>
-
-          <q-item-label header>Results Cards</q-item-label>
-          <q-item dense>
-            <q-item-section>
-              <q-btn-toggle
-                v-model="resultCardVersion"
-                :options="[{label: 'Initial', value: 'a'}, {label: 'Streamlined', value: 'b'}]"
-                outline
-                rounded
-                toggle-color="primary"
-              />
-            </q-item-section>
-          </q-item>
-
-        </q-list>
-
-        <q-card-actions align="right">
-          <q-btn v-close-popup flat label="Close" no-caps/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
 
   </q-page>
 
@@ -125,7 +81,7 @@
 <script lang="ts" setup>
 
 import { useRideStore } from 'stores/ride-store'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import SearchResultV1 from 'components/SearchResultV1.vue'
 import SearchResultV2 from 'components/SearchResultV2.vue'
 import { useRouter } from 'vue-router'
@@ -134,14 +90,11 @@ import SearchControlsV1 from 'components/SearchControlsV1.vue'
 import SearchControlsV2 from 'components/SearchControlsV2.vue'
 import { useUserStore } from 'stores/user-store'
 import { date } from 'quasar'
+import { ResultCards, SearchControls } from 'src/models/options'
 
 const rs = useRideStore()
 const us = useUserStore()
 const router = useRouter()
-
-const showOptions = ref<boolean>(false)
-const resultCardVersion = ref<string>('b')
-const searchControlsVersion = ref<string>('b')
 
 // parade rides starting from the ones users are most interested in; the shortest
 const rides = computed<ReadonlyArray<Ride>>(() => [...rs.rides].sort(sortByDurationThenRecurring))
@@ -150,9 +103,9 @@ const ridesNotified = computed<boolean>(function () {
   const params = rs.searchParameters
   return us.rideNotifications.some(n =>
     date.getDateDiff(n.Date, params.Date, 'minutes') < 10 &&
-    n.DateMode === params.DateMode &&
-    n.Origin === params.Origin &&
-    n.Destination === params.Destination
+      n.DateMode === params.DateMode &&
+      n.Origin === params.Origin &&
+      n.Destination === params.Destination
   )
 })
 

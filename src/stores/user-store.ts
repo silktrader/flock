@@ -11,6 +11,7 @@ import { fakerIT as faker } from '@faker-js/faker'
 import { today } from 'src/tools/date-tools'
 import { Course } from 'src/models/course'
 import { SearchParameters } from 'src/models/search-parameters'
+import { ResultCards, RideDetails, SearchControls } from 'src/models/options'
 
 export const useUserStore = defineStore('user', () => {
   const femaleAvatars: ReadonlyArray<string> =
@@ -91,6 +92,15 @@ export const useUserStore = defineStore('user', () => {
 
   // user added notifications about new rides at desired dates
   const rideNotifications = ref<Array<SearchParameters>>([])
+
+  // options to conditionally show interface elements and document progress
+  const options = ref({
+    debug: {
+      resultCards: ResultCards.Streamlined,
+      searchControls: SearchControls.Compact,
+      rideDetails: RideDetails.Views
+    }
+  })
 
   function getRandomAvatar (isFemale: boolean, avoidAvatars: ReadonlySet<string>): string {
     const validAvatars = (isFemale ? femaleAvatars : maleAvatars).filter(id => !avoidAvatars.has(id))
@@ -188,6 +198,7 @@ export const useUserStore = defineStore('user', () => {
     lectures: readonly(lectures),
     rideNotifications: readonly(rideNotifications),
     user,
+    options,
     generateUser,
     generateDriver,
     getCourseById,

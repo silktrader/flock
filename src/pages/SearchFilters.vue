@@ -58,7 +58,7 @@ function closeModal (): void {
 
     <header class="secondary-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="closeModal()"/>
-      <section class="modal-header-title">
+      <section class="secondary-header-title">
         <span>Filters Selection</span>
       </section>
       <span class="q-space"/>

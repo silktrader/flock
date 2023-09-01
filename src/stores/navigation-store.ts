@@ -2,15 +2,16 @@ import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
+import { useUserStore } from 'stores/user-store'
+import { RideDetails, SearchControls } from 'src/models/options'
 
 export const useNavigationStore = defineStore('navigation', () => {
   const debugButton = ref<boolean>(false)
   const firstUse = ref<boolean>(false)
 
-  const detailsPage = ref<number>(2)
-
   const $q = useQuasar()
   const router = useRouter()
+  const us = useUserStore()
 
   function toggleDebugButton (): void {
     debugButton.value = !debugButton.value
@@ -33,7 +34,7 @@ export const useNavigationStore = defineStore('navigation', () => {
   }
 
   function goDetailsPage (): void {
-    if (detailsPage.value === 1) {
+    if (us.options.debug.rideDetails === RideDetails.Scroll) {
       router.push('/rides/details/')
     } else {
       router.push('/rides/details-alt')
@@ -44,6 +45,18 @@ export const useNavigationStore = defineStore('navigation', () => {
     router.push('/rides/search/request-sent')
   }
 
+  function goDebugOptions (): void {
+    router.push('/settings/debug')
+  }
+
+  function goSearchRides (): void {
+    router.push(us.options.debug.searchControls === SearchControls.FullPage ? '/rides/search-full' : '/rides/search')
+  }
+
+  function goOldSearchResults (): void {
+    router.push('/rides/search')
+  }
+
   return {
     firstUse: readonly(firstUse),
     toggleDebugButton,
@@ -52,6 +65,9 @@ export const useNavigationStore = defineStore('navigation', () => {
     goHome,
     goBack,
     goDetailsPage,
-    goRequestSent
+    goRequestSent,
+    goDebugOptions,
+    goSearchRides,
+    goOldSearchResults
   }
 })

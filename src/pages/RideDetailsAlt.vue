@@ -228,7 +228,7 @@ function CancelRequest (): void {
                           :text="[ride.comment]"
                           bg-color="warning"
                           size="8"
-                          text-color="black"
+                          text-color="grey-10"
           />
 
           <div class="car-accessories">
@@ -558,16 +558,6 @@ small {
 
 // Rules
 
-.q-message-container {
-  justify-content: center;
-  font-style: italic;
-}
-
-.q-message-avatar {
-  width: 60px;
-  height: 60px;
-}
-
 .expense-container {
   display: flex;
   flex-direction: column;
@@ -617,6 +607,19 @@ footer {
   margin-left: 24px;
   margin-right: 24px;
   margin-bottom: 16px;
+}
+
+</style>
+
+<style lang="scss">
+.q-message-container {
+  justify-content: center;
+  font-style: italic;
+}
+
+.q-message-avatar {
+  width: 60px;
+  height: 60px;
 }
 
 </style>
