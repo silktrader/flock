@@ -132,3 +132,25 @@ $border-radius: 12px;
   min-height: 40px;
   border-radius: 12px !important;
 }
+
+.general-container{
+  padding: 0.5em 20px
+}
+.instruction {
+  font-size: 1.6em;
+  text-align: left;
+  padding: 30px 0 20px 5px;
+}
+.place-button {
+  display: flex;
+  flex-direction: row;
+  font-size: medium;
+  border-radius: $border-radius;
+  background-color: $primary;
+  color: $on-primary;
+  cursor: pointer;
+  text-transform: none;
+  font-weight: normal;
+  min-height: 60px;
+  font-style: italic;
+}

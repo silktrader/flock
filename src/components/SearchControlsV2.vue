@@ -100,11 +100,11 @@ function editFilters (): void {
 }
 
 function selectDestination (): void {
-  router.push(`/rides/search/${isSapienzaPlace(destination.value) ? 'sap-location-select' : 'location-select'}/destination`)
+  router.push(`/rides/search/${isSapienzaPlace(destination.value) ? 'sap-location-select' : 'location-select'}/destination/ride`)
 }
 
 function selectOrigin (): void {
-  router.push(`/rides/search/${isSapienzaPlace(origin.value) ? 'sap-location-select' : 'location-select'}/origin`)
+  router.push(`/rides/search/${isSapienzaPlace(origin.value) ? 'sap-location-select' : 'location-select'}/origin/ride`)
 }
 
 </script>
