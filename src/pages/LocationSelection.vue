@@ -6,8 +6,9 @@ import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
 import { FavouritePlace, Place } from 'src/models/place'
 import { QInput } from 'quasar'
+import { route } from 'quasar/wrappers'
 
-const props = defineProps<{ target: 'origin' | 'destination' }>()
+const props = defineProps<{ target: 'origin' | 'destination', task: 'ride' | 'drive'}>()
 const router = useRouter()
 const rs = useRideStore()
 const ls = useLocationStore()
@@ -68,6 +69,11 @@ function selectAddress (address: string): void {
 }
 
 function selectPlace (place: Place): void {
+  console.log(props.task)
+  if (props.task === 'drive') {
+    router.push('/create-ride/dest')
+    return
+  }
   // determine if the address is missing a number and assign a default if necessary
   if (!captureNumber(place.Address)) {
     place.Address = `${place.Address}, 1`

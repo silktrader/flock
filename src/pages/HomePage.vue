@@ -45,6 +45,10 @@ function searchRides (): void {
   ns.goSearchRides()
 }
 
+function createRide (): void {
+  router.push('/create-ride')
+}
+
 </script>
 
 <template>
@@ -175,11 +179,25 @@ function searchRides (): void {
           </main>
 
           <q-page-sticky :offset="[18, 18]" position="bottom-right">
-            <q-btn class="fab-button" fab icon="search" @click="searchRides()"/>
+            <q-btn class="pulsingButton fab-button" fab icon="search" @click="searchRides()"/>
           </q-page-sticky>
         </q-tab-panel>
 
         <q-tab-panel name="drives">
+
+          <section class="upcoming-cards-container">
+              <span class="section-title">Upcoming Rides</span>
+              <div class="upcoming-cards">
+                <div class="card-spacer"/>
+                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
+                <div class="card-spacer"/>
+              </div>
+            </section>
+
+          <q-page-sticky :offset="[18, 18]" position="bottom-right">
+            <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
+          </q-page-sticky>
+
         </q-tab-panel>
 
       </q-tab-panels>
@@ -190,6 +208,30 @@ function searchRides (): void {
 
 <style lang="scss" scoped>
 @import "src/css/quasar.variables.scss";
+
+.pulsingButton {
+  box-shadow: 0 0 0 0 $primary-container;
+  animation: pulsing 3s infinite cubic-bezier(0.66, 0, 0, 0.8);
+  font-size: 22px;
+  font-weight: normal;
+  font-family: sans-serif;
+  text-decoration: none !important;
+  color: #ffffff;
+  transition: all 300ms ease-in-out;
+}
+/* Comment-out to have the button continue to pulse on mouseover */
+/* Animation */
+@keyframes pulsing {
+  0% {
+    box-shadow: 0 0 0 0 $primary-container;
+  }
+  50% {
+    box-shadow: 0 0 0 18px rgba(0,0,0,0);
+  }
+  100% {
+    box-shadow: 0 0 0 18px rgba(0,0,0,0);
+  }
+}
 
 .introduction-carousel {
   color: $on-surface-variant;
