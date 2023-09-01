@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 
-import { Transport, useRideStore } from 'stores/ride-store'
+import { useRideStore } from 'stores/ride-store'
 import { computed, ref } from 'vue'
-import { ExtractDate, ExtractDay, ExtractTime, FormatShortDate } from 'src/tools/date-tools'
+import { ExtractDate, ExtractDay, FormatShortDate } from 'src/tools/date-tools'
 import { Ride } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
+import RouteTimeline from 'components/RouteTimeline.vue'
 
 const rs = useRideStore()
 const ns = useNavigationStore()
@@ -46,7 +47,7 @@ function CancelRequest (): void {
 
 <template>
 
-  <q-page class="ride-details-page">
+  <q-page class="rd">
 
     <header class="modal-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="ns.goBack()"/>
@@ -59,116 +60,17 @@ function CancelRequest (): void {
       </section>
     </header>
 
-    <q-img class="route-image" fit="cover" spinner-color="secondary" src="~/assets/route-map.svg"/>
+    <q-img class="rd__route-image" spinner-color="secondary" src="~/assets/route-map.svg"/>
 
     <div class="segmented-button-container">
       <q-btn-toggle v-model="detailsView" :options="detailsViewOptions" class="button-toggle-large"/>
     </div>
 
-    <main class="ride-details-section-container">
+    <main class="rd__section-container">
 
-      <section v-if="detailsView === 'route'" class="ride-details-section">
+      <section v-if="detailsView === 'route'" class="ride-details__section">
 
-        <q-timeline class="timeline" color="secondary" layout="dense">
-
-          <q-timeline-entry color="tertiary" icon="location_on">
-
-            <!-- Departure -->
-            <template v-slot:title>
-              <div class="timeline-header">
-                <span>{{ ride.Origin.Address }}</span>
-                <span class="timeline-header-time">
-                <q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.Departure) }}
-              </span>
-              </div>
-            </template>
-
-            <div class="timeline-instruction shuttle">
-              <template v-if="ride.Pickup.Transport === Transport.None">
-                <q-icon name="directions_walk" size="sm"/>
-                <span>Walk for {{ ride.PickupDuration }} min.</span>
-              </template>
-              <template v-if="ride.Pickup.Transport === Transport.Subway">
-                <q-icon name="subway" size="sm"/>
-                <span>Ride {{ ride.Pickup.TransportId }} for {{ ride.PickupDuration }} min.</span>
-              </template>
-              <template v-if="ride.Pickup.Transport === Transport.Bus">
-                <q-icon name="directions_bus" size="sm"/>
-                <span>Ride bus <small>#</small>{{ ride.Pickup.TransportId }} for {{
-                    ride.PickupDuration
-                  }} min.</span>
-              </template>
-            </div>
-
-          </q-timeline-entry>
-
-          <!-- Pickup -->
-          <q-timeline-entry :avatar="ride.Driver.avatarUrl" color="yellow-7">
-            <template v-slot:title>
-              <div class="timeline-header">
-                <span>{{ ride.Pickup.Address }}</span>
-                <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
-                    ExtractTime(ride.Pickup.Date)
-                  }}</span>
-              </div>
-            </template>
-
-            <div class="timeline-pickup">
-              <div class="timeline-instruction carpool">
-                <q-icon name="directions_car" size="sm"/>
-                <span>Carpool for {{ ride.CarpoolDuration }} min.</span>
-              </div>
-              <q-btn v-if="!ride.accepted && !ride.requested" class="outline-button" size="md">Change</q-btn>
-            </div>
-
-          </q-timeline-entry>
-
-          <!-- Drop off-->
-          <q-timeline-entry class="carpool-entry" color="tertiary" icon="directions_car">
-            <template v-slot:title>
-              <div class="timeline-header">
-                <span>{{ ride.Drop.Address }}</span>
-                <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
-                    ExtractTime(ride.Drop.Date)
-                  }}</span>
-              </div>
-            </template>
-
-            <div class="timeline-pickup">
-
-              <div class="timeline-instruction shuttle">
-                <q-icon name="directions_walk" size="sm"/>
-                <span>Walk for {{ ride.DropDuration }} min.</span>
-              </div>
-            </div>
-
-          </q-timeline-entry>
-
-          <!-- Arrival -->
-          <q-timeline-entry color="tertiary" icon="flag">
-            <template v-slot:title>
-              <div class="timeline-header">
-                <span>{{ ride.Destination.Address }}</span>
-                <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
-                    ExtractTime(ride.Arrival)
-                  }}</span>
-              </div>
-            </template>
-
-          </q-timeline-entry>
-
-        </q-timeline>
-
-        <!--        <div v-if="!ride.accepted && !ride.requested" class="pickup-prompt">-->
-        <!--          <q-btn class="outline-button">Change Pickup</q-btn>-->
-        <!--          <q-icon color="secondary" name="info" size="sm">-->
-        <!--            <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">Propose a different place and time for-->
-        <!--              meeting {{-->
-        <!--                ride.Driver.firstName-->
-        <!--              }}.-->
-        <!--            </q-tooltip>-->
-        <!--          </q-icon>-->
-        <!--        </div>-->
+        <route-timeline :ride="ride"/>
 
         <div v-if="ride.Recurring && !ride.requested" class="notice-box route-box">
           <q-icon name="las la-calendar-week" size="lg"/>
@@ -402,32 +304,32 @@ function CancelRequest (): void {
 
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "src/css/quasar.variables.scss";
 
-// Header
+// Main
 
-.ride-details-page {
+.rd {
   height: 100vh;
   display: flex;
   flex-direction: column;
-}
 
-.ride-details-section-container {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 5;
-}
+  &__route-image {
+    height: 180px;
+    object-fit: cover;
+  }
 
-.ride-details-section {
-  display: flex;
-  flex-direction: column;
-  margin-top: 4px;
-}
+  &__section-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 5;
+  }
 
-.route-image {
-  height: 180px;
-  object-fit: cover;
+  &__section {
+    display: flex;
+    flex-direction: column;
+    margin-top: 4px;
+  }
 }
 
 .segmented-button-container {
@@ -439,91 +341,6 @@ function CancelRequest (): void {
 }
 
 // Route
-
-.timeline {
-  color: $on-background;
-  margin: 0;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
-.timeline-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  font-size: medium;
-  opacity: 1 !important;
-  text-transform: none;
-}
-
-.timeline-header-time {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: normal;
-  font-size: small;
-}
-
-.timeline-instruction {
-  display: flex;
-  flex-direction: row;
-  width: fit-content;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 8px;
-  margin-top: 8px;
-  align-items: center;
-  font-style: italic;
-}
-
-.carpool {
-  background-color: #fdd835;
-  color: #1f4e4c;
-}
-
-.q-timeline__title {
-  margin-bottom: 8px !important;
-}
-
-.q-timeline__dot::after {
-  opacity: 0.7 !important;
-}
-
-.carpool-entry {
-  .q-timeline__dot {
-
-    color: #fdd835 !important;
-
-    .q-icon {
-      color: $tertiary-container !important;
-    }
-  }
-
-  .q-timeline__dot::after {
-    color: $tertiary-container;
-  }
-}
-
-.shuttle {
-  background-color: #1f4e4c;
-  color: #bbece8;
-}
-
-.timeline-pickup {
-  display: flex;
-  flex-direction: row;
-  align-items: end;
-  justify-content: space-between;
-}
-
-.timeline-carpool {
-  color: $carpool;
-}
-
-.q-timeline__subtitle {
-  margin-bottom: 0 !important;
-}
 
 .pickup-prompt {
   display: flex;
