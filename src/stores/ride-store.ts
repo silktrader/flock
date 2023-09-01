@@ -30,46 +30,6 @@ export enum PickupThreshold {
   Long = 30
 }
 
-export const Degrees = [
-  {
-    Label: 'ACSAI',
-    Addresses: ['Città Universitaria', 'Facoltà d\'Ingegneria']
-  },
-  {
-    Label: 'Computer Science',
-    Addresses: ['Città Universitaria', 'Facoltà d\'Ingegneria']
-  },
-  {
-    Label: 'Sociology',
-    Addresses: ['Città Universitaria']
-  },
-  {
-    Label: 'Archaeology',
-    Addresses: ['Città Universitaria']
-  },
-  {
-    Label: 'Architecture',
-    Addresses: ['Facoltà d\'Architettura']
-  },
-  {
-    Label: 'Economics',
-    Addresses: ['Facoltà d\'Economia', 'Città Universitaria']
-  },
-  {
-    Label: 'Business Management',
-    Addresses: ['Facoltà d\'Economia', 'Città Universitaria']
-  },
-  {
-    Label: 'Chemistry',
-    Addresses: ['Città Universitaria']
-  },
-  {
-    Label: 'Nursing',
-    Addresses: ['Città Universitaria']
-  }
-
-]
-
 export interface Drop {
   Address: string;
   Date: Date;
@@ -90,7 +50,7 @@ export const useRideStore = defineStore('ride',
       Origin: ls.getDefaultHomeLocation(),
       Date: us.getNextLecture()?.date ?? today,
       DateMode: DateMode.Arrive,
-      Destination: ls.getDefaultSapienzaLocation(),
+      Destination: us.getNextLecture()?.location ?? ls.getDefaultSapienzaLocation(),
       reachTime: 20,
       busAllowed: true,
       subwayAllowed: true,

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { RandomFloat, RandomId, RandomInt, RandomPercent } from 'src/tools/random-tools'
-import { Badges, Degrees } from 'stores/ride-store'
+import { Badges } from 'stores/ride-store'
 import { User, UserConfig } from 'src/models/user'
 import { Driver } from 'src/models/driver'
 import { Lecture } from 'src/models/lecture'
@@ -12,6 +12,7 @@ import { today } from 'src/tools/date-tools'
 import { Course } from 'src/models/course'
 import { SearchParameters } from 'src/models/search-parameters'
 import { ResultCards, RideDetails, SearchControls } from 'src/models/options'
+import { Degrees } from 'src/models/degree'
 
 export const useUserStore = defineStore('user', () => {
   const femaleAvatars: ReadonlyArray<string> =
