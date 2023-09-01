@@ -159,7 +159,7 @@ export const useRideStore = defineStore('ride',
       searching.value = true
       setTimeout(() => {
         searching.value = false
-      }, RandomInt(1000, 2000))
+      }, RandomInt(500, 1500))
     }
 
     function updateParameters (newParameters: Partial<SearchParameters>): void {
@@ -214,7 +214,7 @@ export const useRideStore = defineStore('ride',
           Car: generateCar(),
           Drop: generateDrop(arrival, RandomInt(3, 10)),
           Pickup: generatePickup(departure, RandomInt(3, 15)),
-          Passengers: passengers,
+          passengers,
           Recurring: false,
           before: lecture,
           accepted: true
@@ -233,7 +233,7 @@ export const useRideStore = defineStore('ride',
             Car: generateCar(),
             Drop: generateShortDrop(arrival, defaultParameters.Origin.Address),
             Pickup: generateShortPickup(departure, lecture.location.Address),
-            Passengers: passengers,
+            passengers,
             Recurring: false,
             after: lecture,
             accepted: true
@@ -312,7 +312,7 @@ export const useRideStore = defineStore('ride',
           Car: car,
           Drop: generateDrop(arrival, reachTime - pickupMinutes),
           Pickup: pickup,
-          Passengers: passengers,
+          passengers,
           Recurring: recurring
         }))
       }

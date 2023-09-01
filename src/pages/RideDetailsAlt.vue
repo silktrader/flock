@@ -131,7 +131,7 @@ function CancelRequest (): void {
 
           <q-item-label header>Passengers</q-item-label>
 
-          <q-item v-for="passenger in ride.Passengers" :key="passenger.id">
+          <q-item v-for="passenger in ride.passengers" :key="passenger.id">
 
             <q-item-section class="person-avatar-section">
               <q-avatar class="passenger-avatar">

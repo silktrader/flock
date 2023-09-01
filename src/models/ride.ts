@@ -21,7 +21,7 @@ export interface RideConfig {
   Drop: Drop
   Pickup: Pickup
   Expense: number
-  Passengers: ReadonlyArray<User>
+  passengers: ReadonlyArray<User>
   rules: ReadonlyArray<string>
   Recurring: boolean
   before?: Lecture
@@ -42,7 +42,7 @@ export class Ride {
   readonly Drop: Drop
   readonly Pickup: Pickup
   readonly Expense: number
-  readonly Passengers: ReadonlyArray<User>
+  readonly passengers: ReadonlyArray<User>
   readonly Recurring: boolean
   readonly before?: Lecture
   readonly after?: Lecture
@@ -78,7 +78,7 @@ export class Ride {
     this.Drop = config.Drop
     this.Pickup = config.Pickup
     this.Expense = config.Expense
-    this.Passengers = config.Passengers
+    this.passengers = config.passengers
     this.rules = config.rules
     this.Recurring = config.Recurring
     this.before = config.before
@@ -110,6 +110,6 @@ export class Ride {
   }
 
   get FreeSeats (): number {
-    return this.Car.seats - this.Passengers.length
+    return this.Car.seats - this.passengers.length
   }
 }

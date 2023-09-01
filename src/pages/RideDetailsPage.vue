@@ -154,7 +154,7 @@
 
         <q-item-label header>Passengers</q-item-label>
 
-        <q-item v-for="passenger in ride.Passengers" :key="passenger.id">
+        <q-item v-for="passenger in ride.passengers" :key="passenger.id">
 
           <q-item-section>
             <q-avatar size="64px">
@@ -184,9 +184,9 @@
           <q-item-section>
             <div class="free-seats">
               <q-avatar
-                v-for="index in ride.FreeSeats"
-                :key="index"
-                class="free-seat"
+                  v-for="index in ride.FreeSeats"
+                  :key="index"
+                  class="free-seat"
               >
               </q-avatar>
             </div>
