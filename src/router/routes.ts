@@ -21,12 +21,12 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/SearchFilters.vue')
     },
     {
-      path: '/rides/search/sap-location-select/:target',
+      path: '/rides/search/sap-location-select/:target/:task',
       component: () => import('pages/SapLocationSelection.vue'),
       props: true
     },
     {
-      path: '/rides/search/location-select/:target',
+      path: '/rides/search/location-select/:target/:task',
       component: () => import('pages/LocationSelection.vue'),
       props: true
     },
@@ -61,6 +61,10 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/create-ride',
       component: () => import('pages/CreateRide.vue')
+    },
+    {
+      path: '/create-ride/dest',
+      component: () => import('pages/CreateDestination.vue')
     }
     ]
   },

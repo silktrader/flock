@@ -49,7 +49,7 @@ const ls = useLocationStore()
 const us = useUserStore()
 const rs = useRideStore()
 
-const props = defineProps<{ target: 'origin' | 'destination' }>()
+const props = defineProps<{ target: 'origin' | 'destination', task: 'ride' | 'drive'}>()
 
 const places = computed<Array<{ Location: SapienzaPlace, CourseIds: Set<string> }>>(() => {
   return ls.sapienzaPlaces.map(location => ({
