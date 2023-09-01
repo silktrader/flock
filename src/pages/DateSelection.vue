@@ -31,14 +31,6 @@ function closeModal (): void {
   router.go(-1)
 }
 
-const actionLabelHour = computed<string>(() => {
-  return `${dateMode.value === DateMode.Arrive ? 'Arrive by' : 'Leave at'} ${ExtractTime(dateValue.value)}`
-})
-
-const actionLabelDate = computed<string>(() => {
-  return `${FormatShortDate(dateValue.value)}`
-})
-
 const actionLabel = computed<string>(() => {
   const modeModifiers = dateMode.value === DateMode.Arrive ? ['Arrive', 'by'] : ['Leave', 'at']
   return `${modeModifiers[0]} ${FormatShortDate(dateValue.value)} ${modeModifiers[1]} ${ExtractTime(dateValue.value)}`
@@ -115,10 +107,16 @@ const lectureNextWeek = computed<Lecture | null>(
       </section>
     </header>
 
-    <q-tabs v-model="dateMode" active-color="secondary" align="center" no-caps>
-      <q-tab label="Arrive By" name="arrive"/>
-      <q-tab label="Leave At" name="leave"/>
-    </q-tabs>
+    <!--    <q-tabs v-model="dateMode" active-color="secondary" align="center" no-caps>-->
+    <!--      <q-tab label="Arrive By" name="arrive"/>-->
+    <!--      <q-tab label="Leave At" name="leave"/>-->
+    <!--    </q-tabs>-->
+
+    <div class="ds-segmented-button-container">
+      <q-btn-toggle v-model="dateMode"
+                    :options="[{label: 'Arrive By', value: DateMode.Arrive}, {label: 'Leave At', value: DateMode.Leave}]"
+                    class="button-toggle-large"/>
+    </div>
 
     <main class="ds-contents">
 
@@ -126,7 +124,7 @@ const lectureNextWeek = computed<Lecture | null>(
 
       <date-selector v-model="dateValue" :minute-step="selectorMinuteStep"/>
 
-      <section class="hints">
+      <section class="ds-hints">
         <template v-if="dateMode === DateMode.Arrive">
           <q-btn v-if='nextLectureToday' class="outline-button" @click="updateDate(nextLectureToday?.date)">
             Next lecture today
@@ -140,16 +138,13 @@ const lectureNextWeek = computed<Lecture | null>(
         </template>
 
         <template v-else>
-          <q-btn class="outline-button"
-                 outline rounded @click="updateDate(oneHourFromNow())">
+          <q-btn class="outline-button" @click="updateDate(oneHourFromNow())">
             One hour from now
           </q-btn>
-          <q-btn v-if="endLectureToday" class="outline-button"
-                 outline rounded @click="updateDate(endLectureToday)">
+          <q-btn v-if="endLectureToday" class="outline-button" @click="updateDate(endLectureToday)">
             After last lecture today
           </q-btn>
-          <q-btn v-if="endLectureTomorrow" class="outline-button"
-                 outline rounded @click="updateDate(endLectureTomorrow)">
+          <q-btn v-if="endLectureTomorrow" class="outline-button" @click="updateDate(endLectureTomorrow)">
             After last lecture tomorrow
           </q-btn>
         </template>
@@ -157,27 +152,27 @@ const lectureNextWeek = computed<Lecture | null>(
 
       <section style="flex-grow: 2"/>
 
-      <section class="lectures">
+      <section class="ds-lectures">
         <q-list>
           <q-item-label header>Lectures of the Day</q-item-label>
 
           <q-item v-if="dayLectures.length === 0">
-            <span class="no-lectures">No Lectures</span>
+            <span class="ds-no-lectures">No Lectures</span>
           </q-item>
 
           <q-item v-for="lecture in dayLectures" v-else :key="lecture.courseId" clickable
                   @click="updateDate(getLectureDate(lecture))">
-            <q-item-section class="lecture-name">
+            <q-item-section class="ds-lecture__name">
               <q-item-label lines="2">{{ us.getCourseById(lecture.courseId).name }}</q-item-label>
             </q-item-section>
-            <q-item-section class="lecture-details">
+            <q-item-section class="ds-lecture__details">
               <q-item-label lines="1">
                 <q-icon name="schedule"/>
                 {{
                   ExtractTime(lecture.date)
                 }} - {{ ExtractTime(date.addToDate(lecture.date, { minute: lecture.duration })) }}
               </q-item-label>
-              <q-item-label caption lines="1">
+              <q-item-label caption class="ds-lecture__location" lines="1">
                 <q-icon name="map"/>
                 {{ lecture.location.Label }}
               </q-item-label>
@@ -189,12 +184,7 @@ const lectureNextWeek = computed<Lecture | null>(
     </main>
 
     <footer>
-      <q-btn :label="actionLabel" class="filled-button filled-button--full-width" size="lg" @click="selectDate()">
-        <!--        <div class="action-button-contents">-->
-        <!--          <span>{{ actionLabelHour }}</span>-->
-        <!--          <span>{{ actionLabelDate }}</span>-->
-        <!--        </div>-->
-      </q-btn>
+      <q-btn :label="actionLabel" class="filled-button filled-button--full-width" size="lg" @click="selectDate()"/>
     </footer>
   </q-page>
 
@@ -218,14 +208,21 @@ const lectureNextWeek = computed<Lecture | null>(
   align-items: center;
 }
 
-.hints {
+.ds-segmented-button-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.ds-hints {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.lectures {
+.ds-lectures {
   flex-grow: 3;
   padding-left: 16px;
   padding-right: 16px;
@@ -235,18 +232,28 @@ const lectureNextWeek = computed<Lecture | null>(
   min-width: 300px;
 }
 
-.no-lectures {
+.ds-no-lectures {
   font-style: italic;
   text-align: center;
   width: 100%;
 }
 
-.lecture-name {
+.ds-lecture__name, .ds-lecture__details {
+  color: $on-background;
+  font-size: medium;
+}
+
+.ds-lecture__name {
   flex-grow: 2;
 }
 
-.lecture-details {
+.ds-lecture__details {
   flex-grow: 3;
+}
+
+.ds-lecture__location {
+  color: $on-background;
+  font-size: small;
 }
 
 footer {
@@ -259,19 +266,6 @@ footer {
 
 .filled-button--full-width {
   width: 100%;
-}
-
-.action-button-contents {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-.action-button-contents span:nth-child(2) {
-  opacity: 65%;
 }
 
 </style>
