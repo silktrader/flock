@@ -86,6 +86,8 @@ const dateLabel = computed<string>(() => {
 })
 
 function switchLocations (): void {
+  // mock round trip to database
+  rs.mockSearchDelay()
   rs.updateParameters({
     Destination: rs.searchParameters.Origin,
     Origin: rs.searchParameters.Destination

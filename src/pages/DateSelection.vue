@@ -41,6 +41,7 @@ function updateDate (date: Date): void {
 const oneHourFromNow = () => date.addToDate(new Date(), { minutes: 60 })
 
 function selectDate (): void {
+  rs.mockSearchDelay()
   rs.updateParameters({
     Date: dateValue.value,
     DateMode: dateMode.value

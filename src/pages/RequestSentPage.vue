@@ -53,11 +53,11 @@ import { useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { Ride } from 'src/models/ride'
 import { date } from 'quasar'
-import { useRouter } from 'vue-router'
 import { SearchParameters } from 'src/models/search-parameters'
+import { useNavigationStore } from 'stores/navigation-store'
 
 const rs = useRideStore()
-const router = useRouter()
+const ns = useNavigationStore()
 
 const ride = computed<Ride>(() => {
   if (rs.ride === undefined) {
@@ -67,8 +67,7 @@ const ride = computed<Ride>(() => {
 })
 
 async function abort (): Promise<void> {
-  await router.replace('/')
-  rs.reset()
+  ns.goHome()
 }
 
 function SearchReturnRides (): void {
@@ -80,10 +79,9 @@ function SearchReturnRides (): void {
     Date: date.addToDate(rs.searchParameters.Date, { hours: 3 })
   }
 
-  // tk review these steps
-  rs.reset()
+  rs.mockSearchDelay()
   rs.updateParameters(newParameters)
-  router.push('/search-results')
+  ns.goSearchRides()
 }
 
 </script>

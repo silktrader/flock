@@ -6,9 +6,8 @@ import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
 import { FavouritePlace, Place } from 'src/models/place'
 import { QInput } from 'quasar'
-import { route } from 'quasar/wrappers'
 
-const props = defineProps<{ target: 'origin' | 'destination', task: 'ride' | 'drive'}>()
+const props = defineProps<{ target: 'origin' | 'destination', task: 'ride' | 'drive' }>()
 const router = useRouter()
 const rs = useRideStore()
 const ls = useLocationStore()
@@ -83,8 +82,10 @@ function selectPlace (place: Place): void {
   }
 
   if (props.target === 'destination') {
+    rs.mockSearchDelay()
     rs.updateParameters({ Destination: place })
   } else if (props.target === 'origin') {
+    rs.mockSearchDelay()
     rs.updateParameters({ Origin: place })
   } else {
     throw new Error('invalid parameter while selecting location')

@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 import { useRideStore } from 'stores/ride-store'
 import { useUserStore } from 'stores/user-store'
 import UpcomingLectureCard from 'components/UpcomingLectureCard.vue'
-import { Lecture } from 'src/models/lecture'
 import UpcomingRideCard from 'components/UpcomingRideCard.vue'
 import { Ride } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
@@ -21,12 +20,6 @@ const slide = ref<string>('introduction')
 
 const now = new Date()
 
-// assume lectures are already sorted
-const upcomingLectures = computed<ReadonlyArray<Lecture>>(
-  () => us.lectures
-    .filter(l => l.date >= now)
-    .slice(0, 5))
-
 const upcomingRides = computed<ReadonlyArray<Ride>>(
   () => rs.bookedRides
     .filter(r => r.Departure >= now)
@@ -41,6 +34,7 @@ function quitIntroduction (): void {
 }
 
 function searchRides (): void {
+  rs.mockSearchDelay()
   rs.updateParameters({})
   ns.goSearchRides()
 }
@@ -171,7 +165,7 @@ function createRide (): void {
               <span class="section-title">Upcoming Lectures</span>
               <div class="upcoming-cards">
                 <div class="card-spacer"/>
-                <UpcomingLectureCard v-for="lecture in upcomingLectures" :key="lecture.id" :lecture="lecture"/>
+                <UpcomingLectureCard v-for="lecture in us.upcomingLectures" :key="lecture.id" :lecture="lecture"/>
                 <div class="card-spacer"/>
               </div>
             </section>
@@ -186,13 +180,13 @@ function createRide (): void {
         <q-tab-panel name="drives">
 
           <section class="upcoming-cards-container">
-              <span class="section-title">Upcoming Rides</span>
-              <div class="upcoming-cards">
-                <div class="card-spacer"/>
-                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
-                <div class="card-spacer"/>
-              </div>
-            </section>
+            <span class="section-title">Upcoming Rides</span>
+            <div class="upcoming-cards">
+              <div class="card-spacer"/>
+              <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
+              <div class="card-spacer"/>
+            </div>
+          </section>
 
           <q-page-sticky :offset="[18, 18]" position="bottom-right">
             <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
@@ -219,6 +213,7 @@ function createRide (): void {
   color: #ffffff;
   transition: all 300ms ease-in-out;
 }
+
 /* Comment-out to have the button continue to pulse on mouseover */
 /* Animation */
 @keyframes pulsing {
@@ -226,10 +221,10 @@ function createRide (): void {
     box-shadow: 0 0 0 0 $primary-container;
   }
   50% {
-    box-shadow: 0 0 0 18px rgba(0,0,0,0);
+    box-shadow: 0 0 0 18px rgba(0, 0, 0, 0);
   }
   100% {
-    box-shadow: 0 0 0 18px rgba(0,0,0,0);
+    box-shadow: 0 0 0 18px rgba(0, 0, 0, 0);
   }
 }
 

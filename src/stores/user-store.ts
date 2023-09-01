@@ -91,6 +91,11 @@ export const useUserStore = defineStore('user', () => {
 
   const lectures: ReadonlyArray<Lecture> = generateLectures()
 
+  const now = new Date()
+
+  // A limited number of lectures that follows the current date.
+  const upcomingLectures: ReadonlyArray<Lecture> = lectures.filter(l => l.date >= now).slice(0, 6)
+
   // user added notifications about new rides at desired dates
   const rideNotifications = ref<Array<SearchParameters>>([])
 
@@ -201,6 +206,7 @@ export const useUserStore = defineStore('user', () => {
 
   return {
     lectures: readonly(lectures),
+    upcomingLectures: readonly(upcomingLectures),
     rideNotifications: readonly(rideNotifications),
     user,
     options,

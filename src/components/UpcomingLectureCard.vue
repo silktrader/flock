@@ -7,14 +7,14 @@ import { Course } from 'src/models/course'
 import { useUserStore } from 'stores/user-store'
 import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
-import { useRouter } from 'vue-router'
+import { useNavigationStore } from 'stores/navigation-store'
 
 const props = defineProps<{ lecture: Lecture }>()
 
 const us = useUserStore()
 const rs = useRideStore()
 const ls = useLocationStore()
-const router = useRouter()
+const ns = useNavigationStore()
 
 const course = computed<Course>(() => us.getCourseById(props.lecture.courseId))
 
@@ -26,7 +26,7 @@ function searchRides (): void {
     Destination: props.lecture.location,
     results: props.lecture.ridesAvailable
   })
-  router.push('/rides/search')
+  ns.goSearchRides()
 }
 
 </script>
@@ -34,8 +34,8 @@ function searchRides (): void {
 <template>
 
   <transition
-    appear
-    enter-active-class="animated slideInRight"
+      appear
+      enter-active-class="animated slideInRight"
   >
 
     <q-card key="upcoming-lecture-card" v-ripple class="lecture-card card cursor-pointer q-hoverable" flat

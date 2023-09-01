@@ -55,7 +55,8 @@ export const useRideStore = defineStore('ride',
       busAllowed: true,
       subwayAllowed: true,
       ladiesOnly: false,
-      freeSeats: 1
+      freeSeats: 1,
+      results: undefined
     }
 
     const searchParameters = ref<SearchParameters>(defaultParameters)
@@ -67,7 +68,8 @@ export const useRideStore = defineStore('ride',
     const ride = ref<Ride>()
 
     // contains a history of previous searches
-    const searches = ref<Map<string, RideSearch>>(new Map())
+    const searches = ref<Map<string, RideSearch>>(new Map<string, RideSearch>())
+    genInitialSearches()
 
     // contains all the rides a user booked, include an initial sample
     const bookedRides = ref<Array<Ride>>(generateBookedRides())
@@ -93,8 +95,7 @@ export const useRideStore = defineStore('ride',
         reachTime: parameters.reachTime,
         busAllowed: parameters.busAllowed,
         subwayAllowed: parameters.subwayAllowed,
-        ladiesOnly: parameters.ladiesOnly,
-        results: parameters.results
+        ladiesOnly: parameters.ladiesOnly
       })
     }
 
@@ -115,11 +116,6 @@ export const useRideStore = defineStore('ride',
         // when the search is repeated populate the results with old rides
         rides.value.splice(0, rides.value.length, ...oldSearch.Rides)
       }
-
-      searching.value = true
-      setTimeout(() => {
-        searching.value = false
-      }, RandomInt(500, 1500))
     }
 
     function updateParameters (newParameters: Partial<SearchParameters>): void {
@@ -347,6 +343,24 @@ export const useRideStore = defineStore('ride',
       }
     }
 
+    // Generate initial searches so that upcoming lecture cards and random search feature matching results.
+    function genInitialSearches (): void {
+      // cache a new search for each upcoming lecture
+      for (const lecture of us.upcomingLectures) {
+        updateParameters({
+          Origin: ls.getDefaultHomeLocation(),
+          Date: lecture.date,
+          DateMode: DateMode.Arrive,
+          Destination: lecture.location,
+          results: lecture.ridesAvailable
+        })
+      }
+
+      // restore default parameters and rides
+      searchParameters.value = defaultParameters
+      rides.value = []
+    }
+
     function selectRide (newRide: Ride): void {
       ride.value = newRide
     }
@@ -382,6 +396,14 @@ export const useRideStore = defineStore('ride',
       })
     }
 
+    // Mock a round trip to a server.
+    function mockSearchDelay (): void {
+      searching.value = true
+      setTimeout(() => {
+        searching.value = false
+      }, RandomInt(500, 1500))
+    }
+
     return {
       rides: readonly(rides),
       bookedRides: readonly(bookedRides),
@@ -393,6 +415,7 @@ export const useRideStore = defineStore('ride',
       reset,
       colourCodePickup,
       requestSelectedRide,
-      cancelSelectedRequest
+      cancelSelectedRequest,
+      mockSearchDelay
     }
   })
