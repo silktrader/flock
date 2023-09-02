@@ -11,23 +11,23 @@ const ns = useNavigationStore()
 const us = useUserStore()
 
 const commentDialog = ref<boolean>(false)
-const commentText = ref<string>()
+const commentText = ref<string>('')
 const commentSent = ref<boolean>(false)
+const commentLoading = ref<boolean>(false)
 
-const ride = computed<Ride>(() => {
-  if (rs.ride === undefined) {
-    throw new Error('Missing ride')
-  }
-  return rs.ride
-})
+const ride = computed<Ride>(() => rs.ride)
 
 function leaveComment (): void {
-  commentSent.value = true
-  commentDialog.value = false
+  commentLoading.value = true
+  setTimeout(() => {
+    commentSent.value = true
+    commentDialog.value = false
+    commentLoading.value = false
+  }, 600)
 }
 
 function discardComment (): void {
-  commentText.value = undefined
+  commentText.value = ''
   commentDialog.value = false
 }
 
@@ -116,7 +116,12 @@ async function abort (): Promise<void> {
 
           <q-card-actions align="between">
             <q-btn class="flat-button" flat label="Discard" @click="discardComment()"/>
-            <q-btn class="filled-button" label="Leave Message" @click="leaveComment()"/>
+            <q-btn
+                :disable="commentText.length === 0"
+                :loading="commentLoading"
+                class="filled-button"
+                label="Leave Message"
+                @click="leaveComment()"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
