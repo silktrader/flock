@@ -23,6 +23,8 @@ const accepted = computed<Date | null>(() => rs.isAccepted((ride.value.Id)))
 
 const requested = computed<Date | null>(() => rs.isRequested((ride.value.Id)))
 
+const loading = ref<boolean>(false)
+
 const detailsView = ref<DetailsView>(DetailsView.Route)
 const detailsViewOptions: Array<{ label: string, value: DetailsView }> = [{
   label: 'Route',
@@ -41,13 +43,22 @@ const detailsViewOptions: Array<{ label: string, value: DetailsView }> = [{
 // const isRequested = computed<boolean>(() => rs.isRequested(ride.value.Id))
 
 function RequestRide (): void {
-  rs.requestSelectedRide()
-  ns.goRequestSent()
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+    rs.requestSelectedRide()
+    ns.goRequestSent()
+  }, 600)
 }
 
 function CancelRequest (): void {
-  rs.cancelSelectedRequest()
-  ns.goHome()
+  loading.value = true
+  setTimeout(() => {
+    rs.cancelSelectedRequest()
+    loading.value = false
+    rs.requestSelectedRide()
+    ns.goHome()
+  }, 600)
 }
 
 </script>
@@ -324,10 +335,10 @@ function CancelRequest (): void {
     </main>
 
     <footer>
-      <q-btn v-if="accepted" class="filled-button" label="Cancel Ride" size="lg"/>
-      <q-btn v-else-if="requested" class="filled-button" label="Cancel Request" size="lg"
+      <q-btn v-if="accepted" :loading="loading" class="filled-button" label="Cancel Ride" size="lg"/>
+      <q-btn v-else-if="requested" :loading="loading" class="filled-button" label="Cancel Request" size="lg"
              @click="CancelRequest()"/>
-      <q-btn v-else class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
+      <q-btn v-else :loading="loading" class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
     </footer>
 
   </q-page>
