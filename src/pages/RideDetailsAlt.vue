@@ -246,7 +246,7 @@ function CancelRequest (): void {
               <q-chat-message v-if="ride.comment"
                               :avatar="ride.Driver.avatarUrl"
                               :text="[ride.comment]"
-                              bg-color="warning"
+                              bg-color="amber-4"
                               size="8"
                               text-color="grey-10"
               />

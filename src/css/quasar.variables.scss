@@ -83,6 +83,7 @@ $border-radius: 12px;
   color: $on-primary;
   text-transform: none;
   min-height: 40px;
+  padding: 0 24px;
   border-radius: 20px !important;
 }
 
@@ -93,6 +94,7 @@ $border-radius: 12px;
   text-transform: none;
   width: max-content;
   min-height: 40px;
+  padding: 0 24px;
   border-radius: 20px !important;
 }
 
@@ -102,6 +104,7 @@ $border-radius: 12px;
   background-color: $tertiary-container;
   text-transform: none;
   min-height: 40px;
+  padding: 0 24px;
   border-radius: 20px !important;
 }
 
@@ -111,6 +114,7 @@ $border-radius: 12px;
   color: $primary;
   text-transform: none;
   min-height: 40px;
+  padding: 0 24px;
   width: max-content;
   border-radius: 20px !important;
 }
@@ -124,6 +128,7 @@ $border-radius: 12px;
   text-transform: none;
   color: $secondary;
   min-height: 40px;
+  padding: 0 24px;
 }
 
 .fab-button {
@@ -131,17 +136,20 @@ $border-radius: 12px;
   color: $on-primary-container;
   text-transform: none;
   min-height: 40px;
+  padding: 0 24px;
   border-radius: 12px !important;
 }
 
-.general-container{
+.general-container {
   padding: 0.5em 20px
 }
+
 .instruction {
   font-size: 1.6em;
   text-align: left;
   padding: 30px 0 20px 5px;
 }
+
 .place-button {
   display: flex;
   flex-direction: row;
