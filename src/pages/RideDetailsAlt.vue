@@ -17,12 +17,11 @@ enum DetailsView {
 const rs = useRideStore()
 const ns = useNavigationStore()
 
-const ride = computed<Ride>(() => {
-  if (rs.ride === undefined) {
-    throw new Error('Missing ride')
-  }
-  return rs.ride
-})
+const ride = computed<Ride>(() => rs.ride)
+
+const accepted = computed<Date | null>(() => rs.isAccepted((ride.value.Id)))
+
+const requested = computed<Date | null>(() => rs.isRequested((ride.value.Id)))
 
 const detailsView = ref<DetailsView>(DetailsView.Route)
 const detailsViewOptions: Array<{ label: string, value: DetailsView }> = [{
@@ -38,6 +37,8 @@ const detailsViewOptions: Array<{ label: string, value: DetailsView }> = [{
   label: 'Car',
   value: DetailsView.Car
 }]
+
+// const isRequested = computed<boolean>(() => rs.isRequested(ride.value.Id))
 
 function RequestRide (): void {
   rs.requestSelectedRide()
@@ -80,15 +81,22 @@ function CancelRequest (): void {
 
             <route-timeline :ride="ride"/>
 
-            <div v-if="ride.Recurring && !ride.requested" class="notice-box route-box">
+            <div v-if="ride.Recurring && !requested" class="notice-box route-box">
               <q-icon name="las la-calendar-week" size="lg"/>
               <span>{{ ride.Driver.firstName }} repeats this same route every {{ ExtractDay(ride.Departure) }}.</span>
             </div>
 
-            <div v-if="ride.requested && !ride.accepted" class="notice-box route-box">
+            <div v-if="requested" class="notice-box route-box">
               <q-icon name="las la-stamp" size="sm"/>
-              <span>You requested this ride {{ FormatShortDate(ride.requested).toLowerCase() }}. <br/>
+              <span>You requested this ride {{ FormatShortDate(requested) }}. <br/>
                   {{ ride.Driver.firstName }} has yet to accept it.</span>
+            </div>
+
+            <div v-else-if="accepted" class="notice-box route-box">
+              <q-icon name="las la-stamp" size="sm"/>
+              <span>You're part of this ride. {{
+                  ride.Driver.firstName
+                }} accepted your request {{ FormatShortDate(accepted) }}.</span>
             </div>
 
           </section>
@@ -222,13 +230,13 @@ function CancelRequest (): void {
               <section class="car-details-plate">
             <span class="details-label">
               <span>License Plate</span>
-              <q-icon v-if="!ride.accepted" color="secondary" name="info" size="sm">
+              <q-icon v-if="!accepted" color="secondary" name="info" size="sm">
                 <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
                     {{ ride.Driver.firstName }}'s license plate will show once he accepts your ride request.
                   </q-tooltip>
               </q-icon>
             </span>
-                <span :class="{blurred: !ride.accepted, 'car-plate': true}">{{ ride.Car.vrm }}</span>
+                <span :class="{blurred: !accepted, 'car-plate': true}">{{ ride.Car.vrm }}</span>
               </section>
 
             </div>
@@ -316,8 +324,8 @@ function CancelRequest (): void {
     </main>
 
     <footer>
-      <q-btn v-if="ride.accepted" class="filled-button" label="Cancel Ride" size="lg"/>
-      <q-btn v-else-if="ride.requested" class="filled-button" label="Cancel Request" size="lg"
+      <q-btn v-if="accepted" class="filled-button" label="Cancel Ride" size="lg"/>
+      <q-btn v-else-if="requested" class="filled-button" label="Cancel Request" size="lg"
              @click="CancelRequest()"/>
       <q-btn v-else class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
     </footer>

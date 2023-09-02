@@ -21,11 +21,9 @@ const slide = ref<string>('introduction')
 const now = new Date()
 
 const upcomingRides = computed<ReadonlyArray<Ride>>(
-  () => rs.bookedRides
+  () => rs.acceptedRides
     .filter(r => r.Departure >= now)
     .sort((a, b) => a.Departure.getTime() - b.Departure.getTime()))
-
-const pendingRequests = computed<number>(() => rs.bookedRides.filter(r => r.requested && !r.accepted).length)
 
 function quitIntroduction (): void {
   slide.value = 'introduction'
@@ -142,11 +140,13 @@ function createRide (): void {
 
           <main class="tab-sections">
 
-            <section v-if="pendingRequests" class="notice-box">
+            <section v-if="rs.requestedRides.length" class="notice-box">
 
               <q-icon name="las la-stamp" size="lg"/>
 
-              <span>You have <b>{{ pendingRequests }}</b> pending ride request{{ pendingRequests > 1 ? 's' : '' }} waiting to be approved.</span>
+              <span>You have <b>{{
+                  rs.requestedRides.length
+                }}</b> pending ride request{{ rs.requestedRides.length > 1 ? 's' : '' }} waiting to be approved.</span>
 
               <q-btn dense flat icon="arrow_forward_ios" to="/rides/requests"/>
 

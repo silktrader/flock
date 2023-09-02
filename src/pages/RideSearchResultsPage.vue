@@ -65,13 +65,7 @@
     </div>
 
     <div v-else class="ride-cards">
-      <transition-group
-          appear
-          enter-active-class="animated slideInUp"
-          leave-active-class="animated slideOutDown"
-          mode="out-in">
-        <search-result-v2 v-for='ride in rides' :key='ride.Id' :r="ride"/>
-      </transition-group>
+      <search-result-v2 v-for='ride in rides' :key='ride.Id' :ride="ride"/>
     </div>
 
   </q-page>

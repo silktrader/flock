@@ -27,8 +27,6 @@ export interface RideConfig {
   before?: Lecture
   after?: Lecture
   comment?: string
-  requested?: Date | null
-  accepted?: boolean
 }
 
 export class Ride {
@@ -48,12 +46,6 @@ export class Ride {
   readonly after?: Lecture
   readonly comment?: string
   readonly rules: ReadonlyArray<string>
-
-  // Tells whether the ride was requested by the user.
-  readonly requested: Date | null
-
-  // Tells whether the ride was requested by the user and accepted by the driver.
-  readonly accepted: boolean
 
   constructor (
     config: RideConfig
@@ -83,8 +75,6 @@ export class Ride {
     this.Recurring = config.Recurring
     this.before = config.before
     this.after = config.after
-    this.accepted = config.accepted ?? false
-    this.requested = config.requested ?? null
     this.comment = config.comment
   }
 
@@ -111,5 +101,24 @@ export class Ride {
 
   get FreeSeats (): number {
     return this.Car.seats - this.passengers.length
+  }
+}
+
+// Extended ride class which includes request data
+export class RequestedRide extends Ride {
+  readonly requested: Date
+
+  constructor (config: RideConfig & { requested: Date }) {
+    super(config)
+    this.requested = config.requested
+  }
+}
+
+export class AcceptedRide extends RequestedRide {
+  readonly accepted: Date
+
+  constructor (config: RideConfig & { requested: Date, accepted: Date }) {
+    super(config)
+    this.accepted = config.accepted
   }
 }

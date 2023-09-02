@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { readonly, ref, toRaw } from 'vue'
+import { reactive, readonly, ref, toRaw } from 'vue'
 import { date } from 'quasar'
 import { getRandomAddress, RandomFloat, RandomId, RandomInt } from 'src/tools/random-tools'
 import { useLocationStore } from 'stores/location-store'
-import { Ride } from 'src/models/ride'
+import { AcceptedRide, RequestedRide, Ride, RideConfig } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
 import { useUserStore } from 'stores/user-store'
 import { DateMode, today } from 'src/tools/date-tools'
@@ -61,27 +61,47 @@ export const useRideStore = defineStore('ride',
 
     const searchParameters = ref<SearchParameters>(defaultParameters)
 
-    // contains the rides returned by the user search
+    // avoids the need for undefined checks throughout the codebase
+    const defaultRide: Readonly<Ride> = new Ride({
+      Arrival: date.addToDate(today, { hour: 1 }),
+      Departure: today,
+      Car: generateCar(),
+      Destination: ls.sapienzaPlaces[0],
+      Driver: us.generateDriver(new Set(), false),
+      Drop: generateDrop(today, 0),
+      Expense: 0,
+      Id: 'none',
+      Origin: ls.getDefaultHomeLocation(),
+      Pickup: generatePickup(date.addToDate(today, { minute: 30 }), 10),
+      Recurring: false,
+      passengers: [],
+      rules: []
+    })
+
+    // Contains the rides returned by the user search
     const rides = ref<Ride[]>([])
 
-    // holds a reference to the selected ride ready to be inspected
-    const ride = ref<Ride>()
+    // Holds a reference to the selected ride ready to be inspected
+    const ride = ref<Ride>(defaultRide)
 
-    // contains a history of previous searches
+    // Contains a history of previous searches
     const searches = ref<Map<string, RideSearch>>(new Map<string, RideSearch>())
     genInitialSearches()
 
-    // contains all the rides a user booked, include an initial sample
-    const bookedRides = ref<Array<Ride>>(generateBookedRides())
+    // Contains all the rides that a user requested and the matching driver accepted, include an initial sample
+    const acceptedRides = reactive<Array<AcceptedRide>>(genAcceptedRides())
 
-    // mocks a hypothetical round trip to a database
+    // Contains all the rides that a user requested
+    const requestedRides = reactive<Array<RequestedRide>>([])
+
+    // Mocks a hypothetical round trip to a database
     const searching = ref<boolean>(false)
 
     // Clears existing rides, selected ride and parameters.
     function reset (): void {
       rides.value.splice(0)
       searchParameters.value = defaultParameters
-      ride.value = undefined
+      ride.value = defaultRide
     }
 
     // Takes parameters and turn them into JSON strings.
@@ -103,7 +123,7 @@ export const useRideStore = defineStore('ride',
     function updateSearch (): void {
       const serialisedParameters = serialiseParameters(searchParameters.value)
       const oldSearch = searches.value.get(serialisedParameters)
-      ride.value = undefined
+      ride.value = defaultRide
 
       // either fetch previously stored results or generate new ones
       if (oldSearch === undefined || date.getDateDiff(oldSearch.Date, new Date(), 'minutes') > 10) {
@@ -135,14 +155,13 @@ export const useRideStore = defineStore('ride',
       }
     }
 
-    function generateBookedRides (): Array<Ride> {
-      // generate a couple of rides related to the user's home and lectures
-      const rides: Array<Ride> = []
+    // Generate a few rides related to the user's home and lectures
+    function genAcceptedRides (): Array<AcceptedRide> {
+      const rides: Array<AcceptedRide> = []
 
       // pick a random lecture
-      const now = new Date()
-      const soon = date.addToDate(now, { day: 10 })
-      const nextLectures = us.lectures.filter(l => l.date >= now && l.date < soon)
+      const soon = date.addToDate(today, { day: 10 })
+      const nextLectures = us.lectures.filter(l => l.date >= today && l.date < soon)
       for (let i = RandomInt(1, 3); i >= 0; i--) {
         // pick a random lecture
         const lecture = nextLectures[RandomInt(0, nextLectures.length)]
@@ -160,39 +179,47 @@ export const useRideStore = defineStore('ride',
           passengers.push(user)
         }
 
-        rides.push(new Ride({
+        const driver = us.generateDriver(passengerAvatars, false)
+        const car = generateCar()
+        const requested = date.subtractFromDate(departure, { days: RandomInt(1, 6) })
+        const accepted = date.addToDate(requested, { minutes: RandomInt(30, 90) })
+
+        rides.push(new AcceptedRide({
           ...getRandomRideEssentials(),
           Origin: defaultParameters.Origin,
           Destination: lecture.location,
           Arrival: arrival,
           Departure: departure,
-          Driver: us.generateDriver(passengerAvatars, false),
-          Car: generateCar(),
+          Driver: driver,
+          Car: car,
           Drop: generateDrop(arrival, RandomInt(3, 10)),
           Pickup: generatePickup(departure, RandomInt(3, 15)),
           passengers,
           Recurring: false,
           before: lecture,
-          accepted: true
+          requested,
+          accepted
         }))
 
+        // also generate the ride back home from Sapienza locations
         if (RandomFloat(0, 1) > 0.5) {
           const departure = date.addToDate(lecture.date, { minute: lecture.duration + 15 })
           const arrival = date.addToDate(departure, { minute: RandomInt(20, 45) })
-          rides.push(new Ride({
+          rides.push(new AcceptedRide({
             ...getRandomRideEssentials(),
             Origin: lecture.location,
             Destination: defaultParameters.Origin,
             Arrival: arrival,
             Departure: departure,
-            Driver: us.generateDriver(passengerAvatars, false),
-            Car: generateCar(),
+            Driver: driver,
+            Car: car,
             Drop: generateShortDrop(arrival, defaultParameters.Origin.Address),
             Pickup: generateShortPickup(departure, lecture.location.Address),
             passengers,
             Recurring: false,
             after: lecture,
-            accepted: true
+            requested,
+            accepted
           }))
         }
       }
@@ -373,28 +400,17 @@ export const useRideStore = defineStore('ride',
     }
 
     function requestSelectedRide (): void {
-      if (ride.value === undefined) {
-        throw new Error('No ride to request')
-      }
-      ride.value = new Ride({
-        ...ride.value,
-        requested: new Date()
-      })
-      bookedRides.value.push(ride.value)
+      requestedRides.push(new RequestedRide({ ...ride.value as RideConfig, requested: new Date() }))
     }
 
     function cancelSelectedRequest (): void {
-      if (ride.value === undefined) {
-        throw new Error('No ride to cancel')
-      }
-      // unnecessary null navigator, side steps language server issues
-      const rideIndex = bookedRides.value.findIndex(r => r.Id === ride.value?.Id)
-      bookedRides.value.splice(rideIndex, 1)
-      ride.value = new Ride({
-        ...ride.value,
-        requested: null
-      })
+      const rideIndex = acceptedRides.findIndex(r => r.Id === ride.value.Id)
+      requestedRides.splice(rideIndex, 1)
     }
+
+    const isRequested = (id: string): Date | null => requestedRides.find(r => r.Id === id)?.requested ?? null
+
+    const isAccepted = (id: string): Date | null => acceptedRides.find(r => r.Id === id)?.accepted ?? null
 
     // Mock a round trip to a server.
     function mockSearchDelay (): void {
@@ -406,7 +422,8 @@ export const useRideStore = defineStore('ride',
 
     return {
       rides: readonly(rides),
-      bookedRides: readonly(bookedRides),
+      acceptedRides: readonly(acceptedRides),
+      requestedRides: readonly(requestedRides),
       ride: readonly(ride),
       searchParameters: readonly(searchParameters),
       searching: readonly(searching),
@@ -416,6 +433,8 @@ export const useRideStore = defineStore('ride',
       colourCodePickup,
       requestSelectedRide,
       cancelSelectedRequest,
+      isRequested,
+      isAccepted,
       mockSearchDelay
     }
   })
