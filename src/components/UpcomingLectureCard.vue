@@ -19,6 +19,7 @@ const ns = useNavigationStore()
 const course = computed<Course>(() => us.getCourseById(props.lecture.courseId))
 
 function searchRides (): void {
+  rs.mockSearchDelay()
   rs.updateParameters({
     Date: props.lecture.date,
     DateMode: DateMode.Arrive,
@@ -34,8 +35,8 @@ function searchRides (): void {
 <template>
 
   <transition
-      appear
-      enter-active-class="animated slideInRight"
+    appear
+    enter-active-class="animated slideInRight"
   >
 
     <q-card key="upcoming-lecture-card" v-ripple class="lecture-card card cursor-pointer q-hoverable" flat

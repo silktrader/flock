@@ -487,7 +487,7 @@ export const useRideStore = defineStore('ride',
       searching.value = true
       setTimeout(() => {
         searching.value = false
-      }, RandomInt(500, 1500))
+      }, RandomInt(600, 1200))
     }
 
     return {

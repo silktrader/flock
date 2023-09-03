@@ -21,7 +21,7 @@
 
     <div v-if="rs.searching" class="loading-spinner">
       <span>searching for rides ...</span>
-      <q-spinner color="accent" size="50px"/>
+      <q-spinner color="accent" size="xl"/>
     </div>
 
     <div v-else-if="rides.length === 0" class="no-results-container">
@@ -192,8 +192,12 @@ function notifyRide (): void {
   justify-content: center;
   align-items: center;
   margin: auto;
-  font-style: italic;
-  color: $on-background;
+  color: $accent;
+
+  span {
+    font-style: italic;
+    font-size: medium;
+  }
 }
 
 .dialog {
