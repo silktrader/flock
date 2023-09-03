@@ -13,8 +13,8 @@
       </header>
       <q-separator/>
       <div class="column general-container ">
-        <div class="instruction">Where are you going? </div>
-        <q-btn class="place-button" align="left" icon="search">Choose your destination</q-btn>
+        <div class="instruction" style="text-align: left;">Where are you going? </div>
+        <q-btn class="place-button" align="left" icon="search" @click="selectDest()">Choose your destination address</q-btn>
       </div>
     </q-page>
   </template>
@@ -24,12 +24,15 @@ import { useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { DateMode, ExtractTime, FormatShortDate } from 'src/tools/date-tools'
 import { useRouter } from 'vue-router'
-import { isSapienzaPlace } from 'src/models/place'
 
 const router = useRouter()
 
 function abort (): void {
   router.push('/')
+}
+
+function selectDest (): void {
+  router.push('/rides/search/location-select/destination/drive')
 }
 
 </script>

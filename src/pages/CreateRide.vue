@@ -14,26 +14,55 @@
     <q-separator/>
     <div class="column general-container ">
       <div class="instruction">Where do you leave from? </div>
-      <q-btn class="place-button" align="left" @click="selectOrigin()" icon="search">Choose your initial location</q-btn>
+      <q-btn class="place-button" align="left" @click="selectOrigin()" icon="search">Choose your initial address</q-btn>
     </div>
   </q-page>
 </template>
 
 <script lang="ts" setup>
 
-import { useRideStore } from 'stores/ride-store'
+import { useDriveStore } from 'src/stores/driveStore'
+import { Drive } from 'src/models/drive'
+import { User } from 'src/models/user'
 import { computed } from 'vue'
 import { DateMode, ExtractTime, FormatShortDate } from 'src/tools/date-tools'
 import { useRouter } from 'vue-router'
 import { isSapienzaPlace } from 'src/models/place'
+import { fa } from '@faker-js/faker'
 
 const router = useRouter()
+const ds = useDriveStore()
+const tempDrive : Drive = {
+  Id: '1',
+  Origin: {
+    Label: '',
+    Address: ''
+  },
+  Destination: {
+    Label: '',
+    Address: ''
+  },
+  Arrival: new Date(),
+  Departure: new Date(),
+  Car: {
+    Model: 'Tesla Model 3',
+    Seats: 3,
+    Electric: true,
+    AirConditioning: true
+  },
+  Earning: 0,
+  FreeSeats: 3,
+  Recurring: false
+}
+
+ds.setTemporaryDrive(tempDrive)
 
 function selectOrigin (): void {
   router.push('/rides/search/location-select/origin/drive')
 }
 
 function abort (): void {
+  ds.clearTemporaryDrive()
   router.push('/')
 }
 
