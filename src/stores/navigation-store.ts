@@ -1,26 +1,17 @@
 import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
 import { useQuasar } from 'quasar'
-
-export interface Page {
-  route: string,
-  rank: number
-}
-
-export interface AnimationClass {
-  enterClass: string,
-  exitClass: string
-}
+import { useRouter } from 'vue-router'
+import { useUserStore } from 'stores/user-store'
+import { RideDetails, SearchControls } from 'src/models/options'
 
 export const useNavigationStore = defineStore('navigation', () => {
   const debugButton = ref<boolean>(false)
   const firstUse = ref<boolean>(false)
-  const currentPage = ref<Page>({
-    route: '/',
-    rank: 1
-  })
 
   const $q = useQuasar()
+  const router = useRouter()
+  const us = useUserStore()
 
   function toggleDebugButton (): void {
     debugButton.value = !debugButton.value
@@ -34,39 +25,36 @@ export const useNavigationStore = defineStore('navigation', () => {
     await $q.fullscreen.toggle()
   }
 
-  function getAnimation (rank: number): AnimationClass {
-    if (rank > currentPage.value.rank) {
-      return {
-        enterClass: 'animated fadeInRight',
-        exitClass: 'animated fadeOutLeft'
-      }
+  function goHome (): void {
+    router.push('/')
+  }
+
+  function goBack (): void {
+    router.go(-1)
+  }
+
+  function goDetailsPage (): void {
+    if (us.options.debug.rideDetails === RideDetails.Scroll) {
+      router.push('/rides/details/')
     } else {
-      return {
-        enterClass: 'animated fadeInLeft',
-        exitClass: 'animated fadeOutLeft'
-      }
+      router.push('/rides/details-alt')
     }
   }
 
-  function changePage (newPage: Page): { enterClass: string, exitClass: string } {
-    // the new page is coming in from the right
-    if (newPage.rank > currentPage.value.rank) {
-      console.log('HERE')
-      currentPage.value = newPage
-      return {
-        enterClass: 'animated fadeInRight',
-        exitClass: 'animated fadeOutLeft'
-      }
-    } else {
-      console.log('here')
-      currentPage.value = newPage
-      return {
-        // enterClass: 'animated fadeInLeft',
-        // exitClass: 'animated fadeOutLeft'
-        enterClass: 'animated bounceOutUp',
-        exitClass: 'animated bounceOutUp'
-      }
-    }
+  function goRequestSent (): void {
+    router.push('/rides/search/request-sent')
+  }
+
+  function goDebugOptions (): void {
+    router.push('/settings/debug')
+  }
+
+  function goSearchRides (): void {
+    router.push(us.options.debug.searchControls === SearchControls.FullPage ? '/rides/search-full' : '/rides/search')
+  }
+
+  function goOldSearchResults (): void {
+    router.push('/rides/search')
   }
 
   return {
@@ -74,8 +62,12 @@ export const useNavigationStore = defineStore('navigation', () => {
     toggleDebugButton,
     skipIntroduction,
     toggleFullscreen,
-    getAnimation,
-    changePage
+    goHome,
+    goBack,
+    goDetailsPage,
+    goRequestSent,
+    goDebugOptions,
+    goSearchRides,
+    goOldSearchResults
   }
-}
-)
+})

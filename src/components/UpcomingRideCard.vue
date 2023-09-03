@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 
-import { useRouter } from 'vue-router'
 import { ExtractTime, FormatLongDate } from '../tools/date-tools'
 import { Ride } from 'src/models/ride'
 import { useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
 import { Course } from 'src/models/course'
 import { useUserStore } from 'stores/user-store'
+import { useNavigationStore } from 'stores/navigation-store'
 
 const rs = useRideStore()
 const us = useUserStore()
-const router = useRouter()
+const ns = useNavigationStore()
 
 const props = defineProps<{
   ride: Ride
@@ -26,7 +26,7 @@ const afterCourse = computed<Course | null>(
 
 function reviewRide (): void {
   rs.selectRide(props.ride)
-  router.push('/rides/details')
+  ns.goDetailsPage()
 }
 
 </script>

@@ -7,8 +7,11 @@ import { Ride } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
 import { useUserStore } from 'stores/user-store'
 import { DateMode } from 'src/tools/date-tools'
-import { Car } from 'src/models/car'
+import { Car, cars } from 'src/models/car'
 import { SearchParameters } from 'src/models/search-parameters'
+import { faker } from '@faker-js/faker/locale/it'
+import { getRandomRideComment } from 'src/models/ride-comment'
+import { getRandomRules } from 'src/models/ride-rule'
 import subtractFromDate = date.subtractFromDate
 import addToDate = date.addToDate
 
@@ -81,9 +84,6 @@ export const useRideStore = defineStore('ride',
   () => {
     const ls = useLocationStore()
     const us = useUserStore()
-
-    const carModels = ['Toyota Yaris', 'Fiat 500', 'Lancia Ypsilon', 'Mazda 2', 'Lamborghini Murcielago', 'Renault Clio', 'Ford Fiesta']
-    const electricCarModels = ['Tesla Model 3', 'Nissan Leaf', 'Polestar 2']
 
     // setup default parameters for easy testing while avoiding undefined state
     const defaultParameters: Readonly<SearchParameters> = {
@@ -159,7 +159,7 @@ export const useRideStore = defineStore('ride',
       searching.value = true
       setTimeout(() => {
         searching.value = false
-      }, RandomInt(1000, 2000))
+      }, RandomInt(500, 1500))
     }
 
     function updateParameters (newParameters: Partial<SearchParameters>): void {
@@ -168,6 +168,15 @@ export const useRideStore = defineStore('ride',
         ...newParameters
       }
       updateSearch()
+    }
+
+    function getRandomRideEssentials () {
+      return {
+        Id: RandomId(),
+        rules: getRandomRules(),
+        comment: getRandomRideComment(),
+        Expense: RandomInt(0, 4)
+      }
     }
 
     function generateBookedRides (): Array<Ride> {
@@ -189,14 +198,14 @@ export const useRideStore = defineStore('ride',
         // determine random number of total and available seats
         const passengers = []
         const passengerAvatars: Set<string> = new Set()
-        for (let occupiedSeats = RandomInt(0, 2); occupiedSeats > 0; occupiedSeats--) {
+        for (let occupiedSeats = RandomInt(0, 3); occupiedSeats > 0; occupiedSeats--) {
           const user = us.generateUser(passengerAvatars, false)
           passengerAvatars.add(user.avatarUrl)
           passengers.push(user)
         }
 
         rides.push(new Ride({
-          Id: RandomId(),
+          ...getRandomRideEssentials(),
           Origin: defaultParameters.Origin,
           Destination: lecture.location,
           Arrival: arrival,
@@ -205,8 +214,7 @@ export const useRideStore = defineStore('ride',
           Car: generateCar(),
           Drop: generateDrop(arrival, RandomInt(3, 10)),
           Pickup: generatePickup(departure, RandomInt(3, 15)),
-          Expense: RandomInt(0, 4),
-          Passengers: passengers,
+          passengers,
           Recurring: false,
           before: lecture,
           accepted: true
@@ -216,7 +224,7 @@ export const useRideStore = defineStore('ride',
           const departure = date.addToDate(lecture.date, { minute: lecture.duration + 15 })
           const arrival = date.addToDate(departure, { minute: RandomInt(20, 45) })
           rides.push(new Ride({
-            Id: RandomId(),
+            ...getRandomRideEssentials(),
             Origin: lecture.location,
             Destination: defaultParameters.Origin,
             Arrival: arrival,
@@ -225,8 +233,7 @@ export const useRideStore = defineStore('ride',
             Car: generateCar(),
             Drop: generateShortDrop(arrival, defaultParameters.Origin.Address),
             Pickup: generateShortPickup(departure, lecture.location.Address),
-            Expense: RandomInt(0, 4),
-            Passengers: passengers,
+            passengers,
             Recurring: false,
             after: lecture,
             accepted: true
@@ -285,7 +292,7 @@ export const useRideStore = defineStore('ride',
         const car = generateCar()
         const passengers = []
         const passengerAvatars: Set<string> = new Set()
-        for (let occupiedSeats = RandomInt(0, car.Seats - 1); occupiedSeats > 0; occupiedSeats--) {
+        for (let occupiedSeats = RandomInt(0, car.seats - 1); occupiedSeats > 0; occupiedSeats--) {
           const user = us.generateUser(passengerAvatars, ladiesOnly)
           passengerAvatars.add(user.avatarUrl)
           passengers.push(user)
@@ -296,7 +303,7 @@ export const useRideStore = defineStore('ride',
         hasRecurringRide = recurring || hasRecurringRide
 
         rides.push(new Ride({
-          Id: RandomId(),
+          ...getRandomRideEssentials(),
           Origin: origin,
           Destination: destination,
           Arrival: arrival,
@@ -305,8 +312,7 @@ export const useRideStore = defineStore('ride',
           Car: car,
           Drop: generateDrop(arrival, reachTime - pickupMinutes),
           Pickup: pickup,
-          Expense: RandomInt(0, 4),
-          Passengers: passengers,
+          passengers,
           Recurring: recurring
         }))
       }
@@ -315,12 +321,14 @@ export const useRideStore = defineStore('ride',
     }
 
     function generateCar (): Car {
-      const electric = Math.random() < 0.2
+      const carSpec = cars[RandomInt(0, cars.length - 1)]
       return {
-        Model: electric ? electricCarModels[RandomInt(0, electricCarModels.length - 1)] : carModels[RandomInt(0, carModels.length - 1)],
-        Seats: RandomInt(2, 4),
-        AirConditioning: Math.random() < 0.8,
-        Electric: electric
+        ...carSpec,
+        vrm: faker.vehicle.vrm(),
+        color: faker.color.rgb(),
+        usbChargers: Boolean(RandomInt(0, 2)),
+        bootSpace: Boolean(RandomInt(0, 3)),
+        soundSystem: Boolean(RandomInt(0, 2))
       }
     }
 

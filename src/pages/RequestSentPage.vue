@@ -17,7 +17,7 @@
         <span class="request-sent">Request Sent!</span>
         <q-icon name="las la-check-circle" size="lg"/>
         <div class="request-wait">
-          <span>We will <em>notify</em> you when {{ ride.Driver.DisplayName }} reviews the proposed route.</span>
+          <span>We will <em>notify</em> you when {{ ride.Driver.displayName }} reviews the proposed route.</span>
           <span>Fingers crossed!</span>
           <div class="notification-icons">
             <q-icon name="las la-at" size="sm"/>
