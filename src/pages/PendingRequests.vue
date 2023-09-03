@@ -37,22 +37,22 @@ function closeModal (): void {
 
     <q-list padding>
 
-      <q-item v-for="ride in requests" :key="ride.Id" v-ripple class="request" clickable @click="viewRide(ride)">
+      <q-item v-for="ride in requests" :key="ride.id" v-ripple class="request" clickable @click="viewRide(ride)">
         <q-item-section avatar>
           <q-avatar size="60px">
-            <img :src="ride.Driver.avatarUrl" alt="Driver's Avatar"/>
+            <img :src="ride.driver.avatarUrl" alt="Driver's Avatar"/>
           </q-avatar>
         </q-item-section>
         <q-item-section class="pr__details">
 
           <div class="request-date">
-            <span>{{ ExtractDate(ride.Pickup.Date) }}</span>
-            <span class="request-date-hour"><q-icon name="schedule"/>{{ ExtractTime(ride.Pickup.Date) }}</span>
+            <span>{{ ExtractDate(ride.pickup.Date) }}</span>
+            <span class="request-date-hour"><q-icon name="schedule"/>{{ ExtractTime(ride.pickup.Date) }}</span>
           </div>
           <div class="request-address">
-            <span>{{ ride.Pickup.Address }}</span>
+            <span>{{ ride.pickup.Address }}</span>
             <q-icon name="arrow_right_alt" size="xs"/>
-            <span>{{ ride.Destination.Address }}</span>
+            <span>{{ ride.destination.Address }}</span>
           </div>
 
           <!--          <div class="request-timestamp">-->

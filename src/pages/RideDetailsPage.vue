@@ -6,10 +6,10 @@
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
       <section class="secondary-header-title">
         <span>{{
-            `${ride.Origin.Label ?? ride.Origin.Address}
-            to ${ride.Destination.Label ?? ride.Destination.Address}`
+            `${ride.origin.Label ?? ride.origin.Address}
+            to ${ride.destination.Label ?? ride.destination.Address}`
           }}</span>
-        <span class="modal-header-subtitle">{{ ExtractDate(ride.Departure) }}</span>
+        <span class="modal-header-subtitle">{{ ExtractDate(ride.departure) }}</span>
       </section>
     </header>
 
@@ -25,25 +25,25 @@
           <!-- Departure -->
           <template v-slot:title>
             <div class="timeline-header">
-              <span>{{ ride.Origin.Address }}</span>
+              <span>{{ ride.origin.Address }}</span>
               <span class="timeline-header-time">
-                <q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.Departure) }}
+                <q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.departure) }}
               </span>
             </div>
           </template>
 
           <div class="timeline-instruction shuttle">
-            <template v-if="ride.Pickup.Transport === Transport.None">
+            <template v-if="ride.pickup.Transport === Transport.None">
               <q-icon name="directions_walk" size="sm"/>
               <span>Walk for {{ ride.PickupDuration }} min.</span>
             </template>
-            <template v-if="ride.Pickup.Transport === Transport.Subway">
+            <template v-if="ride.pickup.Transport === Transport.Subway">
               <q-icon name="subway" size="sm"/>
-              <span>Ride {{ ride.Pickup.TransportId }} for {{ ride.PickupDuration }} min.</span>
+              <span>Ride {{ ride.pickup.TransportId }} for {{ ride.PickupDuration }} min.</span>
             </template>
-            <template v-if="ride.Pickup.Transport === Transport.Bus">
+            <template v-if="ride.pickup.Transport === Transport.Bus">
               <q-icon name="directions_bus" size="sm"/>
-              <span>Ride bus <small>#</small>{{ ride.Pickup.TransportId }} for {{
+              <span>Ride bus <small>#</small>{{ ride.pickup.TransportId }} for {{
                   ride.PickupDuration
                 }} min.</span>
             </template>
@@ -52,18 +52,18 @@
         </q-timeline-entry>
 
         <!-- Pickup -->
-        <q-timeline-entry :avatar="ride.Driver.avatarUrl" color="yellow-7">
+        <q-timeline-entry :avatar="ride.driver.avatarUrl" color="yellow-7">
           <template v-slot:title>
             <div class="timeline-header">
-              <span>Meet {{ ride.Driver.displayName }}</span>
+              <span>Meet {{ ride.driver.displayName }}</span>
               <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
-                  ExtractTime(ride.Pickup.Date)
+                  ExtractTime(ride.pickup.Date)
                 }}</span>
             </div>
           </template>
 
           <div class="timeline-pickup">
-            <span>{{ ride.Pickup.Address }}</span>
+            <span>{{ ride.pickup.Address }}</span>
             <!--            <div v-if="!ride.accepted" style="display: flex">-->
             <!--              <q-btn class="tonal-button" label="Change" rounded style="flex-grow: 1"/>-->
             <!--              <div style="flex-grow: 5"></div>-->
@@ -80,15 +80,15 @@
         <q-timeline-entry class="carpool-entry" color="tertiary" icon="directions_car">
           <template v-slot:title>
             <div class="timeline-header">
-              <span>{{ ride.Driver.displayName }} drops you</span>
+              <span>{{ ride.driver.displayName }} drops you</span>
               <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
-                  ExtractTime(ride.Drop.Date)
+                  ExtractTime(ride.drop.Date)
                 }}</span>
             </div>
           </template>
 
           <div class="timeline-pickup">
-            <span>{{ ride.Drop.Address }}</span>
+            <span>{{ ride.drop.Address }}</span>
             <div class="timeline-instruction shuttle">
               <q-icon name="directions_walk" size="sm"/>
               <span>Walk for {{ ride.DropDuration }} min.</span>
@@ -101,9 +101,9 @@
         <q-timeline-entry color="tertiary" icon="flag">
           <template v-slot:title>
             <div class="timeline-header">
-              <span>{{ ride.Destination.Address }}</span>
+              <span>{{ ride.destination.Address }}</span>
               <span class="timeline-header-time"><q-icon name="schedule" size="sm"/>{{
-                  ExtractTime(ride.Arrival)
+                  ExtractTime(ride.arrival)
                 }}</span>
             </div>
           </template>
@@ -114,7 +114,7 @@
 
       <div v-if="!ride.accepted && !ride.requested" class="pickup-prompt">
             <span class="pickup-prompt-notice">Propose a different place and time for meeting {{
-                ride.Driver.firstName
+                ride.driver.firstName
               }}.</span>
         <q-btn class="outline-button">Change Pickup</q-btn>
       </div>
@@ -129,15 +129,15 @@
 
           <q-item-section>
             <q-avatar size="80px">
-              <q-img :src="ride.Driver.avatarUrl"/>
-              <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
+              <q-img :src="ride.driver.avatarUrl"/>
+              <span class="driver-rating">{{ ride.driver.Rating.toFixed(1) }}</span>
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
             <div class="driver-details">
-              <span>{{ ride.Driver.displayName }}</span>
-              <span class="degree driver-degree">{{ ride.Driver.degree }}</span>
+              <span>{{ ride.driver.displayName }}</span>
+              <span class="degree driver-degree">{{ ride.driver.degree }}</span>
             </div>
           </q-item-section>
 
@@ -184,9 +184,9 @@
           <q-item-section>
             <div class="free-seats">
               <q-avatar
-                  v-for="index in ride.FreeSeats"
-                  :key="index"
-                  class="free-seat"
+                v-for="index in ride.FreeSeats"
+                :key="index"
+                class="free-seat"
               >
               </q-avatar>
             </div>
@@ -216,7 +216,7 @@
 
           </q-item-section>
 
-          <q-item-section><span class="car-model">{{ ride.Car.model }}</span></q-item-section>
+          <q-item-section><span class="car-model">{{ ride.car.model }}</span></q-item-section>
 
           <q-item-section side>
             <q-btn color="secondary" flat no-caps rounded>
@@ -232,7 +232,7 @@
 
       <q-separator spaced/>
 
-      <q-item v-if="ride.Expense === 0">
+      <q-item v-if="ride.expense === 0">
         <q-item-section>
           <div class="expense-container">
             Free Ride
@@ -240,7 +240,7 @@
           <aside class="expense-none-notice">
             <q-icon name="las la-mug-hot" size="md"/>
             <span>
-              You can tip {{ ride.Driver.displayName }} when the ride's over. It's up to you. <br/>
+              You can tip {{ ride.driver.displayName }} when the ride's over. It's up to you. <br/>
               Donuts and coffee are welcome too!
               </span>
           </aside>
@@ -259,7 +259,7 @@
               </span>
 
             <div class="expense">
-              {{ ride.Expense }} €
+              {{ ride.expense }} €
             </div>
             <aside class="expense-payments-container">
               <span>Pay when the ride's over with:</span>
@@ -282,18 +282,18 @@
 
       <q-separator spaced/>
 
-      <div v-if="ride.Recurring && !ride.requested" class="notice-box">
+      <div v-if="ride.recurring && !ride.requested" class="notice-box">
         <q-icon name="las la-calendar-week" size="lg"/>
         <span>
-              {{ ride.Driver.firstName }} drives to {{ ride.Destination.Label ?? ride.Destination.Address }} every
-              {{ ExtractDay(ride.Departure) }}, arriving at {{ ExtractTime(ride.Arrival) }}.
+              {{ ride.driver.firstName }} drives to {{ ride.destination.Label ?? ride.destination.Address }} every
+              {{ ExtractDay(ride.departure) }}, arriving at {{ ExtractTime(ride.arrival) }}.
         </span>
       </div>
 
       <div v-if="ride.requested && !ride.accepted" class="notice-box">
         <q-icon name="las la-stamp" size="sm"/>
         <span>You requested this ride {{ FormatShortDate(ride.requested).toLowerCase() }}. <br/>
-          {{ ride.Driver.firstName }} has yet to accept it.</span>
+          {{ ride.driver.firstName }} has yet to accept it.</span>
       </div>
 
     </section>

@@ -48,9 +48,9 @@ async function abort (): Promise<void> {
     <div style="flex-grow: 1"/>
 
     <transition
-        appear
-        enter-active-class="animated heartBeat"
-        leave-active-class="animated fadeOut">
+      appear
+      enter-active-class="animated heartBeat"
+      leave-active-class="animated fadeOut">
       <section key="front" class="rqs__front">
         <div class="rqs__image">
           <q-img alt="Success" fit="contain" height="200px" src="~/assets/success-car.svg"/>
@@ -66,7 +66,7 @@ async function abort (): Promise<void> {
       <div class="rqs__message__header">
         <q-icon name="las la-check-circle" size="lg"/>
         <div class="rqs__message__header__text">
-          <span>We'll notify you when {{ ride.Driver.firstName }} approves your request. Fingers crossed!</span>
+          <span>We'll notify you when {{ ride.driver.firstName }} approves your request. Fingers crossed!</span>
           <div class="rqs__message__header__icons">
             <q-icon name="las la-at" size="sm"/>
             <q-icon name="las la-bell" size="sm"/>
@@ -75,7 +75,7 @@ async function abort (): Promise<void> {
       </div>
 
       <div v-if="!commentSent" class="rqs__action">
-        <q-btn :label="`Leave ${ride.Driver.firstName} a comment`" class="outline-button"
+        <q-btn :label="`Leave ${ride.driver.firstName} a comment`" class="outline-button"
                @click="commentDialog = true"/>
       </div>
 
@@ -97,31 +97,31 @@ async function abort (): Promise<void> {
       <q-dialog v-model="commentDialog" persistent>
         <q-card class="card card--with-header" flat style="min-width: 300px">
           <q-card-section class="card-header">
-            <span>Comment for {{ ride.Driver.firstName }}</span>
+            <span>Comment for {{ ride.driver.firstName }}</span>
           </q-card-section>
 
           <q-card-section class="rqs__dialog__input">
             <q-input
-                v-model="commentText"
-                autofocus
-                autogrow
-                clearable
-                counter
-                filled
-                maxlength="160"
-                rows="3"
-                type="textarea"
-                @keyup.enter="commentDialog = false"/>
+              v-model="commentText"
+              autofocus
+              autogrow
+              clearable
+              counter
+              filled
+              maxlength="160"
+              rows="3"
+              type="textarea"
+              @keyup.enter="commentDialog = false"/>
           </q-card-section>
 
           <q-card-actions align="between">
             <q-btn class="flat-button" flat label="Discard" @click="discardComment()"/>
             <q-btn
-                :disable="commentText.length === 0"
-                :loading="commentLoading"
-                class="filled-button"
-                label="Leave Message"
-                @click="leaveComment()"/>
+              :disable="commentText.length === 0"
+              :loading="commentLoading"
+              class="filled-button"
+              label="Leave Message"
+              @click="leaveComment()"/>
           </q-card-actions>
         </q-card>
       </q-dialog>

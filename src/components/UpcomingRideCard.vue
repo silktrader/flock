@@ -43,15 +43,15 @@ function reviewRide (): void {
       <span class="q-focus-helper"/>
 
       <q-card-section class="card-header">
-        <span>{{ FormatLongDate(ride.Departure) }}</span>
+        <span>{{ FormatLongDate(ride.departure) }}</span>
       </q-card-section>
 
       <q-card-section class="ride-details">
 
         <section class="directions">
           <div class="directions-times">
-            <span>{{ ExtractTime(ride.Pickup.Date) }}</span>
-            <span>{{ ExtractTime(ride.Drop.Date) }}</span>
+            <span>{{ ExtractTime(ride.pickup.Date) }}</span>
+            <span>{{ ExtractTime(ride.drop.Date) }}</span>
           </div>
 
           <div class="graph">
@@ -61,15 +61,15 @@ function reviewRide (): void {
           </div>
 
           <div class="directions-locations">
-            <span>{{ ride.Pickup.Address }}</span>
-            <span>{{ ride.Drop.Address }}</span>
+            <span>{{ ride.pickup.Address }}</span>
+            <span>{{ ride.drop.Address }}</span>
           </div>
         </section>
 
         <section class="ride-extra">
           <span class="ride-extra-prep">with</span>
           <q-avatar size="50px">
-            <img :src="ride.Driver.avatarUrl" alt="Driver's Avatar"/>
+            <img :src="ride.driver.avatarUrl" alt="Driver's Avatar"/>
           </q-avatar>
           <template v-if="beforeCourse">
             <span>before</span>

@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { reactive, readonly, ref, toRaw } from 'vue'
 import { date } from 'quasar'
-import { getRandomAddress, RandomFloat, RandomId, RandomInt } from 'src/tools/random-tools'
+import { getRandomAddress, RandomFloat, RandomId, RandomInt, RandomPercent } from 'src/tools/random-tools'
 import { useLocationStore } from 'stores/location-store'
-import { AcceptedRide, RequestedRide, Ride, RideConfig } from 'src/models/ride'
+import { AcceptedRide, RequestedRide, Ride } from 'src/models/ride'
 import { Pickup } from 'src/models/pickup'
 import { useUserStore } from 'stores/user-store'
 import { DateMode, today } from 'src/tools/date-tools'
@@ -12,6 +12,8 @@ import { SearchParameters } from 'src/models/search-parameters'
 import { faker } from '@faker-js/faker/locale/it'
 import { getRandomRideComment } from 'src/models/ride-comment'
 import { getRandomRules } from 'src/models/ride-rule'
+import { User } from 'src/models/user'
+import { sapienzaPlaces } from 'src/models/place'
 import subtractFromDate = date.subtractFromDate
 import addToDate = date.addToDate
 
@@ -63,17 +65,17 @@ export const useRideStore = defineStore('ride',
 
     // avoids the need for undefined checks throughout the codebase
     const defaultRide: Readonly<Ride> = new Ride({
-      Arrival: date.addToDate(today, { hour: 1 }),
-      Departure: today,
-      Car: generateCar(),
-      Destination: ls.sapienzaPlaces[0],
-      Driver: us.generateDriver(new Set(), false),
-      Drop: generateDrop(today, 0),
-      Expense: 0,
-      Id: 'none',
-      Origin: ls.getDefaultHomeLocation(),
-      Pickup: generatePickup(date.addToDate(today, { minute: 30 }), 10),
-      Recurring: false,
+      arrival: date.addToDate(today, { hour: 1 }),
+      departure: today,
+      car: genCar(),
+      destination: ls.sapienzaPlaces[0],
+      driver: us.generateDriver(new Set(), false),
+      drop: generateDrop(today, 0),
+      expense: 0,
+      id: 'none',
+      origin: ls.getDefaultHomeLocation(),
+      pickup: generatePickup(date.addToDate(today, { minute: 30 }), 10),
+      recurring: false,
       passengers: [],
       rules: []
     })
@@ -93,6 +95,9 @@ export const useRideStore = defineStore('ride',
 
     // Contains all the rides that a user requested
     const requestedRides = reactive<Array<RequestedRide>>([])
+
+    // Contains past rides the user took part in.
+    const completedRides = reactive<ReadonlyArray<AcceptedRide>>(genCompletedRides())
 
     // Mocks a hypothetical round trip to a database
     const searching = ref<boolean>(false)
@@ -127,7 +132,7 @@ export const useRideStore = defineStore('ride',
 
       // either fetch previously stored results or generate new ones
       if (oldSearch === undefined || date.getDateDiff(oldSearch.Date, new Date(), 'minutes') > 10) {
-        rides.value.splice(0, rides.value.length, ...generateNewRides())
+        rides.value.splice(0, rides.value.length, ...genNewRides())
         searches.value.set(serialisedParameters, {
           Rides: [...rides.value],
           Date: new Date()
@@ -146,12 +151,13 @@ export const useRideStore = defineStore('ride',
       updateSearch()
     }
 
-    function getRandomRideEssentials () {
+    // Generates a random ID, rules, comment and expense.
+    function genRideBase () {
       return {
-        Id: RandomId(),
+        id: RandomId(),
         rules: getRandomRules(),
         comment: getRandomRideComment(),
-        Expense: RandomInt(0, 4)
+        expense: RandomInt(0, 4)
       }
     }
 
@@ -180,22 +186,22 @@ export const useRideStore = defineStore('ride',
         }
 
         const driver = us.generateDriver(passengerAvatars, false)
-        const car = generateCar()
+        const car = genCar()
         const requested = date.subtractFromDate(departure, { days: RandomInt(1, 6) })
         const accepted = date.addToDate(requested, { minutes: RandomInt(30, 90) })
 
         rides.push(new AcceptedRide({
-          ...getRandomRideEssentials(),
-          Origin: defaultParameters.Origin,
-          Destination: lecture.location,
-          Arrival: arrival,
-          Departure: departure,
-          Driver: driver,
-          Car: car,
-          Drop: generateDrop(arrival, RandomInt(3, 10)),
-          Pickup: generatePickup(departure, RandomInt(3, 15)),
+          ...genRideBase(),
+          origin: defaultParameters.Origin,
+          destination: lecture.location,
+          arrival,
+          departure,
+          driver,
+          car,
+          drop: generateDrop(arrival, RandomInt(3, 10)),
+          pickup: generatePickup(departure, RandomInt(3, 15)),
           passengers,
-          Recurring: false,
+          recurring: false,
           before: lecture,
           requested,
           accepted
@@ -206,17 +212,17 @@ export const useRideStore = defineStore('ride',
           const departure = date.addToDate(lecture.date, { minute: lecture.duration + 15 })
           const arrival = date.addToDate(departure, { minute: RandomInt(20, 45) })
           rides.push(new AcceptedRide({
-            ...getRandomRideEssentials(),
-            Origin: lecture.location,
-            Destination: defaultParameters.Origin,
-            Arrival: arrival,
-            Departure: departure,
-            Driver: driver,
-            Car: car,
-            Drop: generateShortDrop(arrival, defaultParameters.Origin.Address),
-            Pickup: generateShortPickup(departure, lecture.location.Address),
+            ...genRideBase(),
+            origin: lecture.location,
+            destination: defaultParameters.Origin,
+            arrival,
+            departure,
+            driver,
+            car,
+            drop: generateShortDrop(arrival, defaultParameters.Origin.Address),
+            pickup: generateShortPickup(departure, lecture.location.Address),
             passengers,
-            Recurring: false,
+            recurring: false,
             after: lecture,
             requested,
             accepted
@@ -227,7 +233,7 @@ export const useRideStore = defineStore('ride',
       return rides
     }
 
-    function generateNewRides (): ReadonlyArray<Ride> {
+    function genNewRides (): ReadonlyArray<Ride> {
       // needs not track variable through changes
       const {
         Origin: origin,
@@ -272,7 +278,7 @@ export const useRideStore = defineStore('ride',
         avoidAvatars.add(driver.avatarUrl)
 
         // determine random number of total and available seats
-        const car = generateCar()
+        const car = genCar()
         const passengers = []
         const passengerAvatars: Set<string> = new Set()
         for (let occupiedSeats = RandomInt(0, car.seats - 1); occupiedSeats > 0; occupiedSeats--) {
@@ -286,24 +292,85 @@ export const useRideStore = defineStore('ride',
         hasRecurringRide = recurring || hasRecurringRide
 
         rides.push(new Ride({
-          ...getRandomRideEssentials(),
-          Origin: origin,
-          Destination: destination,
-          Arrival: arrival,
-          Departure: departure,
-          Driver: driver,
-          Car: car,
-          Drop: generateDrop(arrival, reachTime - pickupMinutes),
-          Pickup: pickup,
+          ...genRideBase(),
+          origin,
+          destination,
+          arrival,
+          departure,
+          driver,
+          car,
+          drop: generateDrop(arrival, reachTime - pickupMinutes),
+          pickup,
           passengers,
-          Recurring: recurring
+          recurring
         }))
       }
 
       return rides
     }
 
-    function generateCar (): Car {
+    function genPassengers (availableSeats: number): ReadonlyArray<User> {
+      const passengers = []
+      const passengerAvatars: Set<string> = new Set()
+      for (let occupiedSeats = RandomInt(0, availableSeats); occupiedSeats > 0; occupiedSeats--) {
+        const user = us.generateUser(passengerAvatars, false)
+        passengerAvatars.add(user.avatarUrl)
+        passengers.push(user)
+      }
+      return passengers
+    }
+
+    // Generate rides that took place in the past, to populate a user's history.
+    function genCompletedRides (): Array<AcceptedRide> {
+      const rides: Array<AcceptedRide> = []
+
+      // decide on a starting date in the past and go back from there
+      let cursorDate = date.subtractFromDate(today, { days: RandomInt(7, 15) })
+
+      for (let i = RandomInt(5, 21); i >= 0; i--) {
+        // pick a date older than the previous
+        cursorDate = date.subtractFromDate(cursorDate, { days: RandomInt(1, 4) })
+
+        // bound the ride's hours
+        cursorDate.setHours(RandomInt(7, 18))
+        cursorDate.setMinutes(RandomInt(0, 59))
+
+        const departure = cursorDate
+        const arrival = addToDate(departure, { minutes: RandomInt(20, 60) })
+
+        const car = genCar()
+        const passengers = genPassengers(car.seats)
+        const driver = us.generateDriver(new Set(passengers.map(p => p.avatarUrl)), false)
+
+        const requested = date.subtractFromDate(departure, { days: RandomInt(1, 5) })
+        const accepted = date.addToDate(requested, { minutes: RandomInt(60, 120) })
+
+        // determine random places, always counting on one Sapienza place
+        const sapienzaPlace = sapienzaPlaces[RandomInt(0, sapienzaPlaces.length)]
+        const otherPlace = ls.favouritePlaces[RandomInt(0, ls.favouritePlaces.length)]
+
+        const origin = RandomPercent() > 0.5 ? sapienzaPlace : otherPlace
+
+        rides.push(new AcceptedRide({
+          ...genRideBase(),
+          origin,
+          destination: origin === sapienzaPlace ? otherPlace : sapienzaPlace,
+          arrival,
+          departure,
+          driver,
+          car,
+          drop: generateDrop(arrival, RandomInt(3, 10)),
+          pickup: generatePickup(departure, RandomInt(3, 15)),
+          passengers,
+          recurring: false,
+          requested,
+          accepted
+        }))
+      }
+      return rides
+    }
+
+    function genCar (): Car {
       const carSpec = cars[RandomInt(0, cars.length - 1)]
       return {
         ...carSpec,
@@ -400,17 +467,20 @@ export const useRideStore = defineStore('ride',
     }
 
     function requestSelectedRide (): void {
-      requestedRides.push(new RequestedRide({ ...ride.value as RideConfig, requested: new Date() }))
+      requestedRides.push(new RequestedRide({
+        ...ride.value,
+        requested: new Date()
+      }))
     }
 
     function cancelSelectedRequest (): void {
-      const rideIndex = acceptedRides.findIndex(r => r.Id === ride.value.Id)
+      const rideIndex = requestedRides.findIndex(r => r.id === ride.value.id)
       requestedRides.splice(rideIndex, 1)
     }
 
-    const isRequested = (id: string): Date | null => requestedRides.find(r => r.Id === id)?.requested ?? null
+    const isRequested = (id: string): Date | null => requestedRides.find(r => r.id === id)?.requested ?? null
 
-    const isAccepted = (id: string): Date | null => acceptedRides.find(r => r.Id === id)?.accepted ?? null
+    const isAccepted = (id: string): Date | null => acceptedRides.find(r => r.id === id)?.accepted ?? null
 
     // Mock a round trip to a server.
     function mockSearchDelay (): void {
@@ -424,6 +494,7 @@ export const useRideStore = defineStore('ride',
       rides: readonly(rides),
       acceptedRides: readonly(acceptedRides),
       requestedRides: readonly(requestedRides),
+      completedRides: readonly(completedRides),
       ride: readonly(ride),
       searchParameters: readonly(searchParameters),
       searching: readonly(searching),

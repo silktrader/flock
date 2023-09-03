@@ -18,12 +18,12 @@ const ns = useNavigationStore()
 
 const slide = ref<string>('introduction')
 
-const now = new Date()
+const now = new Date() // possible issue in a long-running instance, may need to be outsourced to an external ticker
 
 const upcomingRides = computed<ReadonlyArray<Ride>>(
   () => rs.acceptedRides
-    .filter(r => r.Departure >= now)
-    .sort((a, b) => a.Departure.getTime() - b.Departure.getTime()))
+    .filter(r => r.departure >= now)
+    .sort((a, b) => a.departure.getTime() - b.departure.getTime()))
 
 function quitIntroduction (): void {
   slide.value = 'introduction'
@@ -50,17 +50,17 @@ function createRide (): void {
     <template v-if="ns.firstUse">
 
       <q-carousel
-          v-model="slide"
-          animated
-          class="introduction-carousel"
-          control-color="primary"
-          control-type="flat"
-          height="100vh"
-          navigation
-          padding
-          swipeable
-          transition-next="slide-left"
-          transition-prev="slide-right"
+        v-model="slide"
+        animated
+        class="introduction-carousel"
+        control-color="primary"
+        control-type="flat"
+        height="100vh"
+        navigation
+        padding
+        swipeable
+        transition-next="slide-left"
+        transition-prev="slide-right"
       >
         <q-carousel-slide class="column no-wrap flex-center" name="introduction">
           <q-icon color="primary" name="las la-car-side" size="100px"/>
@@ -156,7 +156,7 @@ function createRide (): void {
               <span class="section-title">Upcoming Rides</span>
               <div class="upcoming-cards">
                 <div class="card-spacer"/>
-                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
+                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.id" :ride="ride"/>
                 <div class="card-spacer"/>
               </div>
             </section>
@@ -183,7 +183,7 @@ function createRide (): void {
             <span class="section-title">Upcoming Rides</span>
             <div class="upcoming-cards">
               <div class="card-spacer"/>
-              <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
+              <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.id" :ride="ride"/>
               <div class="card-spacer"/>
             </div>
           </section>

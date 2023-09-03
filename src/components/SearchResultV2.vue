@@ -1,19 +1,19 @@
 <template>
 
   <transition
-      appear
-      enter-active-class="animated slideInUp"
-      leave-active-class="animated slideOutDown"
-      mode="out-in">
+    appear
+    enter-active-class="animated slideInUp"
+    leave-active-class="animated slideOutDown"
+    mode="out-in">
 
-    <div :key="ride.Id" v-ripple class="result-container">
+    <div :key="ride.id" v-ripple class="result-container">
 
       <div v-if="requested" class="sr-card-header sr-card-header--requested">
         <span>You requested this ride {{ FormatShortDate(requested) }}</span>
       </div>
 
-      <div v-else-if="ride.Recurring" class="sr-card-header">
-        <span>{{ ride.Driver.firstName }} drives this route every {{ ExtractDay(ride.Departure) }}</span>
+      <div v-else-if="ride.recurring" class="sr-card-header">
+        <span>{{ ride.driver.firstName }} drives this route every {{ ExtractDay(ride.departure) }}</span>
       </div>
 
       <div v-ripple class="card" @click="reviewRide()">
@@ -23,11 +23,11 @@
           <section class="driver">
             <div class="driver-avatar">
               <q-avatar size="100px">
-                <img :src="ride.Driver.avatarUrl" alt="Driver's Avatar"/>
+                <img :src="ride.driver.avatarUrl" alt="Driver's Avatar"/>
               </q-avatar>
-              <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
+              <span class="driver-rating">{{ ride.driver.Rating.toFixed(1) }}</span>
             </div>
-            <span class="driver-details">{{ ride.Driver.displayName }}</span>
+            <span class="driver-details">{{ ride.driver.displayName }}</span>
           </section>
 
           <section class="schedule">
@@ -36,7 +36,7 @@
 
               <aside class="duration">
                 <q-icon name="update" size="sm"></q-icon>
-                <span>{{ FormatDuration(ride.Departure, ride.Arrival) }}</span>
+                <span>{{ FormatDuration(ride.departure, ride.arrival) }}</span>
               </aside>
 
               <div class="locations">
@@ -44,7 +44,7 @@
                 <div class="origin">
                   <q-icon name="trip_origin" size="sm"/>
                   <div class="origin-details">
-                    <span>{{ ExtractTime(ride.Departure) }}</span>
+                    <span>{{ ExtractTime(ride.departure) }}</span>
                   </div>
                 </div>
 
@@ -53,7 +53,7 @@
                 <div class="destination">
                   <q-icon name="location_on" size="sm"/>
                   <div class="destination-details">
-                    <span>{{ ExtractTime(ride.Arrival) }}</span>
+                    <span>{{ ExtractTime(ride.arrival) }}</span>
                   </div>
                 </div>
 
@@ -63,12 +63,12 @@
 
             <section class="schedule-details">
 
-              <div v-if="ride.Pickup.Transport === Transport.Subway"
+              <div v-if="ride.pickup.Transport === Transport.Subway"
                    :class="['ride-detail', pickupClass]">
                 <q-icon name="las la-train" size="md"/>
               </div>
 
-              <div v-else-if="ride.Pickup.Transport === Transport.Bus"
+              <div v-else-if="ride.pickup.Transport === Transport.Bus"
                    :class="['ride-detail', pickupClass]">
                 <q-icon name="las la-bus" size="md"/>
               </div>
@@ -78,7 +78,7 @@
               </div>
 
               <div class="result-expense">
-                {{ ride.Expense }} €
+                {{ ride.expense }} €
               </div>
 
             </section>
@@ -106,17 +106,17 @@ const props = defineProps<{
   ride: Ride
 }>()
 
-const requested = computed<Date | null>(() => rs.isRequested(props.ride.Id))
+const requested = computed<Date | null>(() => rs.isRequested(props.ride.id))
 
 // const requested = computed<Date | null>(() =>
 //   rs.bookedRides.filter(r => r.Id === props.ride.Id)[0]?.requested)
 
 const pickupClass = computed<string>(() =>
-    `bg-${rs.colourCodePickup(props.ride.PickupDuration)}`
+  `bg-${rs.colourCodePickup(props.ride.PickupDuration)}`
 )
 
 const walkClass = computed<string>(() =>
-    `bg-${rs.colourCodePickup(props.ride.WalkDuration)}`
+  `bg-${rs.colourCodePickup(props.ride.WalkDuration)}`
 )
 
 function reviewRide (): void {

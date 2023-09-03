@@ -19,9 +19,9 @@ const ns = useNavigationStore()
 
 const ride = computed<Ride>(() => rs.ride)
 
-const accepted = computed<Date | null>(() => rs.isAccepted((ride.value.Id)))
+const accepted = computed<Date | null>(() => rs.isAccepted((ride.value.id)))
 
-const requested = computed<Date | null>(() => rs.isRequested((ride.value.Id)))
+const requested = computed<Date | null>(() => rs.isRequested((ride.value.id)))
 
 const loading = ref<boolean>(false)
 
@@ -39,8 +39,6 @@ const detailsViewOptions: Array<{ label: string, value: DetailsView }> = [{
   label: 'Car',
   value: DetailsView.Car
 }]
-
-// const isRequested = computed<boolean>(() => rs.isRequested(ride.value.Id))
 
 function RequestRide (): void {
   loading.value = true
@@ -71,10 +69,10 @@ function CancelRequest (): void {
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="ns.goBack()"/>
       <section class="secondary-header-title">
         <span>{{
-            `${ride.Origin.Label ?? ride.Origin.Address}
-            to ${ride.Destination.Label ?? ride.Destination.Address}`
+            `${ride.origin.Label ?? ride.origin.Address}
+            to ${ride.destination.Label ?? ride.destination.Address}`
           }}</span>
-        <span class="modal-header-subtitle">{{ ExtractDate(ride.Departure) }}</span>
+        <span class="modal-header-subtitle">{{ ExtractDate(ride.departure) }}</span>
       </section>
     </header>
 
@@ -92,21 +90,21 @@ function CancelRequest (): void {
 
             <route-timeline :ride="ride"/>
 
-            <div v-if="ride.Recurring && !requested" class="notice-box route-box">
+            <div v-if="ride.recurring && !requested" class="notice-box route-box">
               <q-icon name="las la-calendar-week" size="lg"/>
-              <span>{{ ride.Driver.firstName }} repeats this same route every {{ ExtractDay(ride.Departure) }}.</span>
+              <span>{{ ride.driver.firstName }} repeats this same route every {{ ExtractDay(ride.departure) }}.</span>
             </div>
 
             <div v-if="requested" class="notice-box route-box">
               <q-icon name="las la-stamp" size="sm"/>
               <span>You requested this ride {{ FormatShortDate(requested) }}. <br/>
-                  {{ ride.Driver.firstName }} has yet to accept it.</span>
+                  {{ ride.driver.firstName }} has yet to accept it.</span>
             </div>
 
             <div v-else-if="accepted" class="notice-box route-box">
               <q-icon name="las la-stamp" size="sm"/>
               <span>You're part of this ride. {{
-                  ride.Driver.firstName
+                  ride.driver.firstName
                 }} accepted your request {{ FormatShortDate(accepted) }}.</span>
             </div>
 
@@ -125,29 +123,29 @@ function CancelRequest (): void {
 
                 <q-item-section class="person-avatar-section">
                   <q-avatar class="driver-avatar">
-                    <q-img :src="ride.Driver.avatarUrl"/>
-                    <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
+                    <q-img :src="ride.driver.avatarUrl"/>
+                    <span class="driver-rating">{{ ride.driver.Rating.toFixed(1) }}</span>
                   </q-avatar>
                 </q-item-section>
 
                 <q-item-section>
                   <div class="driver-details">
-                    <span>{{ ride.Driver.displayName }}</span>
+                    <span>{{ ride.driver.displayName }}</span>
                     <div class="degree">
                       <q-icon name="school"/>
-                      <span>{{ ride.Driver.degree }}</span>
+                      <span>{{ ride.driver.degree }}</span>
                     </div>
                     <div class="person-stats">
                       <q-rating
-                          v-model="ride.Driver.onTimeRating"
-                          :max="3"
-                          color="accent"
-                          icon="alarm_on"
-                          readonly
-                          size="xs"
+                        v-model="ride.driver.onTimeRating"
+                        :max="3"
+                        color="accent"
+                        icon="alarm_on"
+                        readonly
+                        size="xs"
                       />
                       <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
-                        An estimate of {{ ride.Driver.firstName }} punctuality, as rated by his past passengers.
+                        An estimate of {{ ride.driver.firstName }} punctuality, as rated by his past passengers.
                       </q-tooltip>
                     </div>
 
@@ -223,18 +221,18 @@ function CancelRequest (): void {
                   <img alt="Car Avatar" src="/images/clio.jpg" style="object-fit: cover">
                 </q-avatar>
 
-                <span class="car-model">{{ ride.Car.model }}</span>
+                <span class="car-model">{{ ride.car.model }}</span>
               </div>
 
               <section class="car-accessories">
                 <span class="details-label">Features</span>
                 <div class="accessories-list">
-                  <span v-if="ride.Car.electric" class="chip">Electric</span>
-                  <span v-if="ride.Car.airConditioning" class="chip">Air Conditioning</span>
-                  <span v-if="ride.Car.bootSpace" class="chip">Boot Space</span>
-                  <span v-if="ride.Car.airBag" class="chip">Passenger Airbags</span>
-                  <span v-if="ride.Car.usbChargers" class="chip">USB Chargers</span>
-                  <span v-if="ride.Car.soundSystem" class="chip">Sound System</span>
+                  <span v-if="ride.car.electric" class="chip">Electric</span>
+                  <span v-if="ride.car.airConditioning" class="chip">Air Conditioning</span>
+                  <span v-if="ride.car.bootSpace" class="chip">Boot Space</span>
+                  <span v-if="ride.car.airBag" class="chip">Passenger Airbags</span>
+                  <span v-if="ride.car.usbChargers" class="chip">USB Chargers</span>
+                  <span v-if="ride.car.soundSystem" class="chip">Sound System</span>
                 </div>
               </section>
 
@@ -243,11 +241,11 @@ function CancelRequest (): void {
               <span>License Plate</span>
               <q-icon v-if="!accepted" color="secondary" name="info" size="sm">
                 <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
-                    {{ ride.Driver.firstName }}'s license plate will show once he accepts your ride request.
+                    {{ ride.driver.firstName }}'s license plate will show once he accepts your ride request.
                   </q-tooltip>
               </q-icon>
             </span>
-                <span :class="{blurred: !accepted, 'car-plate': true}">{{ ride.Car.vrm }}</span>
+                <span :class="{blurred: !accepted, 'car-plate': true}">{{ ride.car.vrm }}</span>
               </section>
 
             </div>
@@ -263,7 +261,7 @@ function CancelRequest (): void {
             <div class="rules-container">
 
               <q-chat-message v-if="ride.comment"
-                              :avatar="ride.Driver.avatarUrl"
+                              :avatar="ride.driver.avatarUrl"
                               :text="[ride.comment]"
                               bg-color="amber-4"
                               size="8"
@@ -277,7 +275,7 @@ function CancelRequest (): void {
                 </div>
               </div>
 
-              <q-item v-if="ride.Expense === 0">
+              <q-item v-if="ride.expense === 0">
                 <q-item-section>
                   <div class="expense-container">
                     Free Ride
@@ -285,7 +283,7 @@ function CancelRequest (): void {
                   <aside class="expense-none-notice">
                     <q-icon name="las la-mug-hot" size="md"/>
                     <span>
-              You can tip {{ ride.Driver.displayName }} when the ride's over. It's up to you. <br/>
+              You can tip {{ ride.driver.displayName }} when the ride's over. It's up to you. <br/>
               Donuts and coffee are welcome too!
               </span>
                   </aside>
@@ -306,7 +304,7 @@ function CancelRequest (): void {
                       </q-tooltip>
                     </div>
 
-                    <span class="expense">{{ ride.Expense }} €</span>
+                    <span class="expense">{{ ride.expense }} €</span>
 
                     <aside class="expense-payments-container">
                       <span>Pay when the ride's over with:</span>

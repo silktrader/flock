@@ -26,9 +26,9 @@
 
     <div v-else-if="rides.length === 0" class="no-results-container">
       <transition
-          appear
-          enter-active-class="animated tada"
-          leave-active-class="animated fadeOut">
+        appear
+        enter-active-class="animated tada"
+        leave-active-class="animated fadeOut">
         <div key="no-results-notice" class="no-results-notice">
           <div class="no-results-notice-image">
             <q-img alt="No Results Found" fit="contain" height="60px" src="~/assets/failure-car.svg"/>
@@ -37,22 +37,22 @@
         </div>
       </transition>
       <transition
-          v-if="!ridesNotified"
-          appear
-          enter-active-class="animated zoomIn"
-          leave-active-class="animated zoomOut"
-          mode="out-in">
+        v-if="!ridesNotified"
+        appear
+        enter-active-class="animated zoomIn"
+        leave-active-class="animated zoomOut"
+        mode="out-in">
         <div key="no-results-prompt" class="no-results-prompt">
           <span>Should we notify you when somebody arranges such a ride?</span>
           <q-btn class="tonal-button" label="Notify Me" @click="notifyRide()"/>
         </div>
       </transition>
       <transition
-          v-else
-          appear
-          enter-active-class="animated zoomIn"
-          leave-active-class="animated zoomOut"
-          mode="out-in">
+        v-else
+        appear
+        enter-active-class="animated zoomIn"
+        leave-active-class="animated zoomOut"
+        mode="out-in">
         <div key="no-results-notified" class="no-results-prompt">
           <q-icon name="notification_add" size="md"/>
           <span>We'll tell you once someone schedules this ride.</span>
@@ -61,11 +61,11 @@
     </div>
 
     <div v-else-if="us.options.debug.resultCards === ResultCards.Intricate" class="ride-cards">
-      <search-result-v1 v-for='ride in rides' :key='ride.Id' :r="ride"/>
+      <search-result-v1 v-for='ride in rides' :key='ride.id' :r="ride"/>
     </div>
 
     <div v-else class="ride-cards">
-      <search-result-v2 v-for='ride in rides' :key='ride.Id' :ride="ride"/>
+      <search-result-v2 v-for='ride in rides' :key='ride.id' :ride="ride"/>
     </div>
 
   </q-page>
@@ -97,16 +97,16 @@ const ridesNotified = computed<boolean>(function () {
   const params = rs.searchParameters
   return us.rideNotifications.some(n =>
     date.getDateDiff(n.Date, params.Date, 'minutes') < 10 &&
-      n.DateMode === params.DateMode &&
-      n.Origin === params.Origin &&
-      n.Destination === params.Destination
+    n.DateMode === params.DateMode &&
+    n.Origin === params.Origin &&
+    n.Destination === params.Destination
   )
 })
 
 function sortByDurationThenRecurring (a: Ride, b: Ride): number {
   if (a.TotalDuration > b.TotalDuration) return -1
   if (a.TotalDuration < b.TotalDuration) return 1
-  if (!a.Recurring && b.Recurring) return -1
+  if (!a.recurring && b.recurring) return -1
   return 0
 }
 

@@ -7,23 +7,23 @@
       <section class="driver">
         <div class="driver-avatar">
           <q-avatar size="100px">
-            <img :src="r.Driver.avatarUrl"/>
+            <img :src="r.driver.avatarUrl"/>
           </q-avatar>
-          <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
+          <span class="driver-rating">{{ r.driver.Rating.toFixed(1) }}</span>
         </div>
-        <span class="driver-details">{{ r.Driver.displayName }}</span>
+        <span class="driver-details">{{ r.driver.displayName }}</span>
       </section>
 
       <section class="ride-details">
 
         <section class="ride-details-header">
           <div class="ride-details-header-time">
-            <span>Leave at <em>{{ ExtractTime(r.Departure) }}</em></span>
-            <span>Arrive at <em>{{ ExtractTime(r.Arrival) }}</em></span>
+            <span>Leave at <em>{{ ExtractTime(r.departure) }}</em></span>
+            <span>Arrive at <em>{{ ExtractTime(r.arrival) }}</em></span>
           </div>
           <aside class="duration">
             <q-icon name="update" size="xs"></q-icon>
-            <span>{{ FormatDuration(r.Departure, r.Arrival) }}</span>
+            <span>{{ FormatDuration(r.departure, r.arrival) }}</span>
           </aside>
         </section>
 
@@ -35,16 +35,16 @@
               <q-icon name="airline_seat_recline_normal" size="sm"></q-icon>
               <div>
                 <span>{{ r.FreeSeats }}</span>
-                <sub class="seats-total">/{{ r.Car.seats }}</sub>
+                <sub class="seats-total">/{{ r.car.seats }}</sub>
               </div>
             </div>
 
             <div class="ride-detail">
               <q-icon name="euro" size="sm"></q-icon>
-              <span>{{ r.Expense }}</span>
+              <span>{{ r.expense }}</span>
             </div>
 
-            <div v-if="r.Recurring" class="ride-detail">
+            <div v-if="r.recurring" class="ride-detail">
               <q-icon name="event_repeat" size="sm"/>
             </div>
 
@@ -68,12 +68,12 @@
 
           <div class="ride-details-commute">
 
-            <div v-if="r.Pickup.Transport === Transport.Subway" class="ride-detail">
+            <div v-if="r.pickup.Transport === Transport.Subway" class="ride-detail">
               <q-icon name="directions_subway" size="sm"></q-icon>
               <span>{{ r.PickupDuration }} <small>min</small></span>
             </div>
 
-            <div v-else-if="r.Pickup.Transport === Transport.Bus" class="ride-detail">
+            <div v-else-if="r.pickup.Transport === Transport.Bus" class="ride-detail">
               <q-icon name="directions_bus" size="sm"></q-icon>
               <span>{{ r.PickupDuration }} <small>min</small></span>
             </div>
@@ -81,7 +81,7 @@
             <div class="ride-detail">
               <q-icon name="directions_walk" size="sm"></q-icon>
               <span>{{
-                  r.Pickup.Transport === Transport.None ? r.PickupDuration + r.DropDuration : r.DropDuration
+                  r.pickup.Transport === Transport.None ? r.PickupDuration + r.DropDuration : r.DropDuration
                 }} <small>min</small></span>
             </div>
 
