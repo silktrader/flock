@@ -21,6 +21,8 @@ const rs = useRideStore()
 const us = useUserStore()
 const ns = useNavigationStore()
 
+const loading = ref<boolean>(true)
+
 const slide = ref<string>('introduction')
 
 const now = new Date() // possible issue in a long-running instance, may need to be outsourced to an external ticker
@@ -45,6 +47,11 @@ function searchRides (): void {
 function createRide (): void {
   router.push('/create-ride')
 }
+
+// mimic the wait due to network activity
+setTimeout(() => {
+  loading.value = false
+}, 500)
 
 </script>
 
@@ -81,23 +88,20 @@ function createRide (): void {
             <img :src="us.user.avatarUrl" alt="Christiane F. picture"/>
           </q-avatar>
           <div class="q-mt-md text-center">
-            <p>You impersonate <b>Christiane F.</b> — an ACSAI
+            <p>You're <b>Christiane F.</b> — an ACSAI
               <q-icon name="info" size="xs">
-                <q-tooltip anchor="top middle" self="bottom middle">
+                <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
                   ACSAI stands for "Applied Computer Science and Artificial Intelligence".
                 </q-tooltip>
               </q-icon>
-              student living near Rome's zoo, at Via Aldrovandi, tired
-              of long campus commutes.
+              student living near Rome's zoo, at Via Aldrovandi.
             </p>
 
-            <p>Feel free to explore the app and consider its perks or drawbacks. Your tasks are:</p>
+            <p>Have a look around. Then we'd like you to:</p>
             <ul class="carousel-tasks">
-              <li>Book a comfy ride from home to Sapienza, in time for Monday's "Human Computer Interaction" lecture
-                (HCI),
-                at 10:00.
+              <li>Book a ride from home to Sapienza, in time for Monday's first lecture, at 10:00.
               </li>
-              <li>Arrange a ride to Sapienza's Sport Center for the next Sunday morning. Fingers crossed for a clear
+              <li>Arrange a ride to the Sport Center for the coming Sunday morning. Fingers crossed for a clear
                 sky!
               </li>
             </ul>
@@ -195,8 +199,13 @@ function createRide (): void {
 
           </main>
 
-          <q-page-sticky :offset="[18, 18]" position="bottom-right">
-            <q-btn class="pulsingButton fab-button" fab icon="search" @click="searchRides()"/>
+          <q-page-sticky v-if="!loading" :offset="[18, 18]" position="bottom-right">
+            <transition
+              appear
+              enter-active-class="animated heartBeat"
+            >
+              <q-btn key="search-fab" class="fab-button" fab icon="search" @click="searchRides()"/>
+            </transition>
           </q-page-sticky>
         </q-tab-panel>
 

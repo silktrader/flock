@@ -132,12 +132,21 @@ $border-radius: 12px;
 }
 
 .fab-button {
-  background-color: $primary-container;
-  color: $on-primary-container;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //background-color: $primary-container;
+  //color: $on-primary-container;
+  background-color: $primary;
+  color: $primary-container;
   text-transform: none;
   min-height: 40px;
-  padding: 0 24px;
+  padding: 16px;
   border-radius: 12px !important;
+
+  .q-icon {
+    font-size: 32px;
+  }
 }
 
 .general-container {

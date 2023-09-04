@@ -7,7 +7,7 @@ import { RideDetails, SearchControls } from 'src/models/options'
 
 export const useNavigationStore = defineStore('navigation', () => {
   const debugButton = ref<boolean>(false)
-  const firstUse = ref<boolean>(false)
+  const firstUse = ref<boolean>(true)
 
   const $q = useQuasar()
   const router = useRouter()
