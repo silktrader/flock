@@ -35,8 +35,8 @@ function searchRides (): void {
 <template>
 
   <transition
-    appear
-    enter-active-class="animated slideInRight"
+      appear
+      enter-active-class="animated slideInRight"
   >
 
     <q-card key="upcoming-lecture-card" v-ripple class="lecture-card card cursor-pointer q-hoverable" flat
@@ -44,7 +44,7 @@ function searchRides (): void {
       <!--    sets up the ripple effect-->
       <span class="q-focus-helper"/>
       <q-card-section class="card-header">
-        <span>{{ FormatShortDate(lecture.date) }}</span>
+        <span class="ul__date">{{ FormatShortDate(lecture.date) }}</span>
       </q-card-section>
 
       <q-card-section class="lecture-details">
@@ -128,6 +128,10 @@ function searchRides (): void {
 
 .lecture-no-rides {
   color: $on-secondary-container;
+}
+
+.ul__date {
+  text-transform: capitalize;
 }
 
 </style>

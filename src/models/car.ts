@@ -12,6 +12,7 @@ export interface Car extends CarSpec {
   usbChargers: boolean
   bootSpace: boolean
   soundSystem: boolean
+  bluetooth: boolean
 }
 
 export const cars: ReadonlyArray<CarSpec> = [{

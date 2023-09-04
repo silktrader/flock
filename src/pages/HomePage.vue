@@ -8,6 +8,11 @@ import UpcomingLectureCard from 'components/UpcomingLectureCard.vue'
 import UpcomingRideCard from 'components/UpcomingRideCard.vue'
 import { Ride } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
+import StatPeopleMet from 'components/stats/StatPeopleMet.vue'
+import StatCO2Saved from 'components/stats/StatCO2Saved.vue'
+import StatAggregates from 'components/stats/StatRides.vue'
+import StatDistance from 'components/stats/StatDistance.vue'
+import StatMoney from 'components/stats/StatMoney.vue'
 
 const tab = ref<'rides' | 'drives'>('rides')
 
@@ -152,8 +157,8 @@ function createRide (): void {
 
             </section>
 
-            <section class="upcoming-cards-container">
-              <span class="section-title">Upcoming Rides</span>
+            <section class="home__row">
+              <span class="home__row__title">Upcoming Rides</span>
               <div class="upcoming-cards">
                 <div class="card-spacer"/>
                 <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.id" :ride="ride"/>
@@ -161,13 +166,31 @@ function createRide (): void {
               </div>
             </section>
 
-            <section class="upcoming-cards-container">
-              <span class="section-title">Upcoming Lectures</span>
+            <section class="home__row">
+              <span class="home__row__title">Upcoming Lectures</span>
               <div class="upcoming-cards">
                 <div class="card-spacer"/>
                 <UpcomingLectureCard v-for="lecture in us.upcomingLectures" :key="lecture.id" :lecture="lecture"/>
                 <div class="card-spacer"/>
               </div>
+            </section>
+
+            <section class="home__row">
+              <span class="home__row__title">Facts & Figures</span>
+              <div class="home__stats">
+
+                <div class="home__stats__col">
+                  <StatAggregates/>
+                  <StatPeopleMet/>
+                  <StatDistance/>
+                  <!--                  <StatRideCount/>-->
+                </div>
+                <div class="home__stats__col">
+                  <StatCO2Saved/>
+                  <StatMoney/>
+                </div>
+              </div>
+
             </section>
 
           </main>
@@ -179,8 +202,8 @@ function createRide (): void {
 
         <q-tab-panel name="drives">
 
-          <section class="upcoming-cards-container">
-            <span class="section-title">Upcoming Rides</span>
+          <section class="home__row">
+            <span class="home__row__title">Upcoming Rides</span>
             <div class="upcoming-cards">
               <div class="card-spacer"/>
               <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.id" :ride="ride"/>
@@ -280,13 +303,13 @@ function createRide (): void {
   flex-direction: column;
 }
 
-.upcoming-cards-container {
+.home__row {
   display: flex;
   flex-direction: column;
   margin-top: 24px;
 }
 
-.section-title {
+.home__row__title {
   color: $on-background;
   font-size: medium;
   margin-left: 24px;
@@ -310,6 +333,23 @@ function createRide (): void {
 
 .card-spacer {
   min-width: 16px;
+}
+
+.home__stats {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-left: 24px;
+  margin-right: 24px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.home__stats__col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
 }
 
 </style>

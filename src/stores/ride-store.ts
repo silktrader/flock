@@ -157,7 +157,7 @@ export const useRideStore = defineStore('ride',
         id: RandomId(),
         rules: getRandomRules(),
         comment: getRandomRideComment(),
-        expense: RandomInt(0, 4)
+        expense: RandomPercent() > 0.5 ? 0 : RandomInt(1, 4)
       }
     }
 
@@ -378,7 +378,8 @@ export const useRideStore = defineStore('ride',
         color: faker.color.rgb(),
         usbChargers: Boolean(RandomInt(0, 2)),
         bootSpace: Boolean(RandomInt(0, 3)),
-        soundSystem: Boolean(RandomInt(0, 2))
+        soundSystem: Boolean(RandomInt(0, 2)),
+        bluetooth: Boolean(RandomInt(0, 2))
       }
     }
 
