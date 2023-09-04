@@ -14,6 +14,7 @@ import { getRandomRideComment } from 'src/models/ride-comment'
 import { getRandomRules } from 'src/models/ride-rule'
 import { User } from 'src/models/user'
 import { sapienzaPlaces } from 'src/models/place'
+import { Driver } from 'src/models/driver'
 import subtractFromDate = date.subtractFromDate
 import addToDate = date.addToDate
 
@@ -69,7 +70,7 @@ export const useRideStore = defineStore('ride',
       departure: today,
       car: genCar(),
       destination: ls.sapienzaPlaces[0],
-      driver: us.generateDriver(new Set(), false),
+      driver: us.generateDriver(),
       drop: generateDrop(today, 0),
       expense: 0,
       id: 'none',
@@ -176,17 +177,11 @@ export const useRideStore = defineStore('ride',
         const arrival = subtractFromDate(lecture.date, { minutes: RandomInt(3, 20) })
         const departure = subtractFromDate(arrival, { minutes: RandomInt(25, 90) })
 
-        // determine random number of total and available seats
-        const passengers = []
-        const passengerAvatars: Set<string> = new Set()
-        for (let occupiedSeats = RandomInt(0, 3); occupiedSeats > 0; occupiedSeats--) {
-          const user = us.generateUser(passengerAvatars, false)
-          passengerAvatars.add(user.avatarUrl)
-          passengers.push(user)
-        }
-
-        const driver = us.generateDriver(passengerAvatars, false)
         const car = genCar()
+        const driver = us.generateDriver()
+        const passengers = genPassengers(car.seats, driver)
+        passengers.splice(Math.floor(RandomPercent() * (passengers.length + 1)), 0, us.user)
+
         const requested = date.subtractFromDate(departure, { days: RandomInt(1, 6) })
         const accepted = date.addToDate(requested, { minutes: RandomInt(30, 90) })
 
@@ -244,9 +239,6 @@ export const useRideStore = defineStore('ride',
         ladiesOnly
       } = searchParameters.value
 
-      // avoid creating rides whose drivers share the same avatar
-      const avoidAvatars: Set<string> = new Set()
-
       // flag the creation of at least one recurring ride, if any ride at all is to be generated
       let hasRecurringRide = false
 
@@ -273,18 +265,16 @@ export const useRideStore = defineStore('ride',
         const pickupMinutes = ls.isSapLocation(origin) ? RandomInt(1, 6) : RandomInt(Math.max(tripDuration * 0.33, reachTime - 6), reachTime - 3)
         const pickup = generatePickup(departure, pickupMinutes)
 
-        // generate a suitable driver
-        const driver = us.generateDriver(avoidAvatars, ladiesOnly)
-        avoidAvatars.add(driver.avatarUrl)
-
-        // determine random number of total and available seats
+        // generate a suitable driver, car and a random number of passengers
         const car = genCar()
-        const passengers = []
-        const passengerAvatars: Set<string> = new Set()
-        for (let occupiedSeats = RandomInt(0, car.seats - 1); occupiedSeats > 0; occupiedSeats--) {
-          const user = us.generateUser(passengerAvatars, ladiesOnly)
-          passengerAvatars.add(user.avatarUrl)
-          passengers.push(user)
+        let driver: Driver
+        let passengers: ReadonlyArray<User>
+        if (ladiesOnly) {
+          driver = us.generateFemaleDriver()
+          passengers = genPassengers(car.seats, driver, { allFemale: true })
+        } else {
+          driver = us.generateDriver()
+          passengers = genPassengers(car.seats, driver)
         }
 
         // ensure that at least one ride in the whole set is recurring
@@ -309,12 +299,13 @@ export const useRideStore = defineStore('ride',
       return rides
     }
 
-    function genPassengers (availableSeats: number): ReadonlyArray<User> {
+    function genPassengers (max: number, driver: Driver, options?: { allFemale: boolean }): Array<User> {
       const passengers = []
-      const passengerAvatars: Set<string> = new Set()
-      for (let occupiedSeats = RandomInt(0, availableSeats); occupiedSeats > 0; occupiedSeats--) {
-        const user = us.generateUser(passengerAvatars, false)
-        passengerAvatars.add(user.avatarUrl)
+      const avatars: Set<string> = new Set(driver.avatarUrl)
+      const genUser = options?.allFemale ? us.generateFemaleUser : us.generateUser
+      for (let occupiedSeats = RandomInt(0, max); occupiedSeats > 0; occupiedSeats--) {
+        const user = genUser(avatars)
+        avatars.add(user.avatarUrl)
         passengers.push(user)
       }
       return passengers
@@ -339,8 +330,11 @@ export const useRideStore = defineStore('ride',
         const arrival = addToDate(departure, { minutes: RandomInt(20, 60) })
 
         const car = genCar()
-        const passengers = genPassengers(car.seats)
-        const driver = us.generateDriver(new Set(passengers.map(p => p.avatarUrl)), false)
+        const driver = us.generateDriver()
+
+        // generate passengers but leave a spot for the user
+        const passengers = genPassengers(car.seats - 1, driver)
+        passengers.splice(Math.floor(RandomPercent() * (passengers.length + 1)), 0, us.user)
 
         const requested = date.subtractFromDate(departure, { days: RandomInt(1, 5) })
         const accepted = date.addToDate(requested, { minutes: RandomInt(60, 120) })

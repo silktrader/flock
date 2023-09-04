@@ -134,13 +134,24 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  function generateUser (avoidAvatars: ReadonlySet<string>, forceFemale: boolean): User {
-    return new User(configureNewUser(avoidAvatars, forceFemale))
+  function generateUser (avoidAvatars: ReadonlySet<string>): User {
+    return new User(configureNewUser(avoidAvatars, false))
   }
 
-  function generateDriver (avoidAvatars: ReadonlySet<string>, forceFemale: boolean): Driver {
+  function generateFemaleUser (avoidAvatars: ReadonlySet<string>): User {
+    return new User(configureNewUser(avoidAvatars, true))
+  }
+
+  function generateDriver (): Driver {
     return new Driver({
-      ...generateUser(avoidAvatars, forceFemale),
+      ...generateUser(new Set()),
+      Rating: RandomFloat(2.9, 4.9)
+    })
+  }
+
+  function generateFemaleDriver (): Driver {
+    return new Driver({
+      ...generateFemaleUser(new Set()),
       Rating: RandomFloat(2.9, 4.9)
     })
   }
@@ -211,7 +222,9 @@ export const useUserStore = defineStore('user', () => {
     user,
     options,
     generateUser,
+    generateFemaleUser,
     generateDriver,
+    generateFemaleDriver,
     getCourseById,
     notifyRide,
     getNextLecture
