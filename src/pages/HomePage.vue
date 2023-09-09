@@ -46,7 +46,7 @@ function searchRides (): void {
 }
 
 function createRide (): void {
-  router.push('/create-ride')
+  router.push('/create-ride/date')
 }
 
 </script>
@@ -211,7 +211,7 @@ function createRide (): void {
 
 .pulsingButton {
   box-shadow: 0 0 0 0 $primary-container;
-  animation: pulsing 3s infinite cubic-bezier(0.66, 0, 0, 0.8);
+  animation: pulsing 2s infinite cubic-bezier(0.66, 0, 0, 0.8);
   font-size: 22px;
   font-weight: normal;
   font-family: sans-serif;
@@ -225,7 +225,7 @@ function createRide (): void {
   0% {
     box-shadow: 0 0 0 0 $primary-container;
   }
-  50% {
+  80% {
     box-shadow: 0 0 0 18px rgba(0,0,0,0);
   }
   100% {

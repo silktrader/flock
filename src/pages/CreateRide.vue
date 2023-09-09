@@ -1,7 +1,7 @@
 <template>
   <q-page class="column">
     <header class="modal-header">
-      <!--      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>-->
+      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="router.go(-1)"/>
       <div class="modal-header-spacer"/>
       <section class="modal-header-title">
         <span style="padding-right: 1em; font-weight: bolder;">Drive Creation</span>
@@ -15,6 +15,9 @@
     <div class="column general-container ">
       <div class="instruction">Where do you leave from? </div>
       <q-btn class="place-button" align="left" @click="selectOrigin()" icon="search">Choose your initial address</q-btn>
+    </div>
+    <div style="text-align: center; padding-top:15px;">
+      <q-img src="~/assets/start.jpg" style="max-width: 220px"/>
     </div>
   </q-page>
 </template>
@@ -32,30 +35,6 @@ import { fa } from '@faker-js/faker'
 
 const router = useRouter()
 const ds = useDriveStore()
-const tempDrive : Drive = {
-  Id: '1',
-  Origin: {
-    Label: '',
-    Address: ''
-  },
-  Destination: {
-    Label: '',
-    Address: ''
-  },
-  Arrival: new Date(),
-  Departure: new Date(),
-  Car: {
-    Model: 'Tesla Model 3',
-    Seats: 3,
-    Electric: true,
-    AirConditioning: true
-  },
-  Earning: 0,
-  FreeSeats: 3,
-  Recurring: false
-}
-
-ds.setTemporaryDrive(tempDrive)
 
 function selectOrigin (): void {
   router.push('/rides/search/location-select/origin/drive')

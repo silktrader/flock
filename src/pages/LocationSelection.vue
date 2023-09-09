@@ -83,7 +83,8 @@ function selectPlace (place: Place): void {
   if (props.target === 'destination') {
     if (props.task === 'drive') {
       ds.updateField('Destination', place)
-      router.push('/create-ride/dest')
+      console.log(ds.temporaryDrive)
+      router.push('/create-ride/passengers')
       return
     }
     rs.updateParameters({ Destination: place })
