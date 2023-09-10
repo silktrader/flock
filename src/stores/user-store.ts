@@ -64,7 +64,7 @@ export const useUserStore = defineStore('user', () => {
     {
       id: RandomId(),
       name: 'Computer Architecture',
-      acro: 'CAR',
+      acro: 'ARC',
       days: ['mon', 'wed'],
       start: [16, 8],
       location: getRandomSapLocation(),

@@ -16,6 +16,8 @@ import StatMoney from 'components/stats/StatMoney.vue'
 
 const tab = ref<'rides' | 'drives'>('rides')
 
+const props = defineProps<{ skipIntro: boolean }>()
+
 const router = useRouter()
 const rs = useRideStore()
 const us = useUserStore()
@@ -31,6 +33,9 @@ const upcomingRides = computed<ReadonlyArray<Ride>>(
   () => rs.acceptedRides
     .filter(r => r.departure >= now)
     .sort((a, b) => a.departure.getTime() - b.departure.getTime()))
+
+// Provide a shortcut to skip the introduction from '/home' instead of '/'
+if (props.skipIntro) ns.skipIntroduction()
 
 function quitIntroduction (): void {
   slide.value = 'introduction'
@@ -85,7 +90,7 @@ setTimeout(() => {
         </q-carousel-slide>
         <q-carousel-slide class="column no-wrap flex-center" name="instructions">
           <q-avatar size="120px">
-            <img :src="us.user.avatarUrl" alt="Christiane F. picture"/>
+            <q-img :src="us.user.avatarUrl" alt="Christiane's Avatar" spinner-color="secondary"/>
           </q-avatar>
           <div class="q-mt-md text-center">
             <p>You're <b>Christiane F.</b> — an ACSAI

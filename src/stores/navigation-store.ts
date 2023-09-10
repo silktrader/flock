@@ -6,16 +6,11 @@ import { useUserStore } from 'stores/user-store'
 import { RideDetails, SearchControls } from 'src/models/options'
 
 export const useNavigationStore = defineStore('navigation', () => {
-  const debugButton = ref<boolean>(false)
   const firstUse = ref<boolean>(true)
 
   const $q = useQuasar()
   const router = useRouter()
   const us = useUserStore()
-
-  function toggleDebugButton (): void {
-    debugButton.value = !debugButton.value
-  }
 
   function skipIntroduction (): void {
     firstUse.value = false
@@ -59,7 +54,6 @@ export const useNavigationStore = defineStore('navigation', () => {
 
   return {
     firstUse: readonly(firstUse),
-    toggleDebugButton,
     skipIntroduction,
     toggleFullscreen,
     goHome,

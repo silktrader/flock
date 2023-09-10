@@ -6,6 +6,7 @@ import { ExtractDate, ExtractDay, FormatShortDate } from 'src/tools/date-tools'
 import { Ride } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
 import RouteTimeline from 'components/RouteTimeline.vue'
+import { useUserStore } from 'stores/user-store'
 
 enum DetailsView {
   Route,
@@ -16,6 +17,7 @@ enum DetailsView {
 
 const rs = useRideStore()
 const ns = useNavigationStore()
+const us = useUserStore()
 
 const ride = computed<Ride>(() => rs.ride)
 
@@ -24,6 +26,8 @@ const accepted = computed<Date | null>(() => rs.isAccepted((ride.value.id)))
 const requested = computed<Date | null>(() => rs.isRequested((ride.value.id)))
 
 const loading = ref<boolean>(false)
+
+const userId = computed<string>(() => us.user.id)
 
 const detailsView = ref<DetailsView>(DetailsView.Route)
 const detailsViewOptions: Array<{ label: string, value: DetailsView }> = [{
@@ -168,7 +172,14 @@ function CancelRequest (): void {
                   </q-avatar>
                 </q-item-section>
 
-                <q-item-section>
+                <q-item-section v-if="passenger.id === userId">
+                  <div class="passenger-details">
+                    <span><b>You</b></span>
+
+                  </div>
+                </q-item-section>
+
+                <q-item-section v-else>
                   <div class="passenger-details">
                     <span>{{ passenger.displayName }}</span>
                     <div class="degree">
@@ -179,7 +190,7 @@ function CancelRequest (): void {
                 </q-item-section>
 
                 <q-item-section side>
-                  <q-btn color="secondary" flat icon="arrow_forward_ios"/>
+                  <q-btn v-if="passenger.id !== userId" color="secondary" flat icon="arrow_forward_ios"/>
                 </q-item-section>
 
               </q-item>
