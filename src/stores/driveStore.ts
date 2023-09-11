@@ -33,7 +33,7 @@ export const useDriveStore = defineStore('driveStore', {
     },
 
     updateField (fieldName: string, fieldValue: any) {
-      if (['Id', 'Origin', 'Destination', 'Arrival', 'Departure', 'Car', 'Earning', 'Passengers', 'Recurring', 'before', 'after'].indexOf(fieldName) !== -1) {
+      if (['Id', 'Origin', 'Destination', 'Arrival', 'Departure', 'CarS', 'Earning', 'Passengers', 'Recurring', 'before', 'after', 'FreeSeats'].indexOf(fieldName) !== -1) {
         this.temporaryDrive[fieldName] = fieldValue
       } else {
         console.log(`Field '${fieldName}' does not exist in temporaryDrive.`)

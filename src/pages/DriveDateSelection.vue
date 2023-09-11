@@ -79,7 +79,6 @@ function abort (): void {
       <div class="column general-container">
         <div class="instruction" style="text-align: center;">When do you leave? </div>
         <date-selector class="time-sel" v-model="dateValue" :minuteStep="5"/>
-
         <section class="lectures">
             <q-list>
             <q-item-label header>Lectures of the Day</q-item-label>
