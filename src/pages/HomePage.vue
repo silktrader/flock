@@ -6,7 +6,7 @@ import { useRideStore } from 'stores/ride-store'
 import { useUserStore } from 'stores/user-store'
 import UpcomingLectureCard from 'components/UpcomingLectureCard.vue'
 import UpcomingRideCard from 'components/UpcomingRideCard.vue'
-import { Ride } from 'src/models/ride'
+import { AcceptedRide } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
 import StatPeopleMet from 'components/stats/StatPeopleMet.vue'
 import StatCO2Saved from 'components/stats/StatCO2Saved.vue'
@@ -29,7 +29,7 @@ const slide = ref<string>('introduction')
 
 const now = new Date() // possible issue in a long-running instance, may need to be outsourced to an external ticker
 
-const upcomingRides = computed<ReadonlyArray<Ride>>(
+const bookedRides = computed<ReadonlyArray<AcceptedRide>>(
   () => rs.acceptedRides
     .filter(r => r.departure >= now)
     .sort((a, b) => a.departure.getTime() - b.departure.getTime()))
@@ -167,16 +167,16 @@ setTimeout(() => {
             </section>
 
             <section class="home__row">
-              <span class="home__row__title">Upcoming Rides</span>
+              <span class="home__row__title">Your Booked Rides</span>
               <div class="upcoming-cards">
                 <div class="card-spacer"/>
-                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.id" :ride="ride"/>
+                <UpcomingRideCard v-for="ride in bookedRides" :key="ride.id" :ride="ride"/>
                 <div class="card-spacer"/>
               </div>
             </section>
 
             <section class="home__row">
-              <span class="home__row__title">Upcoming Lectures</span>
+              <span class="home__row__title">Your Next Lectures</span>
               <div class="upcoming-cards">
                 <div class="card-spacer"/>
                 <UpcomingLectureCard v-for="lecture in us.upcomingLectures" :key="lecture.id" :lecture="lecture"/>
@@ -209,7 +209,8 @@ setTimeout(() => {
               appear
               enter-active-class="animated heartBeat"
             >
-              <q-btn key="search-fab" class="fab-button" fab icon="search" @click="searchRides()"/>
+              <q-btn key="search-fab" class="fab-button" fab icon="search" size="lg" @click="searchRides()">Search
+              </q-btn>
             </transition>
           </q-page-sticky>
         </q-tab-panel>
@@ -220,7 +221,7 @@ setTimeout(() => {
             <span class="home__row__title">Upcoming Rides</span>
             <div class="upcoming-cards">
               <div class="card-spacer"/>
-              <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.id" :ride="ride"/>
+              <UpcomingRideCard v-for="ride in bookedRides" :key="ride.id" :ride="ride"/>
               <div class="card-spacer"/>
             </div>
           </section>
@@ -232,6 +233,10 @@ setTimeout(() => {
         </q-tab-panel>
 
       </q-tab-panels>
+
+      <footer>
+      </footer>
+
     </template>
 
   </q-page>
@@ -364,6 +369,10 @@ setTimeout(() => {
   flex-direction: column;
   gap: 8px;
   flex-grow: 1;
+}
+
+footer {
+  min-height: 100px; // ensure there's enough bottom space to accomodate the FAB without overlapping elements
 }
 
 </style>
