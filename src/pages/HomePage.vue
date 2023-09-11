@@ -1,20 +1,27 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from 'stores/user-store'
 import { useNavigationStore } from 'stores/navigation-store'
 import PassengerHome from 'components/home/PassengerHome.vue'
+import { useRideStore } from 'stores/ride-store'
+import UserModeSelector from 'components/home/UserModeSelector.vue'
 
-const tab = ref<'rides' | 'drives'>('rides')
+const tab = ref<'passenger' | 'driver'>('passenger')
 
 const props = defineProps<{ skipIntro: boolean }>()
 
 const router = useRouter()
 const us = useUserStore()
 const ns = useNavigationStore()
+const rs = useRideStore()
 
 const slide = ref<string>('introduction')
+
+const loading = ref<boolean>(true) // tk look into offloading this to the navigation store
+
+const showPassengerFab = computed<boolean>(() => loading.value === false && tab.value === 'passenger')
 
 // Provide a shortcut to skip the introduction from '/home' instead of '/'
 if (props.skipIntro) ns.skipIntroduction()
@@ -25,9 +32,20 @@ function quitIntroduction (): void {
   ns.toggleFullscreen()
 }
 
+function searchRides (): void {
+  rs.mockSearchDelay()
+  rs.updateParameters({})
+  ns.goSearchRides()
+}
+
 function createRide (): void {
   router.push('/create-ride')
 }
+
+// mimic the wait due to network activity
+setTimeout(() => {
+  loading.value = false
+}, 500)
 
 </script>
 
@@ -101,7 +119,9 @@ function createRide (): void {
     <template v-else>
 
       <header key="header" class="home-header">
-        <span>Flock</span>
+        <UserModeSelector/>
+
+        <div style="flex-grow: 5"/>
 
         <section class="home-header-actions">
           <q-btn flat icon="chat" round></q-btn>
@@ -115,19 +135,19 @@ function createRide (): void {
         </section>
       </header>
 
-      <q-tabs key="tabs" v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
-        <q-tab label="Rides" name="rides"/>
-        <q-tab label="Drives" name="drives"/>
+      <q-tabs v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
+        <q-tab label="Passenger" name="passenger"/>
+        <q-tab label="Driver" name="driver"/>
       </q-tabs>
 
-      <q-tab-panels key="tab-panels" v-model="tab" animated class="tab-container">
-        <q-tab-panel name="rides">
+      <q-tab-panels v-model="tab" animated class="tab-container">
+        <q-tab-panel name="passenger">
 
           <PassengerHome/>
 
         </q-tab-panel>
 
-        <q-tab-panel name="drives">
+        <q-tab-panel name="driver">
 
           <q-page-sticky :offset="[18, 18]" position="bottom-right">
             <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
@@ -136,6 +156,18 @@ function createRide (): void {
         </q-tab-panel>
 
       </q-tab-panels>
+
+      <!--In order to be stickied the FAB must be anchored to the main page, so can't be featured in children components.-->
+
+      <q-page-sticky v-if="showPassengerFab" :offset="[18, 18]" position="bottom-right">
+        <transition
+          appear
+          enter-active-class="animated heartBeat"
+        >
+          <q-btn key="search-fab" class="fab-button" fab icon="search" size="lg" @click="searchRides()">Search
+          </q-btn>
+        </transition>
+      </q-page-sticky>
 
       <footer>
       </footer>
@@ -206,6 +238,7 @@ function createRide (): void {
 .home-header-actions {
   display: flex;
   justify-content: flex-end;
+  flex-grow: 1;
 }
 
 .tabs {
@@ -227,10 +260,6 @@ function createRide (): void {
 
 .q-tab-panel {
   padding: 0 !important;
-}
-
-.card-spacer {
-  min-width: 16px;
 }
 
 footer {

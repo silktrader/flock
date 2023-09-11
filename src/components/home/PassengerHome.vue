@@ -9,28 +9,18 @@ import StatPeopleMet from 'components/stats/StatPeopleMet.vue'
 import StatDistance from 'components/stats/StatDistance.vue'
 import { useRideStore } from 'stores/ride-store'
 import { useUserStore } from 'stores/user-store'
-import { useNavigationStore } from 'stores/navigation-store'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { AcceptedRide } from 'src/models/ride'
 
 const rs = useRideStore()
 const us = useUserStore()
-const ns = useNavigationStore()
 
 const now = new Date() // possible issue in a long-running instance, may need to be outsourced to an external ticker
-
-const loading = ref<boolean>(true) // tk look into offloading this to the navigation store
 
 const bookedRides = computed<ReadonlyArray<AcceptedRide>>(
   () => rs.acceptedRides
     .filter(r => r.departure >= now)
     .sort((a, b) => a.departure.getTime() - b.departure.getTime()))
-
-function searchRides (): void {
-  rs.mockSearchDelay()
-  rs.updateParameters({})
-  ns.goSearchRides()
-}
 
 </script>
 
@@ -76,7 +66,7 @@ function searchRides (): void {
           <StatAggregates/>
           <StatPeopleMet/>
           <StatDistance/>
-          <!--                  <StatRideCount/>-->
+          <!--          <StatRideCount/>-->
         </div>
         <div class="home__stats__col">
           <StatCO2Saved/>
@@ -87,16 +77,6 @@ function searchRides (): void {
     </section>
 
   </main>
-
-  <q-page-sticky v-if="!loading" :offset="[18, 18]" position="bottom-right">
-    <transition
-      appear
-      enter-active-class="animated heartBeat"
-    >
-      <q-btn key="search-fab" class="fab-button" fab icon="search" size="lg" @click="searchRides()">Search
-      </q-btn>
-    </transition>
-  </q-page-sticky>
 
 </template>
 
@@ -142,6 +122,10 @@ function searchRides (): void {
   flex-direction: column;
   gap: 8px;
   flex-grow: 1;
+}
+
+.card-spacer {
+  min-width: 16px;
 }
 
 </style>
