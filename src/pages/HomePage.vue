@@ -1,38 +1,20 @@
 <script lang="ts" setup>
 
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useRideStore } from 'stores/ride-store'
 import { useUserStore } from 'stores/user-store'
-import UpcomingLectureCard from 'components/UpcomingLectureCard.vue'
-import UpcomingRideCard from 'components/UpcomingRideCard.vue'
-import { AcceptedRide } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
-import StatPeopleMet from 'components/stats/StatPeopleMet.vue'
-import StatCO2Saved from 'components/stats/StatCO2Saved.vue'
-import StatAggregates from 'components/stats/StatRides.vue'
-import StatDistance from 'components/stats/StatDistance.vue'
-import StatMoney from 'components/stats/StatMoney.vue'
+import PassengerHome from 'components/home/PassengerHome.vue'
 
 const tab = ref<'rides' | 'drives'>('rides')
 
 const props = defineProps<{ skipIntro: boolean }>()
 
 const router = useRouter()
-const rs = useRideStore()
 const us = useUserStore()
 const ns = useNavigationStore()
 
-const loading = ref<boolean>(true)
-
 const slide = ref<string>('introduction')
-
-const now = new Date() // possible issue in a long-running instance, may need to be outsourced to an external ticker
-
-const bookedRides = computed<ReadonlyArray<AcceptedRide>>(
-  () => rs.acceptedRides
-    .filter(r => r.departure >= now)
-    .sort((a, b) => a.departure.getTime() - b.departure.getTime()))
 
 // Provide a shortcut to skip the introduction from '/home' instead of '/'
 if (props.skipIntro) ns.skipIntroduction()
@@ -43,20 +25,9 @@ function quitIntroduction (): void {
   ns.toggleFullscreen()
 }
 
-function searchRides (): void {
-  rs.mockSearchDelay()
-  rs.updateParameters({})
-  ns.goSearchRides()
-}
-
 function createRide (): void {
   router.push('/create-ride')
 }
-
-// mimic the wait due to network activity
-setTimeout(() => {
-  loading.value = false
-}, 500)
 
 </script>
 
@@ -152,79 +123,11 @@ setTimeout(() => {
       <q-tab-panels key="tab-panels" v-model="tab" animated class="tab-container">
         <q-tab-panel name="rides">
 
-          <main class="tab-sections">
+          <PassengerHome/>
 
-            <section v-if="rs.requestedRides.length" class="notice-box">
-
-              <q-icon name="las la-stamp" size="lg"/>
-
-              <span>You have <b>{{
-                  rs.requestedRides.length
-                }}</b> pending ride request{{ rs.requestedRides.length > 1 ? 's' : '' }} waiting to be approved.</span>
-
-              <q-btn dense flat icon="arrow_forward_ios" to="/rides/requests"/>
-
-            </section>
-
-            <section class="home__row">
-              <span class="home__row__title">Your Booked Rides</span>
-              <div class="upcoming-cards">
-                <div class="card-spacer"/>
-                <UpcomingRideCard v-for="ride in bookedRides" :key="ride.id" :ride="ride"/>
-                <div class="card-spacer"/>
-              </div>
-            </section>
-
-            <section class="home__row">
-              <span class="home__row__title">Your Next Lectures</span>
-              <div class="upcoming-cards">
-                <div class="card-spacer"/>
-                <UpcomingLectureCard v-for="lecture in us.upcomingLectures" :key="lecture.id" :lecture="lecture"/>
-                <div class="card-spacer"/>
-              </div>
-            </section>
-
-            <section class="home__row">
-              <span class="home__row__title">Facts & Figures</span>
-              <div class="home__stats">
-
-                <div class="home__stats__col">
-                  <StatAggregates/>
-                  <StatPeopleMet/>
-                  <StatDistance/>
-                  <!--                  <StatRideCount/>-->
-                </div>
-                <div class="home__stats__col">
-                  <StatCO2Saved/>
-                  <StatMoney/>
-                </div>
-              </div>
-
-            </section>
-
-          </main>
-
-          <q-page-sticky v-if="!loading" :offset="[18, 18]" position="bottom-right">
-            <transition
-              appear
-              enter-active-class="animated heartBeat"
-            >
-              <q-btn key="search-fab" class="fab-button" fab icon="search" size="lg" @click="searchRides()">Search
-              </q-btn>
-            </transition>
-          </q-page-sticky>
         </q-tab-panel>
 
         <q-tab-panel name="drives">
-
-          <section class="home__row">
-            <span class="home__row__title">Upcoming Rides</span>
-            <div class="upcoming-cards">
-              <div class="card-spacer"/>
-              <UpcomingRideCard v-for="ride in bookedRides" :key="ride.id" :ride="ride"/>
-              <div class="card-spacer"/>
-            </div>
-          </section>
 
           <q-page-sticky :offset="[18, 18]" position="bottom-right">
             <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
@@ -322,53 +225,12 @@ setTimeout(() => {
   flex-direction: column;
 }
 
-.home__row {
-  display: flex;
-  flex-direction: column;
-  margin-top: 24px;
-}
-
-.home__row__title {
-  color: $on-background;
-  font-size: medium;
-  margin-left: 24px;
-}
-
-.upcoming-cards {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  width: 100%;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  overflow-y: hidden;
-  overflow-x: auto;
-  height: min-content;
-}
-
 .q-tab-panel {
   padding: 0 !important;
 }
 
 .card-spacer {
   min-width: 16px;
-}
-
-.home__stats {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  margin-left: 24px;
-  margin-right: 24px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.home__stats__col {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex-grow: 1;
 }
 
 footer {
