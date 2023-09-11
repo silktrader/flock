@@ -4,13 +4,13 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRideStore } from 'stores/ride-store'
 import { useUserStore } from 'stores/user-store'
-import UpcomingLectureCard from 'components/UpcomingLectureCard.vue'
-import { Lecture } from 'src/models/lecture'
-import UpcomingRideCard from 'components/UpcomingRideCard.vue'
-import { Ride } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
+import PassengerHome from 'components/home/PassengerHome.vue'
+import UserModeSelector from 'components/home/UserModeSelector.vue'
 
-const tab = ref<'rides' | 'drives'>('rides')
+const props = defineProps<{ skipIntro?: boolean }>()
+
+const tab = ref<'passenger' | 'driver'>('passenger')
 
 const router = useRouter()
 const rs = useRideStore()
@@ -18,21 +18,11 @@ const us = useUserStore()
 const ns = useNavigationStore()
 
 const slide = ref<string>('introduction')
+const loading = ref<boolean>(true) // tk look into offloading this to the navigation store
 
-const now = new Date()
+const showPassengerFab = computed<boolean>(() => loading.value === false && tab.value === 'passenger')
 
-// assume lectures are already sorted
-const upcomingLectures = computed<ReadonlyArray<Lecture>>(
-  () => us.lectures
-    .filter(l => l.date >= now)
-    .slice(0, 5))
-
-const upcomingRides = computed<ReadonlyArray<Ride>>(
-  () => rs.bookedRides
-    .filter(r => r.Departure >= now)
-    .sort((a, b) => a.Departure.getTime() - b.Departure.getTime()))
-
-const pendingRequests = computed<number>(() => rs.bookedRides.filter(r => r.requested && !r.accepted).length)
+if (props.skipIntro) ns.skipIntroduction()
 
 function quitIntroduction (): void {
   slide.value = 'introduction'
@@ -41,6 +31,7 @@ function quitIntroduction (): void {
 }
 
 function searchRides (): void {
+  rs.mockSearchDelay()
   rs.updateParameters({})
   ns.goSearchRides()
 }
@@ -49,7 +40,10 @@ function createRide (): void {
   router.push('/create-ride/date')
 }
 
-</script>
+// mimic the wait due to network activity
+setTimeout(() => {
+  loading.value = false
+}, 500)</script>
 
 <template>
 
@@ -58,17 +52,17 @@ function createRide (): void {
     <template v-if="ns.firstUse">
 
       <q-carousel
-          v-model="slide"
-          animated
-          class="introduction-carousel"
-          control-color="primary"
-          control-type="flat"
-          height="100vh"
-          navigation
-          padding
-          swipeable
-          transition-next="slide-left"
-          transition-prev="slide-right"
+        v-model="slide"
+        animated
+        class="introduction-carousel"
+        control-color="primary"
+        control-type="flat"
+        height="100vh"
+        navigation
+        padding
+        swipeable
+        transition-next="slide-left"
+        transition-prev="slide-right"
       >
         <q-carousel-slide class="column no-wrap flex-center" name="introduction">
           <q-icon color="primary" name="las la-car-side" size="100px"/>
@@ -81,12 +75,12 @@ function createRide (): void {
         </q-carousel-slide>
         <q-carousel-slide class="column no-wrap flex-center" name="instructions">
           <q-avatar size="120px">
-            <img :src="us.user.avatarUrl" alt="Christiane F. picture"/>
+            <q-img :src="us.user.avatarUrl" alt="Christiane's Avatar" spinner-color="secondary"/>
           </q-avatar>
           <div class="q-mt-md text-center">
-            <p>You impersonate <b>Christiane F.</b> — an ACSAI
+            <p>You're <b>Christiane F.</b> — an ACSAI
               <q-icon name="info" size="xs">
-                <q-tooltip anchor="top middle" self="bottom middle">
+                <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
                   ACSAI stands for "Applied Computer Science and Artificial Intelligence".
                 </q-tooltip>
               </q-icon>
@@ -94,14 +88,12 @@ function createRide (): void {
               of long campus commutes.
             </p>
 
-            <p>Feel free to explore the app and consider its perks or drawbacks. Your tasks are:</p>
+            <p>Have a look around. Then we'd like you to:</p>
             <ul class="carousel-tasks">
               <li>Book a comfy ride from home to Sapienza, in time for Monday's "Human Computer Interaction" lecture
-                (HCI),
-                at 10:00.
+                (HCI), at 10:00.
               </li>
-              <li>Arrange a ride to Sapienza's Sport Center for the next Sunday morning. Fingers crossed for a clear
-                sky!
+              <li>Arrange a ride to the Sport Center for the coming Sunday morning. Fingers crossed for a clear sky!
               </li>
             </ul>
           </div>
@@ -124,7 +116,9 @@ function createRide (): void {
     <template v-else>
 
       <header key="header" class="home-header">
-        <span>Flock</span>
+        <UserModeSelector/>
+
+        <div style="flex-grow: 5"/>
 
         <section class="home-header-actions">
           <q-btn flat icon="chat" round></q-btn>
@@ -138,69 +132,42 @@ function createRide (): void {
         </section>
       </header>
 
-      <q-tabs key="tabs" v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
-        <q-tab label="Rides" name="rides"/>
-        <q-tab label="Drives" name="drives"/>
+      <q-tabs v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
+        <q-tab label="Passenger" name="passenger"/>
+        <q-tab label="Driver" name="driver"/>
       </q-tabs>
 
-      <q-tab-panels key="tab-panels" v-model="tab" animated class="tab-container">
-        <q-tab-panel name="rides">
+      <q-tab-panels v-model="tab" animated class="tab-container">
+        <q-tab-panel name="passenger">
 
-          <main class="tab-sections">
+          <passenger-home/>
 
-            <section v-if="pendingRequests" class="notice-box">
-
-              <q-icon name="las la-stamp" size="lg"/>
-
-              <span>You have <b>{{ pendingRequests }}</b> pending ride request{{ pendingRequests > 1 ? 's' : '' }} waiting to be approved.</span>
-
-              <q-btn dense flat icon="arrow_forward_ios" to="/rides/requests"/>
-
-            </section>
-
-            <section class="upcoming-cards-container">
-              <span class="section-title">Upcoming Rides</span>
-              <div class="upcoming-cards">
-                <div class="card-spacer"/>
-                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
-                <div class="card-spacer"/>
-              </div>
-            </section>
-
-            <section class="upcoming-cards-container">
-              <span class="section-title">Upcoming Lectures</span>
-              <div class="upcoming-cards">
-                <div class="card-spacer"/>
-                <UpcomingLectureCard v-for="lecture in upcomingLectures" :key="lecture.id" :lecture="lecture"/>
-                <div class="card-spacer"/>
-              </div>
-            </section>
-
-          </main>
-
-          <q-page-sticky :offset="[18, 18]" position="bottom-right">
-            <q-btn class="pulsingButton fab-button" fab icon="search" @click="searchRides()"/>
-          </q-page-sticky>
         </q-tab-panel>
 
-        <q-tab-panel name="drives">
-
-          <section class="upcoming-cards-container">
-              <span class="section-title">Upcoming Rides</span>
-              <div class="upcoming-cards">
-                <div class="card-spacer"/>
-                <UpcomingRideCard v-for="ride in upcomingRides" :key="ride.Id" :ride="ride"/>
-                <div class="card-spacer"/>
-              </div>
-            </section>
-
-          <q-page-sticky :offset="[18, 18]" position="bottom-right">
-            <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
-          </q-page-sticky>
+        <q-tab-panel name="driver">
 
         </q-tab-panel>
 
       </q-tab-panels>
+
+      <!--In order to be stickied the FAB must be anchored to the main page, so can't be featured in children components.-->
+
+      <q-page-sticky v-if="showPassengerFab" :offset="[18, 18]" position="bottom-right">
+        <transition
+          appear
+          enter-active-class="animated heartBeat"
+        >
+          <q-btn key="search-fab" class="fab-button" fab icon="search" size="lg" @click="searchRides()">Search
+          </q-btn>
+        </transition>
+      </q-page-sticky>
+
+      <q-page-sticky v-else :offset="[18, 18]" position="bottom-right">
+        <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
+      </q-page-sticky>
+
+      <footer></footer>
+
     </template>
 
   </q-page>
@@ -219,6 +186,7 @@ function createRide (): void {
   color: #ffffff;
   transition: all 300ms ease-in-out;
 }
+
 /* Comment-out to have the button continue to pulse on mouseover */
 /* Animation */
 @keyframes pulsing {
@@ -226,10 +194,10 @@ function createRide (): void {
     box-shadow: 0 0 0 0 $primary-container;
   }
   80% {
-    box-shadow: 0 0 0 18px rgba(0,0,0,0);
+    box-shadow: 0 0 0 18px rgba(0, 0, 0, 0);
   }
   100% {
-    box-shadow: 0 0 0 18px rgba(0,0,0,0);
+    box-shadow: 0 0 0 18px rgba(0, 0, 0, 0);
   }
 }
 
@@ -285,36 +253,12 @@ function createRide (): void {
   flex-direction: column;
 }
 
-.upcoming-cards-container {
-  display: flex;
-  flex-direction: column;
-  margin-top: 24px;
-}
-
-.section-title {
-  color: $on-background;
-  font-size: medium;
-  margin-left: 24px;
-}
-
-.upcoming-cards {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  width: 100%;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  overflow-y: hidden;
-  overflow-x: auto;
-  height: min-content;
-}
-
 .q-tab-panel {
   padding: 0 !important;
 }
 
-.card-spacer {
-  min-width: 16px;
+footer {
+  min-height: 100px; // ensure there's enough bottom space to accomodate the FAB without overlapping elements
 }
 
 </style>
