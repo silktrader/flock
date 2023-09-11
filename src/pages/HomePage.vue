@@ -115,40 +115,53 @@ setTimeout(() => {
 
     <template v-else>
 
-      <header key="header" class="home-header">
-        <UserModeSelector/>
+      <div :class="{'home__container--permanent-header': us.options.debug.fixedHeader}" class="home__container">
 
-        <div style="flex-grow: 5"/>
+        <header class="home-header">
+          <UserModeSelector/>
 
-        <section class="home-header-actions">
-          <q-btn flat icon="chat" round></q-btn>
-          <q-btn flat icon="notifications" round></q-btn>
+          <div style="flex-grow: 5"/>
 
-          <q-btn flat round @click="ns.goDebugOptions()">
-            <q-avatar size="xl">
-              <img :src="us.user.avatarUrl" alt="User Avatar"/>
-            </q-avatar>
-          </q-btn>
-        </section>
-      </header>
+          <section class="home-header-actions">
+            <q-btn flat icon="chat" round></q-btn>
+            <q-btn flat icon="notifications" round></q-btn>
 
-      <q-tabs v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
-        <q-tab label="Passenger" name="passenger"/>
-        <q-tab label="Driver" name="driver"/>
-      </q-tabs>
+            <q-btn flat round @click="ns.goDebugOptions()">
+              <q-avatar size="xl">
+                <img :src="us.user.avatarUrl" alt="User Avatar"/>
+              </q-avatar>
+            </q-btn>
+          </section>
 
-      <q-tab-panels v-model="tab" animated class="tab-container">
-        <q-tab-panel name="passenger">
+        </header>
 
-          <passenger-home/>
+        <div>
+          <q-tabs v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
+            <q-tab label="Passenger" name="passenger"/>
+            <q-tab label="Driver" name="driver"/>
+          </q-tabs>
+        </div>
 
-        </q-tab-panel>
+        <div class="home__contents">
 
-        <q-tab-panel name="driver">
+          <q-tab-panels v-model="tab" animated class="tab-container">
+            <q-tab-panel name="passenger">
 
-        </q-tab-panel>
+              <passenger-home/>
 
-      </q-tab-panels>
+            </q-tab-panel>
+
+            <q-tab-panel name="driver">
+
+            </q-tab-panel>
+
+          </q-tab-panels>
+
+          <footer/>
+
+        </div>
+
+      </div>
 
       <!--In order to be stickied the FAB must be anchored to the main page, so can't be featured in children components.-->
 
@@ -165,8 +178,6 @@ setTimeout(() => {
       <q-page-sticky v-else :offset="[18, 18]" position="bottom-right">
         <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
       </q-page-sticky>
-
-      <footer></footer>
 
     </template>
 
@@ -211,6 +222,15 @@ setTimeout(() => {
   margin-top: 8px;
 }
 
+.home__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.home__container--permanent-header {
+  height: 100vh;
+}
+
 .home-header {
   display: flex;
   width: 100vw;
@@ -224,6 +244,10 @@ setTimeout(() => {
   span {
     font-weight: bold;
   }
+}
+
+.home__contents {
+  overflow: auto;
 }
 
 .quit-introduction-button {
@@ -258,7 +282,7 @@ setTimeout(() => {
 }
 
 footer {
-  min-height: 100px; // ensure there's enough bottom space to accomodate the FAB without overlapping elements
+  min-height: 80px; // ensure there's enough bottom space to accomodate the FAB without overlapping elements
 }
 
 </style>
