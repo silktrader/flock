@@ -29,7 +29,7 @@
                 <q-icon name="location_on" size="sm"/>
               </div>
               <div class="col" style="margin-right:0.5em; margin-left: 0.5em;">
-  
+
                 <q-input ref="inputRef" v-model="startingAddress" :style="styleStart" dense label="From" outlined
                          rounded style="padding-bottom: 0.7em;">
                   <!--
@@ -69,7 +69,7 @@
               <div style="font-size: small; text-align: center;">
                 Rendezvous distance: {{ value }} min
               </div>
-  
+
               <q-slider
                 v-model="value"
                 :label-value="value + ' min'"
@@ -86,7 +86,7 @@
               <q-btn color="primary" icon-right="keyboard_double_arrow_down" label="Continue" @click="stepFront"/>
             </q-stepper-navigation>
           </q-step>
-  
+
           <q-step
             :done="step > 2"
             :name="2"
@@ -114,13 +114,13 @@
                     <q-card-section>
                       <div class="text-h6">Ride Repetition</div>
                     </q-card-section>
-  
+
                     <q-card-section class="q-pt-none">
                       If you want to set a recurrent ride, first select a date and then check the box.
                       The ride will be repeated every week, the same day of the week you choose,
                       at the time you selected.
                     </q-card-section>
-  
+
                     <q-card-actions align="right">
                       <q-btn v-close-popup color="primary" flat label="OK"/>
                     </q-card-actions>
@@ -163,7 +163,7 @@
               <q-btn class="q-ml-sm" color="primary" label="Back" outline @click="stepBack"/>
             </q-stepper-navigation>
           </q-step>
-  
+
           <q-step
             :done="step > 3"
             :name="3"
@@ -211,14 +211,14 @@
           </q-step>
         </q-stepper>
         <q-dialog v-model="createDiag" @hide="resetDialog">
-  
+
           <q-card style="padding: 0 1em 0 1em; width: 300px; height: 300px;">
-  
+
             <q-card-section v-show="showInfos">
               <div class="text-h6">Confirm</div>
               <q-separator spaced/>
             </q-card-section>
-  
+
             <q-card-section class="q-pt-none">
               <div v-show="showInfos">
                 <div style="text-align: center; font-size:medium;">
@@ -232,18 +232,18 @@
                     <div style="font-weight: bold; padding-right: 2px; padding-bottom: 0.2em;">From:</div>
                     <div style="font-style: italic;"> {{ startingAddress }}</div>
                   </div>
-  
+
                   <div class="row">
                     <div style="font-weight: bold; padding-right: 2px;">To:</div>
                     <div style="font-style: italic;"> {{ destinationAddress }}</div>
                   </div>
-  
+
                   <div
                     style="color:lightseagreen; text-align: center; padding-top: 0.4em; padding-bottom: 0.5em; font-style: italic; font-size:small;"
                     @click="moreRecap= !moreRecap">
                     <u> More </u>
                   </div>
-  
+
                   <div v-if="moreRecap" class="row justify-around" style="padding-top: 0.5em;">
                     <div>
                       <q-icon name="emoji_people" size="1.5em"/>
@@ -258,7 +258,7 @@
                       : {{ value }} min
                     </div>
                   </div>
-  
+
                 </div>
               </div>
               <div v-show="showCreatedMessage">
@@ -279,12 +279,12 @@
                 </div>
               </div>
             </q-card-section>
-  
+
             <div class="row justify-center">
               <q-btn v-show="showInfos" color="primary" dense label="Create"
                      style="font-size:smaller; margin-bottom: 1em;" @click="confirmation"/>
             </div>
-  
+
             <q-inner-loading :showing="circle_progress">
               <q-spinner-gears color="primary" size="100px"/>
             </q-inner-loading>
@@ -293,185 +293,185 @@
       </div>
     </q-page>
   </template>
-  
-  <script>
-  import { ref } from 'vue'
-  import { date } from 'quasar'
-  
-  const stringOptions = ['Città Universitaria', 'Castro Laurenziano',
-    'Centro Sportivo', 'Laboratorio d\'informatica',
-    'Via Salaria 113', 'Via della A.Lungimira']
-  
-  export default {
-  
-    setup () {
-      const options = ref(stringOptions)
-  
-      return {
-        options,
-  
-        filterFn (val, update, abort) {
-          update(() => {
-            const needle = val.toLowerCase()
-            options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-          })
-        },
-  
-        dateLimiter (day) {
-          return day >= date.formatDate(new Date(), 'YYYY/MM/DD')
-        }
-  
+
+<script>
+import { ref } from 'vue'
+import { date } from 'quasar'
+
+const stringOptions = ['Città Universitaria', 'Castro Laurenziano',
+  'Centro Sportivo', 'Laboratorio d\'informatica',
+  'Via Salaria 113', 'Via della A.Lungimira']
+
+export default {
+
+  setup () {
+    const options = ref(stringOptions)
+
+    return {
+      options,
+
+      filterFn (val, update, abort) {
+        update(() => {
+          const needle = val.toLowerCase()
+          options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+
+      dateLimiter (day) {
+        return day >= date.formatDate(new Date(), 'YYYY/MM/DD')
+      }
+
+    }
+  },
+
+  data () {
+    return {
+      destinationAddress: '',
+      startingAddress: 'Your location',
+      weekDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      step: 1,
+      value: 1,
+      searchDate: '',
+      time: '06:30',
+      recurrentCheck: false,
+      carModel: 'Panda',
+      seats: [1, 2, 3, 4, 5, 6],
+      seatsNumber: 1,
+      price: 0,
+      priceString: '0$',
+      isPulsing: false,
+      isRotated: false,
+      helpDiag: false,
+      createDiag: false,
+      moreRecap: false,
+      circle_progress: false,
+      showInfos: true,
+      showCreatedMessage: false
+    }
+  },
+
+  computed: {
+    everyWeekdayModel () {
+      return 'Every ' + this.searchDate.slice(0, this.searchDate.indexOf(','))
+    },
+    displayedDate () {
+      return this.searchDate.slice(0, -5)
+    },
+    styleStart () {
+      if (this.startingAddress === 'Your location') {
+        return 'font-style: italic;'
+      } else {
+        return ''
       }
     },
-  
-    data () {
-      return {
-        destinationAddress: '',
-        startingAddress: 'Your location',
-        weekDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        step: 1,
-        value: 1,
-        searchDate: '',
-        time: '06:30',
-        recurrentCheck: false,
-        carModel: 'Panda',
-        seats: [1, 2, 3, 4, 5, 6],
-        seatsNumber: 1,
-        price: 0,
-        priceString: '0$',
-        isPulsing: false,
-        isRotated: false,
-        helpDiag: false,
-        createDiag: false,
-        moreRecap: false,
-        circle_progress: false,
-        showInfos: true,
-        showCreatedMessage: false
+    styleDest () {
+      if (this.destinationAddress === 'Your location') {
+        return 'font-style: italic;'
+      } else {
+        return ''
+      }
+    }
+  },
+  methods: {
+
+    stepBack () {
+      if (this.step !== 1) {
+        this.step -= 1
       }
     },
-  
-    computed: {
-      everyWeekdayModel () {
-        return 'Every ' + this.searchDate.slice(0, this.searchDate.indexOf(','))
-      },
-      displayedDate () {
-        return this.searchDate.slice(0, -5)
-      },
-      styleStart () {
-        if (this.startingAddress === 'Your location') {
-          return 'font-style: italic;'
-        } else {
-          return ''
-        }
-      },
-      styleDest () {
-        if (this.destinationAddress === 'Your location') {
-          return 'font-style: italic;'
-        } else {
-          return ''
-        }
+    stepFront () {
+      if (this.step === 1 && this.destinationAddress === '') {
+        this.makePulse()
+        return
       }
-    },
-    methods: {
-  
-      stepBack () {
-        if (this.step !== 1) {
-          this.step -= 1
-        }
-      },
-      stepFront () {
-        if (this.step === 1 && this.destinationAddress === '') {
+      if (this.step === 2) {
+        if (!this.recurrentCheck && (this.time === '' || this.searchDate === '')) {
           this.makePulse()
           return
         }
-        if (this.step === 2) {
-          if (!this.recurrentCheck && (this.time === '' || this.searchDate === '')) {
-            this.makePulse()
-            return
-          }
-          if (this.recurrentCheck && this.time === '') {
-            this.makePulse()
-            return
-          }
-        }
-        if (this.step !== 3) {
-          this.step += 1
-        }
-      },
-      increasePrice () {
-        if (this.price < 10) {
-          this.price += 0.50
-          this.price = parseFloat(this.price.toFixed(2))
-          this.priceString = this.price.toString() + '$'
-        }
-      },
-      decreasePrice () {
-        if (this.price > 0) {
-          this.price -= 0.50
-          this.price = parseFloat(this.price.toFixed(2))
-          this.priceString = this.price.toString() + '$'
-        }
-      },
-      makePulse () {
-        this.isPulsing = true
-        setTimeout(() => {
-          this.isPulsing = false
-        }, 1250) // 1250 milliseconds, same duration as the CSS animation
-      },
-      checkboxMakePulse () {
-        if (this.searchDate === '') {
+        if (this.recurrentCheck && this.time === '') {
           this.makePulse()
+          return
         }
-      },
-      confirmation () {
-        this.circle_progress = true
-        this.showInfos = false
-        setTimeout(() => {
-          this.circle_progress = false
-          this.showCreatedMessage = true
-          this.step = 1
-          this.value = 0
-          this.destinationAddress = ''
-          this.date = ''
-          this.time = '06:30'
-          this.recurrentCheck = false
-          this.seatsNumber = 1
-          this.price = 0
-          this.priceString = '0$'
-        }, 2500)
-      },
-      resetDialog () {
-        this.createDiag = false
-        this.showInfos = true
-        this.showCreatedMessage = false
+      }
+      if (this.step !== 3) {
+        this.step += 1
       }
     },
-    mounted () {
-      const inputWidth = this.$refs.inputRef.$el.offsetWidth
-      this.$refs.selectRef.$el.style.maxWidth = inputWidth + 'px'
+    increasePrice () {
+      if (this.price < 10) {
+        this.price += 0.50
+        this.price = parseFloat(this.price.toFixed(2))
+        this.priceString = this.price.toString() + '$'
+      }
+    },
+    decreasePrice () {
+      if (this.price > 0) {
+        this.price -= 0.50
+        this.price = parseFloat(this.price.toFixed(2))
+        this.priceString = this.price.toString() + '$'
+      }
+    },
+    makePulse () {
+      this.isPulsing = true
+      setTimeout(() => {
+        this.isPulsing = false
+      }, 1250) // 1250 milliseconds, same duration as the CSS animation
+    },
+    checkboxMakePulse () {
+      if (this.searchDate === '') {
+        this.makePulse()
+      }
+    },
+    confirmation () {
+      this.circle_progress = true
+      this.showInfos = false
+      setTimeout(() => {
+        this.circle_progress = false
+        this.showCreatedMessage = true
+        this.step = 1
+        this.value = 0
+        this.destinationAddress = ''
+        this.date = ''
+        this.time = '06:30'
+        this.recurrentCheck = false
+        this.seatsNumber = 1
+        this.price = 0
+        this.priceString = '0$'
+      }, 2500)
+    },
+    resetDialog () {
+      this.createDiag = false
+      this.showInfos = true
+      this.showCreatedMessage = false
     }
+  },
+  mounted () {
+    const inputWidth = this.$refs.inputRef.$el.offsetWidth
+    this.$refs.selectRef.$el.style.maxWidth = inputWidth + 'px'
   }
-  </script>
-  
+}
+</script>
+
   <style>
   .disabled-checkbox {
     color: rgb(156, 156, 156)
   }
-  
+
   .pulsing-effect {
     animation: pulse 1.25s infinite;
     border-radius: 30px;
   }
-  
+
   .square-pulsing-effect {
     animation: pulse 1.25s infinite;
     border-radius: 5px;
   }
-  
+
   .q-dialog__backdrop {
     backdrop-filter: blur(2px);
   }
-  
+
   @keyframes pulse {
     0% {
       box-shadow: 0 0 0 0 white
@@ -483,6 +483,5 @@
       box-shadow: 0 0 0 0 white
     }
   }
-  
+
   </style>
-  

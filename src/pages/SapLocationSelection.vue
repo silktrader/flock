@@ -63,6 +63,10 @@ function closeModal (): void {
 }
 
 async function selectPlace (place: SapienzaPlace): Promise<void> {
+  if (props.task === 'drive') {
+    router.push('/create-ride/dest')
+    return
+  }
   if (props.target === 'destination') {
     rs.mockSearchDelay()
     rs.updateParameters({ Destination: place })

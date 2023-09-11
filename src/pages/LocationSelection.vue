@@ -6,11 +6,14 @@ import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
 import { FavouritePlace, Place } from 'src/models/place'
 import { QInput } from 'quasar'
+import { route } from 'quasar/wrappers'
+import { useDriveStore } from 'src/stores/driveStore'
 
-const props = defineProps<{ target: 'origin' | 'destination', task: 'ride' | 'drive' }>()
+const props = defineProps<{ target: 'origin' | 'destination', task: 'ride' | 'drive'}>()
 const router = useRouter()
 const rs = useRideStore()
 const ls = useLocationStore()
+const ds = useDriveStore()
 
 const formInput = ref<QInput>()
 const locationInput = ref<string>('')
@@ -69,10 +72,6 @@ function selectAddress (address: string): void {
 
 function selectPlace (place: Place): void {
   console.log(props.task)
-  if (props.task === 'drive') {
-    router.push('/create-ride/dest')
-    return
-  }
   // determine if the address is missing a number and assign a default if necessary
   if (!captureNumber(place.Address)) {
     place.Address = `${place.Address}, 1`
@@ -82,10 +81,19 @@ function selectPlace (place: Place): void {
   }
 
   if (props.target === 'destination') {
-    rs.mockSearchDelay()
+    if (props.task === 'drive') {
+      ds.updateField('Destination', place)
+      console.log(ds.temporaryDrive)
+      router.push('/create-ride/passengers')
+      return
+    }
     rs.updateParameters({ Destination: place })
   } else if (props.target === 'origin') {
-    rs.mockSearchDelay()
+    if (props.task === 'drive') {
+      ds.updateField('Origin', place)
+      router.push('/create-ride/dest')
+      return
+    }
     rs.updateParameters({ Origin: place })
   } else {
     throw new Error('invalid parameter while selecting location')

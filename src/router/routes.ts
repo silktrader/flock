@@ -64,12 +64,20 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/ProfilePage.vue')
     },
     {
-      path: '/create-ride',
+      path: '/create-ride/start',
       component: () => import('pages/CreateRide.vue')
     },
     {
       path: '/create-ride/dest',
       component: () => import('pages/CreateDestination.vue')
+    },
+    {
+      path: '/create-ride/date',
+      component: () => import('pages/DriveDateSelection.vue')
+    },
+    {
+      path: '/create-ride/passengers',
+      component: () => import('pages/DrivePassengersSelection.vue')
     }
     ]
   },
