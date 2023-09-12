@@ -89,7 +89,7 @@ watch([selectedDate, selectedHour, selectedMinute], ([isoDate, hour, minute]) =>
 }
 
 .days {
-  width: 110px;
+  width: 130px;
   text-transform: capitalize; // ensure that strings like 'tomorrow" are capitalised
 }
 

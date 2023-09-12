@@ -106,7 +106,8 @@ export const useUserStore = defineStore('user', () => {
       searchControls: SearchControls.Compact,
       rideDetails: RideDetails.Views,
       fixedHeader: true,
-      tabbedHome: false
+      tabbedHome: false,
+      dateHints: false
     }
   })
 

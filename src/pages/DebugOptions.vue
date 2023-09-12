@@ -43,8 +43,8 @@ const ns = useNavigationStore()
 
       <q-item>
         <q-item-section>
-          <q-item-label>View Switch</q-item-label>
-          <q-item-label caption>Choose how you'd rather switch between the passenger and driver views.
+          <q-item-label>User Mode Switch</q-item-label>
+          <q-item-label caption>Choose how to switch between the passenger and driver views.
           </q-item-label>
           <div class="segmented-button-container">
             <q-btn-toggle
@@ -98,6 +98,24 @@ const ns = useNavigationStore()
             <q-btn-toggle v-model="us.options.debug.rideDetails"
                           :options="[{label: 'Scrollable Page', value: RideDetails.Scroll}, {label: 'Multiple Views', value: RideDetails.Views}]"
                           class="button-toggle"/>
+          </div>
+        </q-item-section>
+      </q-item>
+
+      <q-item-label header>Date Selection</q-item-label>
+
+      <q-item>
+        <q-item-section>
+          <q-item-label>Date Hints</q-item-label>
+          <q-item-label caption>Choose whether to display suggested dates and lecture starting times in the relevant
+            selector.
+          </q-item-label>
+          <div class="segmented-button-container">
+            <q-btn-toggle
+              v-model="us.options.debug.dateHints"
+              :options="[{label: 'Show Date Hints', value: true}, {label: 'Hide Date Hints', value: false}]"
+              class="button-toggle"
+            />
           </div>
         </q-item-section>
       </q-item>

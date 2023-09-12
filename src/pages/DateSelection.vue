@@ -119,7 +119,7 @@ const lectureNextWeek = computed<Lecture | null>(
 
       <date-selector v-model="dateValue" :minute-step="selectorMinuteStep"/>
 
-      <section class="ds-hints">
+      <section v-if="us.options.debug.dateHints" class="ds-hints">
         <template v-if="dateMode === DateMode.Arrive">
           <q-btn v-if='nextLectureToday' class="outline-button" @click="updateDate(nextLectureToday?.date)">
             Next lecture today
