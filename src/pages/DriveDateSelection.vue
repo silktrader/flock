@@ -107,12 +107,9 @@ function abort (): void {
             </q-list>
         </section>
         <footer style="margin-top: 30px;">
-            <q-btn :label="actionLabel" class="filled-button filled-button--full-width" size="lg" @click="selectDriveDate()">
-                <!--        <div class="action-button-contents">-->
-                <!--          <span>{{ actionLabelHour }}</span>-->
-                <!--          <span>{{ actionLabelDate }}</span>-->
-                <!--        </div>-->
-            </q-btn>
+          <q-page-sticky :offset="[55, 200]" position="bottom-right">
+            <q-btn class="pulsingButton fab-button" fab icon="arrow_forward" @click="selectDriveDate()"/>
+          </q-page-sticky>
         </footer>
       </div>
     </q-page>
@@ -128,4 +125,5 @@ function abort (): void {
 .filled-button--full-width {
   width: 100%;
 }
+
 </style>
