@@ -1,82 +1,93 @@
 <template>
 
-  <div v-ripple class="result-container">
+  <transition
+    appear
+    enter-active-class="animated slideInUp"
+    leave-active-class="animated slideOutDown"
+    mode="out-in">
 
-    <div v-if="r.Recurring" class="regular-route-header">
-      <span>{{ r.Driver.firstName }} drives this route every {{ ExtractDay(r.Departure) }}</span>
-      <q-icon name="event_repeat" size="xs"></q-icon>
-    </div>
+    <div :key="ride.id" v-ripple class="result-container">
 
-    <div v-ripple class="card" @click="reviewRide()">
+      <div v-if="requested" class="sr-card-header sr-card-header--requested">
+        <span>You requested this ride {{ FormatShortDate(requested) }}</span>
+      </div>
 
-      <div class="driver-schedule">
+      <div v-else-if="ride.recurring" class="sr-card-header">
+        <span>{{ ride.driver.firstName }} drives this route every {{ ExtractDay(ride.departure) }}</span>
+      </div>
 
-        <section class="driver">
-          <div class="driver-avatar">
-            <q-avatar size="100px">
-              <img :src="r.Driver.avatarUrl" alt="Driver's Avatar"/>
-            </q-avatar>
-            <span class="driver-rating">{{ r.Driver.Rating.toFixed(1) }}</span>
-          </div>
-          <span class="driver-details">{{ r.Driver.displayName }}</span>
-        </section>
+      <div v-ripple class="card" @click="reviewRide()">
 
-        <section class="schedule">
+        <div class="driver-schedule">
 
-          <section class="schedule-times">
-
-            <aside class="duration">
-              <q-icon name="update" size="sm"></q-icon>
-              <span>{{ FormatDuration(r.Departure, r.Arrival) }}</span>
-            </aside>
-
-            <div class="locations">
-
-              <div class="origin">
-                <q-icon name="trip_origin" size="sm"/>
-                <div class="origin-details">
-                  <span>{{ ExtractTime(r.Departure) }}</span>
-                </div>
-              </div>
-
-              <div class="route"></div>
-
-              <div class="destination">
-                <q-icon name="location_on" size="sm"/>
-                <div class="destination-details">
-                  <span>{{ ExtractTime(r.Arrival) }}</span>
-                </div>
-              </div>
-
+          <section class="driver">
+            <div class="driver-avatar">
+              <q-avatar size="100px">
+                <img :src="ride.driver.avatarUrl" alt="Driver's Avatar"/>
+              </q-avatar>
+              <span class="driver-rating">{{ ride.driver.Rating.toFixed(1) }}</span>
             </div>
-
+            <span class="driver-details">{{ ride.driver.displayName }}</span>
           </section>
 
-          <section class="schedule-details">
+          <section class="schedule">
 
-            <div v-if="r.Pickup.Transport === Transport.Subway"
-                 :class="['ride-detail', pickupClass]">
-              <q-icon name="las la-train" size="md"/>
-            </div>
+            <section class="schedule-times">
 
-            <div v-else-if="r.Pickup.Transport === Transport.Bus"
-                 :class="['ride-detail', pickupClass]">
-              <q-icon name="las la-bus" size="md"/>
-            </div>
+              <aside class="duration">
+                <q-icon name="update" size="sm"></q-icon>
+                <span>{{ FormatDuration(ride.departure, ride.arrival) }}</span>
+              </aside>
 
-            <div :class="['ride-detail', walkClass]">
-              <q-icon name="las la-walking" size="md"/>
-            </div>
+              <div class="locations">
 
-            <div class="result-expense">
-              {{ r.Expense }} €
-            </div>
+                <div class="origin">
+                  <q-icon name="trip_origin" size="sm"/>
+                  <div class="origin-details">
+                    <span>{{ ExtractTime(ride.departure) }}</span>
+                  </div>
+                </div>
 
+                <div class="route"></div>
+
+                <div class="destination">
+                  <q-icon name="location_on" size="sm"/>
+                  <div class="destination-details">
+                    <span>{{ ExtractTime(ride.arrival) }}</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </section>
+
+            <section class="schedule-details">
+
+              <div v-if="ride.pickup.Transport === Transport.Subway"
+                   :class="['ride-detail', pickupClass]">
+                <q-icon name="las la-train" size="md"/>
+              </div>
+
+              <div v-else-if="ride.pickup.Transport === Transport.Bus"
+                   :class="['ride-detail', pickupClass]">
+                <q-icon name="las la-bus" size="md"/>
+              </div>
+
+              <div :class="['ride-detail', walkClass]">
+                <q-icon name="las la-walking" size="md"/>
+              </div>
+
+              <div class="result-expense">
+                {{ ride.expense }} €
+              </div>
+
+            </section>
           </section>
-        </section>
+        </div>
       </div>
     </div>
-  </div>
+
+  </transition>
 
 </template>
 
@@ -84,7 +95,7 @@
 
 import { Transport, useRideStore } from 'stores/ride-store'
 import { Ride } from 'src/models/ride'
-import { ExtractDay, ExtractTime, FormatDuration } from '../tools/date-tools'
+import { ExtractDay, ExtractTime, FormatDuration, FormatShortDate } from '../tools/date-tools'
 import { computed } from 'vue'
 import { useNavigationStore } from 'stores/navigation-store'
 
@@ -92,19 +103,24 @@ const rs = useRideStore()
 const ns = useNavigationStore()
 
 const props = defineProps<{
-  r: Ride // webstorm will complain if the instance is named after the interface (bug)
+  ride: Ride
 }>()
 
+const requested = computed<Date | null>(() => rs.isRequested(props.ride.id))
+
+// const requested = computed<Date | null>(() =>
+//   rs.bookedRides.filter(r => r.Id === props.ride.Id)[0]?.requested)
+
 const pickupClass = computed<string>(() =>
-  `bg-${rs.colourCodePickup(props.r.PickupDuration)}`
+  `bg-${rs.colourCodePickup(props.ride.PickupDuration)}`
 )
 
 const walkClass = computed<string>(() =>
-  `bg-${rs.colourCodePickup(props.r.WalkDuration)}`
+  `bg-${rs.colourCodePickup(props.ride.WalkDuration)}`
 )
 
 function reviewRide (): void {
-  rs.selectRide(props.r)
+  rs.selectRide(props.ride)
   ns.goDetailsPage()
 }
 
@@ -121,9 +137,10 @@ function reviewRide (): void {
   position: relative;
 }
 
-.regular-route-header {
+.sr-card-header {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 8px;
   align-items: center;
   font-style: italic;
   font-size: small;
@@ -134,6 +151,11 @@ function reviewRide (): void {
   color: $on-surface-variant;
   background-color: $surface-variant;
   z-index: -1;
+}
+
+.sr-card-header--requested {
+  color: $on-tertiary-container;
+  background-color: $tertiary-container;
 }
 
 .card {

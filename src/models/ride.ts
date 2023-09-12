@@ -11,105 +11,114 @@ import { Lecture } from 'src/models/lecture'
  but TS has no explicit support for them, requiring prototype pollution. */
 
 export interface RideConfig {
-  Id: string
-  Origin: Place
-  Destination: Place
-  Arrival: Date
-  Departure: Date
-  Driver: Driver
-  Car: Car
-  Drop: Drop
-  Pickup: Pickup
-  Expense: number
+  id: string
+  origin: Place
+  destination: Place
+  arrival: Date
+  departure: Date
+  driver: Driver
+  car: Car
+  drop: Drop
+  pickup: Pickup
+  expense: number
   passengers: ReadonlyArray<User>
   rules: ReadonlyArray<string>
-  Recurring: boolean
+  recurring: boolean
   before?: Lecture
   after?: Lecture
   comment?: string
-  requested?: Date | null
-  accepted?: boolean
 }
 
-export class Ride {
-  readonly Id: string
-  readonly Origin: Place
-  readonly Destination: Place
-  readonly Arrival: Date
-  readonly Departure: Date
-  readonly Driver: Driver
-  readonly Car: Car
-  readonly Drop: Drop
-  readonly Pickup: Pickup
-  readonly Expense: number
+export class Ride implements RideConfig {
+  readonly id: string
+  readonly origin: Place
+  readonly destination: Place
+  readonly arrival: Date
+  readonly departure: Date
+  readonly driver: Driver
+  readonly car: Car
+  readonly drop: Drop
+  readonly pickup: Pickup
+  readonly expense: number
   readonly passengers: ReadonlyArray<User>
-  readonly Recurring: boolean
+  readonly recurring: boolean
   readonly before?: Lecture
   readonly after?: Lecture
   readonly comment?: string
   readonly rules: ReadonlyArray<string>
 
-  // Tells whether the ride was requested by the user.
-  readonly requested: Date | null
-
-  // Tells whether the ride was requested by the user and accepted by the driver.
-  readonly accepted: boolean
-
   constructor (
     config: RideConfig
   ) {
     // checks ensure valid creation
-    if (config.Arrival <= config.Departure) throw new Error('Ride departure follows arrival')
+    if (config.arrival <= config.departure) throw new Error('Ride departure follows arrival')
 
-    if (config.Pickup.Date <= config.Departure) throw new Error('Ride departure follows pickup')
+    if (config.pickup.Date <= config.departure) throw new Error('Ride departure follows pickup')
 
-    const addresses = new Set([config.Origin.Address, config.Destination.Address, config.Drop.Address, config.Pickup.Address])
+    const addresses = new Set([config.origin.Address, config.destination.Address, config.drop.Address, config.pickup.Address])
     if (addresses.size !== 4) throw new Error('One or more ride addresses match')
 
-    if (config.Expense < 0) throw new Error('Negative ride expense')
+    if (config.expense < 0) throw new Error('Negative ride expense')
 
-    this.Id = config.Id
-    this.Origin = config.Origin
-    this.Destination = config.Destination
-    this.Arrival = config.Arrival
-    this.Departure = config.Departure
-    this.Driver = config.Driver
-    this.Car = config.Car
-    this.Drop = config.Drop
-    this.Pickup = config.Pickup
-    this.Expense = config.Expense
+    this.id = config.id
+    this.origin = config.origin
+    this.destination = config.destination
+    this.arrival = config.arrival
+    this.departure = config.departure
+    this.driver = config.driver
+    this.car = config.car
+    this.drop = config.drop
+    this.pickup = config.pickup
+    this.expense = config.expense
     this.passengers = config.passengers
     this.rules = config.rules
-    this.Recurring = config.Recurring
+    this.recurring = config.recurring
     this.before = config.before
     this.after = config.after
-    this.accepted = config.accepted ?? false
-    this.requested = config.requested ?? null
     this.comment = config.comment
   }
 
   // Provides an estimate of the trip's duration, including pick-up, drop-off and carpooling times.
   get TotalDuration (): number {
-    return MinutesDiff(this.Departure, this.Arrival)
+    return MinutesDiff(this.departure, this.arrival)
   }
 
   get PickupDuration (): number {
-    return MinutesDiff(this.Pickup.Date, this.Departure)
+    return MinutesDiff(this.pickup.Date, this.departure)
   }
 
   get CarpoolDuration (): number {
-    return MinutesDiff(this.Drop.Date, this.Pickup.Date)
+    return MinutesDiff(this.drop.Date, this.pickup.Date)
   }
 
   get DropDuration (): number {
-    return MinutesDiff(this.Arrival, this.Drop.Date)
+    return MinutesDiff(this.arrival, this.drop.Date)
   }
 
   get WalkDuration (): number {
-    return this.DropDuration + (this.Pickup.Transport === Transport.None ? this.PickupDuration : 0)
+    return this.DropDuration + (this.pickup.Transport === Transport.None ? this.PickupDuration : 0)
   }
 
   get FreeSeats (): number {
-    return this.Car.seats - this.passengers.length
+    return this.car.seats - this.passengers.length
+  }
+}
+
+// Extended ride class which includes request data
+export class RequestedRide extends Ride {
+  readonly requested: Date
+
+  constructor (config: RideConfig & { requested: Date }) {
+    super(config)
+    this.requested = config.requested
+  }
+}
+
+export class AcceptedRide extends RequestedRide {
+  readonly accepted: Date
+
+  constructor (config: RideConfig & { requested: Date, accepted: Date }) {
+    super(config)
+    this.accepted = config.accepted
   }
 }

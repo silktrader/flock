@@ -41,6 +41,7 @@ const smokersAllowed = ref<boolean>(false)
 const masksOnly = ref<boolean>(false)
 
 function closeModal (): void {
+  rs.mockSearchDelay()
   rs.updateParameters({
     reachTime: maxPickupTime.value,
     busAllowed: busAllowed.value,

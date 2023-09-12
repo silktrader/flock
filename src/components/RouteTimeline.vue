@@ -18,25 +18,25 @@ const props = defineProps<{ ride: Ride }>()
       <!-- Departure -->
       <template v-slot:title>
         <div class="rt__header">
-          <span>{{ ride.Origin.Address }}</span>
+          <span>{{ ride.origin.Address }}</span>
           <span class="rt__header__time">
-                <q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.Departure) }}
+                <q-icon name="schedule" size="sm"/>{{ ExtractTime(ride.departure) }}
               </span>
         </div>
       </template>
 
       <div class="rt__instruction rt__instruction--shuttle">
-        <template v-if="ride.Pickup.Transport === Transport.None">
+        <template v-if="ride.pickup.Transport === Transport.None">
           <q-icon name="directions_walk" size="sm"/>
           <span>Walk for {{ ride.PickupDuration }} min.</span>
         </template>
-        <template v-if="ride.Pickup.Transport === Transport.Subway">
+        <template v-if="ride.pickup.Transport === Transport.Subway">
           <q-icon name="subway" size="sm"/>
-          <span>Ride {{ ride.Pickup.TransportId }} for {{ ride.PickupDuration }} min.</span>
+          <span>Ride {{ ride.pickup.TransportId }} for {{ ride.PickupDuration }} min.</span>
         </template>
-        <template v-if="ride.Pickup.Transport === Transport.Bus">
+        <template v-if="ride.pickup.Transport === Transport.Bus">
           <q-icon name="directions_bus" size="sm"/>
-          <span>Ride bus <small>#</small>{{ ride.Pickup.TransportId }} for {{
+          <span>Ride bus <small>#</small>{{ ride.pickup.TransportId }} for {{
               ride.PickupDuration
             }} min.</span>
         </template>
@@ -45,12 +45,12 @@ const props = defineProps<{ ride: Ride }>()
     </q-timeline-entry>
 
     <!-- Pickup -->
-    <q-timeline-entry :avatar="ride.Driver.avatarUrl" color="yellow-7">
+    <q-timeline-entry :avatar="ride.driver.avatarUrl" color="yellow-7">
       <template v-slot:title>
         <div class="rt__header">
-          <span>{{ ride.Pickup.Address }}</span>
+          <span>{{ ride.pickup.Address }}</span>
           <span class="rt__header__time"><q-icon name="schedule" size="sm"/>{{
-              ExtractTime(ride.Pickup.Date)
+              ExtractTime(ride.pickup.Date)
             }}</span>
         </div>
       </template>
@@ -69,9 +69,9 @@ const props = defineProps<{ ride: Ride }>()
     <q-timeline-entry class="rt__carpool" color="tertiary" icon="directions_car">
       <template v-slot:title>
         <div class="rt__header">
-          <span>{{ ride.Drop.Address }}</span>
+          <span>{{ ride.drop.Address }}</span>
           <span class="rt__header__time"><q-icon name="schedule" size="sm"/>{{
-              ExtractTime(ride.Drop.Date)
+              ExtractTime(ride.drop.Date)
             }}</span>
         </div>
       </template>
@@ -89,9 +89,9 @@ const props = defineProps<{ ride: Ride }>()
     <q-timeline-entry color="tertiary" icon="flag">
       <template v-slot:title>
         <div class="rt__header">
-          <span>{{ ride.Destination.Address }}</span>
+          <span>{{ ride.destination.Address }}</span>
           <span class="rt__header__time"><q-icon name="schedule" size="sm"/>{{
-              ExtractTime(ride.Arrival)
+              ExtractTime(ride.arrival)
             }}</span>
         </div>
       </template>

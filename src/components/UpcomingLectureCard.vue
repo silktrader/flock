@@ -7,18 +7,19 @@ import { Course } from 'src/models/course'
 import { useUserStore } from 'stores/user-store'
 import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
-import { useRouter } from 'vue-router'
+import { useNavigationStore } from 'stores/navigation-store'
 
 const props = defineProps<{ lecture: Lecture }>()
 
 const us = useUserStore()
 const rs = useRideStore()
 const ls = useLocationStore()
-const router = useRouter()
+const ns = useNavigationStore()
 
 const course = computed<Course>(() => us.getCourseById(props.lecture.courseId))
 
 function searchRides (): void {
+  rs.mockSearchDelay()
   rs.updateParameters({
     Date: props.lecture.date,
     DateMode: DateMode.Arrive,
@@ -26,7 +27,7 @@ function searchRides (): void {
     Destination: props.lecture.location,
     results: props.lecture.ridesAvailable
   })
-  router.push('/rides/search')
+  ns.goSearchRides()
 }
 
 </script>
@@ -34,8 +35,8 @@ function searchRides (): void {
 <template>
 
   <transition
-    appear
-    enter-active-class="animated slideInRight"
+      appear
+      enter-active-class="animated slideInRight"
   >
 
     <q-card key="upcoming-lecture-card" v-ripple class="lecture-card card cursor-pointer q-hoverable" flat
@@ -43,7 +44,7 @@ function searchRides (): void {
       <!--    sets up the ripple effect-->
       <span class="q-focus-helper"/>
       <q-card-section class="card-header">
-        <span>{{ FormatShortDate(lecture.date) }}</span>
+        <span class="ul__date">{{ FormatShortDate(lecture.date) }}</span>
       </q-card-section>
 
       <q-card-section class="lecture-details">
@@ -127,6 +128,10 @@ function searchRides (): void {
 
 .lecture-no-rides {
   color: $on-secondary-container;
+}
+
+.ul__date {
+  text-transform: capitalize;
 }
 
 </style>

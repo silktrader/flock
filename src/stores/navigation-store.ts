@@ -5,20 +5,28 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from 'stores/user-store'
 import { RideDetails, SearchControls } from 'src/models/options'
 
-export const useNavigationStore = defineStore('navigation', () => {
-  const debugButton = ref<boolean>(false)
-  const firstUse = ref<boolean>(false)
+export enum UserMode {
+  Passenger,
+  Driver
+}
 
+export const useNavigationStore = defineStore('navigation', () => {
   const $q = useQuasar()
   const router = useRouter()
   const us = useUserStore()
 
-  function toggleDebugButton (): void {
-    debugButton.value = !debugButton.value
-  }
+  // Determines whether the user opens the application for the first time.
+  const firstUse = ref<boolean>(true)
+
+  // Tracks changes to passenger or driver modes.
+  const userMode = ref<UserMode>(UserMode.Passenger)
 
   function skipIntroduction (): void {
     firstUse.value = false
+  }
+
+  function setUserMode (mode: UserMode): void {
+    userMode.value = mode
   }
 
   async function toggleFullscreen (): Promise<void> {
@@ -59,7 +67,8 @@ export const useNavigationStore = defineStore('navigation', () => {
 
   return {
     firstUse: readonly(firstUse),
-    toggleDebugButton,
+    userMode: readonly(userMode),
+    setUserMode,
     skipIntroduction,
     toggleFullscreen,
     goHome,

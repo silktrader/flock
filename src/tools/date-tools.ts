@@ -44,8 +44,8 @@ export const DateFromIso = (s: string): Date => (date.extractDate(s, 'YYYY-MM-DD
 
 export function FormatShortDate (d: Date): string {
   if (today.getFullYear() === d.getFullYear() && today.getMonth() === d.getMonth()) {
-    if (today.getDate() === d.getDate()) return 'Today'
-    if (today.getDate() === d.getDate() - 1) return 'Tomorrow'
+    if (today.getDate() === d.getDate()) return 'today'
+    if (today.getDate() === d.getDate() - 1) return 'tomorrow'
   }
   return date.formatDate(d, 'ddd, D MMM')
 }

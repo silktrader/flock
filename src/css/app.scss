@@ -100,7 +100,7 @@
 .card {
   background-color: #23261e;
   color: rgb(228, 227, 221);
-  border-radius: 12px;
+  border-radius: 12px !important; // the important tag is necessary when in dialogs
 }
 
 .card-header {

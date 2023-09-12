@@ -6,41 +6,61 @@ import { ExtractDate, ExtractDay, FormatShortDate } from 'src/tools/date-tools'
 import { Ride } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
 import RouteTimeline from 'components/RouteTimeline.vue'
+import { useUserStore } from 'stores/user-store'
+
+enum DetailsView {
+  Route,
+  People,
+  Rules,
+  Car
+}
 
 const rs = useRideStore()
 const ns = useNavigationStore()
+const us = useUserStore()
 
-const ride = computed<Ride>(() => {
-  if (rs.ride === undefined) {
-    throw new Error('Missing ride')
-  }
-  return rs.ride
-})
+const ride = computed<Ride>(() => rs.ride)
 
-const detailsView = ref<'route' | 'people' | 'car' | 'rules'>('route')
-const detailsViewOptions: Array<{ label: string, value: string }> = [{
+const accepted = computed<Date | null>(() => rs.isAccepted((ride.value.id)))
+
+const requested = computed<Date | null>(() => rs.isRequested((ride.value.id)))
+
+const loading = ref<boolean>(false)
+
+const userId = computed<string>(() => us.user.id)
+
+const detailsView = ref<DetailsView>(DetailsView.Route)
+const detailsViewOptions: Array<{ label: string, value: DetailsView }> = [{
   label: 'Route',
-  value: 'route'
+  value: DetailsView.Route
 }, {
   label: 'People',
-  value: 'people'
+  value: DetailsView.People
 }, {
   label: 'Rules',
-  value: 'rules'
-},
-{
+  value: DetailsView.Rules
+}, {
   label: 'Car',
-  value: 'car'
+  value: DetailsView.Car
 }]
 
 function RequestRide (): void {
-  rs.requestSelectedRide()
-  ns.goRequestSent()
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+    rs.requestSelectedRide()
+    ns.goRequestSent()
+  }, 600)
 }
 
 function CancelRequest (): void {
-  rs.cancelSelectedRequest()
-  ns.goHome()
+  loading.value = true
+  setTimeout(() => {
+    rs.cancelSelectedRequest()
+    loading.value = false
+    rs.requestSelectedRide()
+    ns.goHome()
+  }, 600)
 }
 
 </script>
@@ -53,10 +73,10 @@ function CancelRequest (): void {
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="ns.goBack()"/>
       <section class="secondary-header-title">
         <span>{{
-            `${ride.Origin.Label ?? ride.Origin.Address}
-            to ${ride.Destination.Label ?? ride.Destination.Address}`
+            `${ride.origin.Label ?? ride.origin.Address}
+            to ${ride.destination.Label ?? ride.destination.Address}`
           }}</span>
-        <span class="modal-header-subtitle">{{ ExtractDate(ride.Departure) }}</span>
+        <span class="modal-header-subtitle">{{ ExtractDate(ride.departure) }}</span>
       </section>
     </header>
 
@@ -68,236 +88,266 @@ function CancelRequest (): void {
 
     <main class="rd__section-container">
 
-      <section v-if="detailsView === 'route'" class="ride-details__section">
+      <template v-if="detailsView === DetailsView.Route">
+        <transition appear enter-active-class="animated fadeIn">
+          <section key="route-view" class="ride-details__section">
 
-        <route-timeline :ride="ride"/>
+            <route-timeline :ride="ride"/>
 
-        <div v-if="ride.Recurring && !ride.requested" class="notice-box route-box">
-          <q-icon name="las la-calendar-week" size="lg"/>
-          <span>{{ ride.Driver.firstName }} repeats this same route every {{ ExtractDay(ride.Departure) }}.</span>
-        </div>
-
-        <div v-if="ride.requested && !ride.accepted" class="notice-box route-box">
-          <q-icon name="las la-stamp" size="sm"/>
-          <span>You requested this ride {{ FormatShortDate(ride.requested).toLowerCase() }}. <br/>
-                  {{ ride.Driver.firstName }} has yet to accept it.</span>
-        </div>
-
-      </section>
-
-      <section v-else-if="detailsView === 'people'" class="ride-details-section">
-
-        <q-list style="padding-left: 8px">
-
-          <q-item-label header style="padding-top: 0 !important;">Driver</q-item-label>
-          <q-item>
-
-            <q-item-section class="person-avatar-section">
-              <q-avatar class="driver-avatar">
-                <q-img :src="ride.Driver.avatarUrl"/>
-                <span class="driver-rating">{{ ride.Driver.Rating.toFixed(1) }}</span>
-              </q-avatar>
-            </q-item-section>
-
-            <q-item-section>
-              <div class="driver-details">
-                <span>{{ ride.Driver.displayName }}</span>
-                <div class="degree">
-                  <q-icon name="school"/>
-                  <span>{{ ride.Driver.degree }}</span>
-                </div>
-                <div class="person-stats">
-                  <q-rating
-                      v-model="ride.Driver.onTimeRating"
-                      :max="3"
-                      color="accent"
-                      icon="alarm_on"
-                      readonly
-                      size="xs"
-                  />
-                  <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
-                    An estimate of {{ ride.Driver.firstName }} punctuality, as rated by his past passengers.
-                  </q-tooltip>
-                </div>
-
-              </div>
-            </q-item-section>
-
-            <q-item-section side>
-              <q-btn color="secondary" flat icon="arrow_forward_ios"/>
-            </q-item-section>
-
-          </q-item>
-
-          <q-item-label header>Passengers</q-item-label>
-
-          <q-item v-for="passenger in ride.passengers" :key="passenger.id">
-
-            <q-item-section class="person-avatar-section">
-              <q-avatar class="passenger-avatar">
-                <q-img :src="passenger.avatarUrl"/>
-              </q-avatar>
-            </q-item-section>
-
-            <q-item-section>
-              <div class="passenger-details">
-                <span>{{ passenger.displayName }}</span>
-                <div class="degree">
-                  <q-icon name="school"/>
-                  <span>{{ passenger.degree }}</span>
-                </div>
-              </div>
-            </q-item-section>
-
-            <q-item-section side>
-              <q-btn color="secondary" flat icon="arrow_forward_ios"/>
-            </q-item-section>
-
-          </q-item>
-
-          <template v-if="ride.FreeSeats">
-            <q-item v-for="index in ride.FreeSeats" :key="index">
-
-              <q-item-section class="person-avatar-section">
-                <q-avatar class="free-seat-avatar"/>
-              </q-item-section>
-
-              <q-item-section>
-                <q-chip class="chip">Free Seat</q-chip>
-              </q-item-section>
-
-              <q-item-section side>
-                <div v-if="index === 1" class="free-seats-spacer"/>
-                <q-btn v-else color="secondary" flat icon="las la-user-plus"/>
-              </q-item-section>
-
-            </q-item>
-
-          </template>
-
-        </q-list>
-
-      </section>
-
-      <section v-else-if="detailsView === 'car'" class="ride-details-section">
-
-        <div class="car-details-container">
-
-          <div class="car-details-header">
-            <q-avatar size="80px">
-              <img alt="Car Avatar" src="/images/clio.jpg" style="object-fit: cover">
-            </q-avatar>
-
-            <span class="car-model">{{ ride.Car.model }}</span>
-          </div>
-
-          <section class="car-accessories">
-            <span class="details-label">Features</span>
-            <div class="accessories-list">
-              <span v-if="ride.Car.electric" class="chip">Electric</span>
-              <span v-if="ride.Car.airConditioning" class="chip">Air Conditioning</span>
-              <span v-if="ride.Car.bootSpace" class="chip">Boot Space</span>
-              <span v-if="ride.Car.airBag" class="chip">Passenger Airbags</span>
-              <span v-if="ride.Car.usbChargers" class="chip">USB Chargers</span>
-              <span v-if="ride.Car.soundSystem" class="chip">Sound System</span>
+            <div v-if="ride.recurring && !requested" class="notice-box route-box">
+              <q-icon name="las la-calendar-week" size="lg"/>
+              <span>{{ ride.driver.firstName }} repeats this same route every {{ ExtractDay(ride.departure) }}.</span>
             </div>
-          </section>
 
-          <section class="car-details-plate">
+            <div v-if="requested" class="notice-box route-box">
+              <q-icon name="las la-stamp" size="sm"/>
+              <span>You requested this ride {{ FormatShortDate(requested) }}. <br/>
+                  {{ ride.driver.firstName }} has yet to accept it.</span>
+            </div>
+
+            <div v-else-if="accepted" class="notice-box route-box">
+              <q-icon name="las la-stamp" size="sm"/>
+              <span>You're part of this ride. {{
+                  ride.driver.firstName
+                }} accepted your request {{ FormatShortDate(accepted) }}.</span>
+            </div>
+
+          </section>
+        </transition>
+      </template>
+
+      <template v-else-if="detailsView === DetailsView.People">
+        <transition appear enter-active-class="animated fadeIn">
+          <section key="people-view" class="ride-details-section">
+
+            <q-list style="padding-left: 8px">
+
+              <q-item-label header style="padding-top: 0 !important;">Driver</q-item-label>
+              <q-item>
+
+                <q-item-section class="person-avatar-section">
+                  <q-avatar class="driver-avatar">
+                    <q-img :src="ride.driver.avatarUrl"/>
+                    <span class="driver-rating">{{ ride.driver.Rating.toFixed(1) }}</span>
+                  </q-avatar>
+                </q-item-section>
+
+                <q-item-section>
+                  <div class="driver-details">
+                    <span>{{ ride.driver.displayName }}</span>
+                    <div class="degree">
+                      <q-icon name="school"/>
+                      <span>{{ ride.driver.degree }}</span>
+                    </div>
+                    <div class="person-stats">
+                      <q-rating
+                        v-model="ride.driver.onTimeRating"
+                        :max="3"
+                        color="accent"
+                        icon="alarm_on"
+                        readonly
+                        size="xs"
+                      />
+                      <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
+                        An estimate of {{ ride.driver.firstName }} punctuality, as rated by his past passengers.
+                      </q-tooltip>
+                    </div>
+
+                  </div>
+                </q-item-section>
+
+                <q-item-section side>
+                  <q-btn color="secondary" flat icon="arrow_forward_ios"/>
+                </q-item-section>
+
+              </q-item>
+
+              <q-item-label header>Passengers</q-item-label>
+
+              <q-item v-for="passenger in ride.passengers" :key="passenger.id">
+
+                <q-item-section class="person-avatar-section">
+                  <q-avatar class="passenger-avatar">
+                    <q-img :src="passenger.avatarUrl"/>
+                  </q-avatar>
+                </q-item-section>
+
+                <q-item-section v-if="passenger.id === userId">
+                  <div class="passenger-details">
+                    <span><b>You</b></span>
+
+                  </div>
+                </q-item-section>
+
+                <q-item-section v-else>
+                  <div class="passenger-details">
+                    <span>{{ passenger.displayName }}</span>
+                    <div class="degree">
+                      <q-icon name="school"/>
+                      <span>{{ passenger.degree }}</span>
+                    </div>
+                  </div>
+                </q-item-section>
+
+                <q-item-section side>
+                  <q-btn v-if="passenger.id !== userId" color="secondary" flat icon="arrow_forward_ios"/>
+                </q-item-section>
+
+              </q-item>
+
+              <template v-if="ride.FreeSeats">
+                <q-item v-for="index in ride.FreeSeats" :key="index">
+
+                  <q-item-section class="person-avatar-section">
+                    <q-avatar class="free-seat-avatar"/>
+                  </q-item-section>
+
+                  <q-item-section>
+                    <q-chip class="chip">Free Seat</q-chip>
+                  </q-item-section>
+
+                  <q-item-section side>
+                    <div v-if="index === 1" class="free-seats-spacer"/>
+                    <q-btn v-else color="secondary" flat icon="las la-user-plus"/>
+                  </q-item-section>
+
+                </q-item>
+
+              </template>
+
+            </q-list>
+
+          </section>
+        </transition>
+      </template>
+
+      <template v-else-if="detailsView === DetailsView.Car">
+        <transition appear enter-active-class="animated fadeIn">
+          <section key="car-view" class="ride-details-section">
+
+            <div class="car-details-container">
+
+              <div class="car-details-header">
+                <q-avatar size="80px">
+                  <img alt="Car Avatar" src="/images/clio.jpg" style="object-fit: cover">
+                </q-avatar>
+
+                <span class="car-model">{{ ride.car.model }}</span>
+              </div>
+
+              <section class="car-accessories">
+                <span class="details-label">Features</span>
+                <div class="accessories-list">
+                  <span v-if="ride.car.electric" class="chip">Electric</span>
+                  <span v-if="ride.car.airConditioning" class="chip">Air Conditioning</span>
+                  <span v-if="ride.car.bootSpace" class="chip">Boot Space</span>
+                  <span v-if="ride.car.airBag" class="chip">Passenger Airbags</span>
+                  <span v-if="ride.car.usbChargers" class="chip">USB Chargers</span>
+                  <span v-if="ride.car.soundSystem" class="chip">Sound System</span>
+                </div>
+              </section>
+
+              <section class="car-details-plate">
             <span class="details-label">
               <span>License Plate</span>
-              <q-icon v-if="!ride.accepted" color="secondary" name="info" size="sm">
+              <q-icon v-if="!accepted" color="secondary" name="info" size="sm">
                 <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
-                    {{ ride.Driver.firstName }}'s license plate will show once he accepts your ride request.
+                    {{ ride.driver.firstName }}'s license plate will show once he accepts your ride request.
                   </q-tooltip>
               </q-icon>
             </span>
-            <span :class="{blurred: !ride.accepted, 'car-plate': true}">{{ ride.Car.vrm }}</span>
-          </section>
+                <span :class="{blurred: !accepted, 'car-plate': true}">{{ ride.car.vrm }}</span>
+              </section>
 
-        </div>
-
-      </section>
-
-      <section v-else-if="detailsView === 'rules'" class="ride-details-section-container">
-
-        <div class="rules-container">
-
-          <q-chat-message v-if="ride.comment"
-                          :avatar="ride.Driver.avatarUrl"
-                          :text="[ride.comment]"
-                          bg-color="warning"
-                          size="8"
-                          text-color="grey-10"
-          />
-
-          <div class="car-accessories">
-            <span class="details-label">Conduct</span>
-            <div class="rules-list">
-              <span v-for="rule in ride.rules" :key="rule" class="chip">{{ rule }}</span>
             </div>
-          </div>
 
-          <q-item v-if="ride.Expense === 0">
-            <q-item-section>
-              <div class="expense-container">
-                Free Ride
+          </section>
+        </transition>
+      </template>
+
+      <template v-else-if="detailsView === DetailsView.Rules">
+        <transition appear enter-active-class="animated fadeIn">
+          <section key="rules-view" class="ride-details-section-container">
+
+            <div class="rules-container">
+
+              <q-chat-message v-if="ride.comment"
+                              :avatar="ride.driver.avatarUrl"
+                              :text="[ride.comment]"
+                              bg-color="amber-4"
+                              size="8"
+                              text-color="grey-10"
+              />
+
+              <div class="car-accessories">
+                <span class="details-label">Conduct</span>
+                <div class="rules-list">
+                  <span v-for="rule in ride.rules" :key="rule" class="chip">{{ rule }}</span>
+                </div>
               </div>
-              <aside class="expense-none-notice">
-                <q-icon name="las la-mug-hot" size="md"/>
-                <span>
-              You can tip {{ ride.Driver.displayName }} when the ride's over. It's up to you. <br/>
+
+              <q-item v-if="ride.expense === 0">
+                <q-item-section>
+                  <div class="expense-container">
+                    Free Ride
+                  </div>
+                  <aside class="expense-none-notice">
+                    <q-icon name="las la-mug-hot" size="md"/>
+                    <span>
+              You can tip {{ ride.driver.displayName }} when the ride's over. It's up to you. <br/>
               Donuts and coffee are welcome too!
               </span>
-              </aside>
-            </q-item-section>
+                  </aside>
+                </q-item-section>
 
-          </q-item>
+              </q-item>
 
-          <q-item v-else>
-            <q-item-section>
-              <div class="expense-container">
-                <div class="details-label">
-                  <span>Contribution</span>
-                  <q-icon color="secondary" name="info" size="sm"/>
-                  <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
-                    This amount comprises <b>all costs</b>, including parking and fuel. You're welcome to <b>tip the
-                    driver</b>
-                    in excess of displayed figure!
-                  </q-tooltip>
-                </div>
+              <q-item v-else>
+                <q-item-section>
+                  <div class="expense-container">
+                    <div class="details-label">
+                      <span>Contribution</span>
+                      <q-icon color="secondary" name="info" size="sm"/>
+                      <q-tooltip anchor="top middle" max-width="300px" self="bottom middle">
+                        This amount comprises <b>all costs</b>, including parking and fuel. You're welcome to <b>tip the
+                        driver</b>
+                        in excess of displayed figure!
+                      </q-tooltip>
+                    </div>
 
-                <span class="expense">{{ ride.Expense }} €</span>
+                    <span class="expense">{{ ride.expense }} €</span>
 
-                <aside class="expense-payments-container">
-                  <span>Pay when the ride's over with:</span>
-                  <div class="expense-payments-means">
-                    <q-icon name="las la-money-bill-wave" size="sm">
-                      <q-tooltip>Cash</q-tooltip>
-                    </q-icon>
-                    <q-icon name="lab la-paypal" size="sm">
-                      <q-tooltip>Paypal</q-tooltip>
-                    </q-icon>
-                    <q-icon name="lab la-bitcoin" size="sm">
-                      <q-tooltip>Bitcoins</q-tooltip>
-                    </q-icon>
+                    <aside class="expense-payments-container">
+                      <span>Pay when the ride's over with:</span>
+                      <div class="expense-payments-means">
+                        <q-icon name="las la-money-bill-wave" size="sm">
+                          <q-tooltip>Cash</q-tooltip>
+                        </q-icon>
+                        <q-icon name="lab la-paypal" size="sm">
+                          <q-tooltip>Paypal</q-tooltip>
+                        </q-icon>
+                        <q-icon name="lab la-bitcoin" size="sm">
+                          <q-tooltip>Bitcoins</q-tooltip>
+                        </q-icon>
+                      </div>
+                    </aside>
                   </div>
-                </aside>
-              </div>
-            </q-item-section>
+                </q-item-section>
 
-          </q-item>
+              </q-item>
 
-        </div>
-      </section>
+            </div>
+          </section>
+        </transition>
+      </template>
 
     </main>
 
     <footer>
-      <q-btn v-if="ride.accepted" class="filled-button" label="Cancel Ride" size="lg"/>
-      <q-btn v-else-if="ride.requested" class="filled-button" label="Cancel Request" size="lg"
+      <q-btn v-if="accepted" :loading="loading" class="filled-button" label="Cancel Ride" size="lg"/>
+      <q-btn v-else-if="requested" :loading="loading" class="filled-button" label="Cancel Request" size="lg"
              @click="CancelRequest()"/>
-      <q-btn v-else class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
+      <q-btn v-else :loading="loading" class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
     </footer>
 
   </q-page>

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { RandomFloat, RandomId, RandomInt, RandomPercent } from 'src/tools/random-tools'
-import { Badges, Degrees } from 'stores/ride-store'
+import { Badges } from 'stores/ride-store'
 import { User, UserConfig } from 'src/models/user'
 import { Driver } from 'src/models/driver'
 import { Lecture } from 'src/models/lecture'
@@ -12,6 +12,7 @@ import { today } from 'src/tools/date-tools'
 import { Course } from 'src/models/course'
 import { SearchParameters } from 'src/models/search-parameters'
 import { ResultCards, RideDetails, SearchControls } from 'src/models/options'
+import { Degrees } from 'src/models/degree'
 
 export const useUserStore = defineStore('user', () => {
   const femaleAvatars: ReadonlyArray<string> =
@@ -63,7 +64,7 @@ export const useUserStore = defineStore('user', () => {
     {
       id: RandomId(),
       name: 'Computer Architecture',
-      acro: 'CAR',
+      acro: 'ARC',
       days: ['mon', 'wed'],
       start: [16, 8],
       location: getRandomSapLocation(),
@@ -90,6 +91,11 @@ export const useUserStore = defineStore('user', () => {
 
   const lectures: ReadonlyArray<Lecture> = generateLectures()
 
+  const now = new Date()
+
+  // A limited number of lectures that follows the current date.
+  const upcomingLectures: ReadonlyArray<Lecture> = lectures.filter(l => l.date >= now).slice(0, 6)
+
   // user added notifications about new rides at desired dates
   const rideNotifications = ref<Array<SearchParameters>>([])
 
@@ -98,7 +104,9 @@ export const useUserStore = defineStore('user', () => {
     debug: {
       resultCards: ResultCards.Streamlined,
       searchControls: SearchControls.Compact,
-      rideDetails: RideDetails.Views
+      rideDetails: RideDetails.Views,
+      fixedHeader: true,
+      tabbedHome: false
     }
   })
 
@@ -128,13 +136,24 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  function generateUser (avoidAvatars: ReadonlySet<string>, forceFemale: boolean): User {
-    return new User(configureNewUser(avoidAvatars, forceFemale))
+  function generateUser (avoidAvatars: ReadonlySet<string>): User {
+    return new User(configureNewUser(avoidAvatars, false))
   }
 
-  function generateDriver (avoidAvatars: ReadonlySet<string>, forceFemale: boolean): Driver {
+  function generateFemaleUser (avoidAvatars: ReadonlySet<string>): User {
+    return new User(configureNewUser(avoidAvatars, true))
+  }
+
+  function generateDriver (): Driver {
     return new Driver({
-      ...generateUser(avoidAvatars, forceFemale),
+      ...generateUser(new Set()),
+      Rating: RandomFloat(2.9, 4.9)
+    })
+  }
+
+  function generateFemaleDriver (): Driver {
+    return new Driver({
+      ...generateFemaleUser(new Set()),
       Rating: RandomFloat(2.9, 4.9)
     })
   }
@@ -194,14 +213,22 @@ export const useUserStore = defineStore('user', () => {
     rideNotifications.value.push(params)
   }
 
+  function getNextLecture (): Lecture | null {
+    return lectures.filter(l => l.date >= today).sort((a, b) => a.date > b.date ? 1 : -1)[0] ?? null
+  }
+
   return {
     lectures: readonly(lectures),
+    upcomingLectures: readonly(upcomingLectures),
     rideNotifications: readonly(rideNotifications),
     user,
     options,
     generateUser,
+    generateFemaleUser,
     generateDriver,
+    generateFemaleDriver,
     getCourseById,
-    notifyRide
+    notifyRide,
+    getNextLecture
   }
 })

@@ -51,8 +51,7 @@
 
     <section class="date-time-controls">
       <q-btn class="outline-button" @click="selectDate()">
-        <span v-if="wantsArrive">Arrive {{ searchDateLabel }} by {{ searchTimeLabel }}</span>
-        <span v-else>Leave {{ searchDateLabel }} at {{ searchTimeLabel }}</span>
+        <span>{{ dateLabel }}</span>
         <q-icon name="schedule" size="18px"/>
       </q-btn>
 
@@ -79,12 +78,16 @@ const router = useRouter()
 
 const origin = computed(() => rs.searchParameters.Origin)
 const destination = computed(() => rs.searchParameters.Destination)
-const wantsArrive = computed<boolean>(() => rs.searchParameters.DateMode === DateMode.Arrive)
 
-const searchTimeLabel = computed<string>(() => ExtractTime(rs.searchParameters.Date))
-const searchDateLabel = computed<string>(() => FormatShortDate(rs.searchParameters.Date))
+const dateLabel = computed<string>(() => {
+  const date = rs.searchParameters.Date
+  const modeModifiers = rs.searchParameters.DateMode === DateMode.Arrive ? ['Arrive', 'by'] : ['Leave', 'at']
+  return `${modeModifiers[0]} ${FormatShortDate(date)} ${modeModifiers[1]} ${ExtractTime(date)}`
+})
 
 function switchLocations (): void {
+  // mock round trip to database
+  rs.mockSearchDelay()
   rs.updateParameters({
     Destination: rs.searchParameters.Origin,
     Origin: rs.searchParameters.Destination

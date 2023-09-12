@@ -13,7 +13,10 @@ const rideComments: ReadonlyArray<string> = [
   'Lazio fans, keep clear of this ride! I am sorry but I can\'t stand the stench of goat cheese in the morning.',
 
   'Don\'t ask to change pickup location at the last minute. I am not going to fiddle with my GPS while I' +
-  'rush to uni. Thanks!'
+  ' rush to uni. Thanks!',
+
+  'I am fan of Barbero and I like to listen to his podcast while I drive. I won\'t mind if you decide to wear' +
+  ' headphones and listen to your own music.'
 ]
 
 export const getRandomRideComment = (): string => rideComments[RandomInt(0, rideComments.length)]
