@@ -11,7 +11,7 @@ import { fakerIT as faker } from '@faker-js/faker'
 import { today } from 'src/tools/date-tools'
 import { Course } from 'src/models/course'
 import { SearchParameters } from 'src/models/search-parameters'
-import { ResultCards, RideDetails, SearchControls } from 'src/models/options'
+import { LectureHints, ResultCards, RideDetails, SearchControls } from 'src/models/options'
 import { Degrees } from 'src/models/degree'
 
 export const useUserStore = defineStore('user', () => {
@@ -107,7 +107,8 @@ export const useUserStore = defineStore('user', () => {
       rideDetails: RideDetails.Views,
       fixedHeader: true,
       tabbedHome: false,
-      dateHints: false
+      dateHints: false,
+      lectureHints: LectureHints.Vertical
     }
   })
 

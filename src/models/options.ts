@@ -12,3 +12,8 @@ export enum RideDetails {
   Scroll,
   Views
 }
+
+export enum LectureHints {
+  Vertical,
+  Tabular
+}

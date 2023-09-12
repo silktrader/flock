@@ -6,10 +6,9 @@ import { useRideStore } from 'stores/ride-store'
 import { useLocationStore } from 'stores/location-store'
 import { FavouritePlace, Place } from 'src/models/place'
 import { QInput } from 'quasar'
-import { route } from 'quasar/wrappers'
 import { useDriveStore } from 'src/stores/driveStore'
 
-const props = defineProps<{ target: 'origin' | 'destination', task: 'ride' | 'drive'}>()
+const props = defineProps<{ target: 'origin' | 'destination', task: 'ride' | 'drive' }>()
 const router = useRouter()
 const rs = useRideStore()
 const ls = useLocationStore()
