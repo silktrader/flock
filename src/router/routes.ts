@@ -73,6 +73,14 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/create-ride/passengers',
       component: () => import('pages/DrivePassengersSelection.vue')
+    },
+    {
+      path: '/create-ride/recap',
+      component: () => import('pages/CreationRecap.vue')
+    },
+    {
+      path: '/create-ride/confirm',
+      component: () => import('pages/CreationConfirmation.vue')
     }
     ]
   },
