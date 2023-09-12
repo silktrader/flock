@@ -16,7 +16,7 @@
         <div style="padding: 2em 1em 0 1em; width: 300px; height: 320px;font-size: large;">
 
             <q-card-section>
-            <div class="text-h6">Confirm</div>
+            <div class="text-h6">Confirm ?</div>
             <q-separator spaced/>
             </q-card-section>
 

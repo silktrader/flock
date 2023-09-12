@@ -32,20 +32,20 @@
           <div class="column">
             <q-select v-model="selectCarString" :options="carsArray" filled
                       style="padding-left: 1em; padding-bottom: 1em;"/>
-            <q-input v-model="seatsNumber" filled style="padding-left: 1em; max-width: 157px; padding-bottom: 1em;">
+            <q-input v-model="seatsNumber" filled style="padding-left: 1em; max-width: 174px; padding-bottom: 1em;">
               <template v-slot:prepend>
-                <q-btn round icon="remove" size="sm" @click="decreaseSeats" style="margin-right: 1.4em"/>
+                <q-btn round icon="remove" size="md" @click="decreaseSeats" style="margin-right: 0.7em; background-color: rgb(62, 81, 63);"/>
               </template>
               <template v-slot:append>
-                <q-btn round icon="add" size="sm" @click="increaseSeats"/>
+                <q-btn round icon="add" size="md" @click="increaseSeats" style="background-color: rgb(62, 81, 63)"/>
               </template>
             </q-input>
-            <q-input v-model="priceString" filled style="padding-left: 1em; max-width: 157px;">
+            <q-input v-model="priceString" filled style="padding-left: 1em; max-width: 174px;">
               <template v-slot:prepend>
-                <q-btn round icon="remove" size="sm" @click="decreasePrice"  style="margin-right: 0.75em"/>
+                <q-btn round icon="remove" size="md" @click="decreasePrice"  style="background-color: rgb(62, 81, 63)"/>
               </template>
               <template v-slot:append>
-                <q-btn round icon="add" size="sm" @click="increasePrice"/>
+                <q-btn round icon="add" size="md" @click="increasePrice" style="background-color: rgb(62, 81, 63);"/>
               </template>
             </q-input>
           </div>

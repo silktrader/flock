@@ -17,7 +17,7 @@
         <q-btn class="place-button" align="left" icon="search" @click="selectDest()">Choose your destination address</q-btn>
       </div>
       <div style="text-align: center; padding-top:15px;">
-        <q-img src="~/assets/end.jpg" style="max-width: 280px"/>
+        <q-img src="~/assets/end.png" style="max-width: 280px"/>
       </div>
     </q-page>
   </template>
