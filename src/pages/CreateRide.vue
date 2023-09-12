@@ -17,7 +17,7 @@
       <q-btn class="place-button" align="left" @click="selectOrigin()" icon="search">Choose your initial address</q-btn>
     </div>
     <div style="text-align: center; padding-top:15px;">
-      <q-img src="~/assets/start.jpg" style="max-width: 220px"/>
+      <q-img src="~/assets/start.png" style="max-width: 220px"/>
     </div>
   </q-page>
 </template>
