@@ -23,7 +23,7 @@ const ns = useNavigationStore()
 
     <q-list padding>
 
-      <q-item-label header>General</q-item-label>
+      <q-item-label header>Home</q-item-label>
 
       <q-item>
         <q-item-section>
@@ -35,6 +35,21 @@ const ns = useNavigationStore()
             <q-btn-toggle
               v-model="us.options.debug.fixedHeader"
               :options="[{label: 'Fixed Header', value: true}, {label: 'Scrollable Header', value: false}]"
+              class="button-toggle"
+            />
+          </div>
+        </q-item-section>
+      </q-item>
+
+      <q-item>
+        <q-item-section>
+          <q-item-label>View Switch</q-item-label>
+          <q-item-label caption>Choose how you'd rather switch between the passenger and driver views.
+          </q-item-label>
+          <div class="segmented-button-container">
+            <q-btn-toggle
+              v-model="us.options.debug.tabbedHome"
+              :options="[{label: 'Tabs', value: true}, {label: 'Selector', value: false}]"
               class="button-toggle"
             />
           </div>

@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRideStore } from 'stores/ride-store'
 import { useUserStore } from 'stores/user-store'
-import { useNavigationStore } from 'stores/navigation-store'
+import { useNavigationStore, UserMode } from 'stores/navigation-store'
 import PassengerHome from 'components/home/PassengerHome.vue'
 import UserModeSelector from 'components/home/UserModeSelector.vue'
+import DriverHome from 'components/home/DriverHome.vue'
 
 const props = defineProps<{ skipIntro?: boolean }>()
 
@@ -20,7 +21,13 @@ const ns = useNavigationStore()
 const slide = ref<string>('introduction')
 const loading = ref<boolean>(true) // tk look into offloading this to the navigation store
 
-const showPassengerFab = computed<boolean>(() => loading.value === false && tab.value === 'passenger')
+watch(tab, async (newValue) => {
+  ns.setUserMode(newValue === 'passenger' ? UserMode.Passenger : UserMode.Driver)
+})
+
+const showPassengerFab = computed<boolean>(() => !loading.value && ns.userMode === UserMode.Passenger)
+
+const showDriverFab = computed<boolean>(() => !loading.value && ns.userMode === UserMode.Driver)
 
 if (props.skipIntro) ns.skipIntroduction()
 
@@ -43,7 +50,9 @@ function createRide (): void {
 // mimic the wait due to network activity
 setTimeout(() => {
   loading.value = false
-}, 500)</script>
+}, 500)
+
+</script>
 
 <template>
 
@@ -117,8 +126,9 @@ setTimeout(() => {
 
       <div :class="{'home__container--permanent-header': us.options.debug.fixedHeader}" class="home__container">
 
-        <header class="home-header">
-          <UserModeSelector/>
+        <header :class="{'home-header--tabs': us.options.debug.tabbedHome}" class="home-header">
+          <span v-if="us.options.debug.tabbedHome">Flock</span>
+          <UserModeSelector v-else/>
 
           <div style="flex-grow: 5"/>
 
@@ -127,7 +137,7 @@ setTimeout(() => {
             <q-btn flat icon="notifications" round></q-btn>
 
             <q-btn flat round @click="ns.goDebugOptions()">
-              <q-avatar size="xl">
+              <q-avatar size="50px">
                 <img :src="us.user.avatarUrl" alt="User Avatar"/>
               </q-avatar>
             </q-btn>
@@ -135,7 +145,7 @@ setTimeout(() => {
 
         </header>
 
-        <div>
+        <div v-if="us.options.debug.tabbedHome">
           <q-tabs v-model="tab" align="center" class="tabs" indicator-color="primary" no-caps>
             <q-tab label="Passenger" name="passenger"/>
             <q-tab label="Driver" name="driver"/>
@@ -144,7 +154,7 @@ setTimeout(() => {
 
         <div class="home__contents">
 
-          <q-tab-panels v-model="tab" animated class="tab-container">
+          <q-tab-panels v-if="us.options.debug.tabbedHome" v-model="tab" animated class="tab-container">
             <q-tab-panel name="passenger">
 
               <passenger-home/>
@@ -153,9 +163,18 @@ setTimeout(() => {
 
             <q-tab-panel name="driver">
 
+              <driver-home/>
+
             </q-tab-panel>
 
           </q-tab-panels>
+
+          <template v-else>
+
+            <passenger-home v-if="ns.userMode === UserMode.Passenger"/>
+            <driver-home v-else/>
+
+          </template>
 
           <footer/>
 
@@ -175,7 +194,7 @@ setTimeout(() => {
         </transition>
       </q-page-sticky>
 
-      <q-page-sticky v-else :offset="[18, 18]" position="bottom-right">
+      <q-page-sticky v-if="showDriverFab" :offset="[18, 18]" position="bottom-right">
         <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
       </q-page-sticky>
 
@@ -237,13 +256,19 @@ setTimeout(() => {
   padding: 8px 16px 0;
   align-items: center;
   justify-content: space-between;
-  color: $on-secondary-container;
-  background-color: $secondary-container;
   font-size: large;
+  color: $on-background;
+  margin-bottom: 12px;
 
   span {
     font-weight: bold;
   }
+}
+
+.home-header--tabs {
+  color: $on-secondary-container;
+  background-color: $secondary-container;
+  margin-bottom: 0;
 }
 
 .home__contents {
