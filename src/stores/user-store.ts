@@ -59,7 +59,7 @@ export const useUserStore = defineStore('user', () => {
       days: ['tue', 'wed'],
       start: [9, 16],
       location: getRandomSapLocation(),
-      color: '#83781b'
+      color: '#B75652'
     },
     {
       id: RandomId(),
@@ -77,7 +77,7 @@ export const useUserStore = defineStore('user', () => {
       days: ['thu', 'fri'],
       start: [8, 8],
       location: getRandomSapLocation(),
-      color: '#ffd23f'
+      color: '#3A405A'
     },
     {
       id: RandomId(),

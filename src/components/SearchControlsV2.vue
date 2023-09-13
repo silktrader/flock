@@ -178,6 +178,7 @@ function selectOrigin (): void {
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  font-size: large;
 }
 
 .label, .address {
@@ -188,7 +189,7 @@ function selectOrigin (): void {
 }
 
 .address {
-  font-size: small;
+  font-size: medium;
   font-style: italic;
   padding-right: 2px; // solves issues with overflow clipping content
 }

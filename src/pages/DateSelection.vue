@@ -54,7 +54,6 @@ function getLectureDate (lecture: Lecture): Date {
 }
 
 function updateDate (date: Date): void {
-  console.log('asdasd')
   dateValue.value = date
 }
 
