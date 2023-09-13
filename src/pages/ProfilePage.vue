@@ -1,9 +1,9 @@
 <template>
   <q-page-sticky position="top-right">
     <div class="modal-header-spacer"/>
-      <section>
-        <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
-      </section>
+    <section>
+      <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
+    </section>
   </q-page-sticky>
 
   <div class="named-avatar">
@@ -24,16 +24,16 @@
       max='1'
       readonly
       size='7vw'
-      />
-      <div class='text-body2'>
-        ({{ numReviews }})
-      </div>
+    />
+    <div class='text-body2'>
+      ({{ numReviews }})
+    </div>
 
   </div>
 
   <div class="actions-container">
     <q-btn class="action-button" label="Follow" outline/>
-      <q-btn class="action-button" label="Message" outline/>
+    <q-btn class="action-button" label="Message" outline/>
   </div>
 
   <div class='badge-container'>
@@ -60,7 +60,7 @@
     <div v-if="isDriver">
       <q-card class="cert-driver-card">
         <q-img :ratio="1"
-          src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
+               src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
           <div class="absolute-bottom text-h6">
             Certified Driver
           </div>
@@ -79,7 +79,7 @@
     <div v-if="isRider">
       <q-card class="usual-passenger-card">
         <q-img ratio="1"
-          src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
+               src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
           <div class="absolute-bottom text-h6">
             Usual Passenger
           </div>
@@ -224,7 +224,7 @@
 </style>
 
 <script lang='ts' setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useUserStore } from 'stores/user-store'
 import { useLocationStore } from 'stores/location-store'
 import { useNavigationStore } from 'src/stores/navigation-store'
@@ -235,7 +235,7 @@ const us = useUserStore()
 const ls = useLocationStore()
 const ns = useNavigationStore()
 
-const user = ref<User>(us.generateUser(new Set()))
+const user = computed<User>(() => us.viewedUser)
 const lorem = `Greetings fellow travelers! I'm ${user.value.firstName}, your carpool companion on journeys through both books and roads. When I'm not engrossed in novels, you'll find me on the open road, always up for an adventure. I love to discover hidden gems and cozy coffee shops along the way. Join me for great conversations and unforgettable road trips.`
 const userRating = RandomFloat(2.4, 4.9)
 

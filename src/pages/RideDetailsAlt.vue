@@ -8,6 +8,7 @@ import { useNavigationStore } from 'stores/navigation-store'
 import RouteTimeline from 'components/RouteTimeline.vue'
 import { useUserStore } from 'stores/user-store'
 import { useQuasar } from 'quasar'
+import { User } from 'src/models/user'
 
 enum DetailsView {
   Route,
@@ -68,6 +69,11 @@ function CancelRequest (): void {
     message: `You cancelled your request to ${ride.value.driver.firstName}.`,
     timeout: 3000
   })
+}
+
+function viewUser (user: User): void {
+  us.viewUser(user)
+  ns.goUserProfile(user.firstName)
 }
 
 </script>
@@ -197,7 +203,8 @@ function CancelRequest (): void {
                 </q-item-section>
 
                 <q-item-section side>
-                  <q-btn v-if="passenger.id !== userId" color="secondary" flat icon="arrow_forward_ios"/>
+                  <q-btn v-if="passenger.id !== userId" color="secondary" flat icon="arrow_forward_ios"
+                         @click="viewUser(passenger)"/>
                 </q-item-section>
 
               </q-item>

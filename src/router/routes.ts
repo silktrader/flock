@@ -64,8 +64,9 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/DebugOptions.vue')
     },
     {
-      path: '/profile',
-      component: () => import('pages/ProfilePage.vue')
+      path: '/profile/:user',
+      component: () => import('pages/ProfilePage.vue'),
+      props: true
     },
     {
       path: '/create-ride/start',

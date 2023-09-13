@@ -40,6 +40,9 @@ export const useUserStore = defineStore('user', () => {
     onTime: 0.8
   })
 
+  // Selects the user to inspect via the profile page and other means.
+  const viewedUser = ref<User>(user)
+
   const getRandomSapLocation = () => ls.sapienzaPlaces[RandomInt(0, ls.sapienzaPlaces.length)]
 
   // few courses justify the use of arrays instead of maps
@@ -217,11 +220,16 @@ export const useUserStore = defineStore('user', () => {
     return lectures.filter(l => l.date >= today).sort((a, b) => a.date > b.date ? 1 : -1)[0] ?? null
   }
 
+  function viewUser (user: User): void {
+    viewedUser.value = user
+  }
+
   return {
     courses: readonly(courses),
     lectures: readonly(lectures),
     upcomingLectures: readonly(upcomingLectures),
     rideNotifications: readonly(rideNotifications),
+    viewedUser: readonly(viewedUser),
     user,
     options,
     generateUser,
@@ -230,6 +238,7 @@ export const useUserStore = defineStore('user', () => {
     generateFemaleDriver,
     getCourseById,
     notifyRide,
-    getNextLecture
+    getNextLecture,
+    viewUser
   }
 })
