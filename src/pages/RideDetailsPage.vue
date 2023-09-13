@@ -112,7 +112,7 @@
 
       </q-timeline>
 
-      <div v-if="!ride.accepted && !ride.requested" class="pickup-prompt">
+      <div v-if="!accepted && !requested" class="pickup-prompt">
             <span class="pickup-prompt-notice">Propose a different place and time for meeting {{
                 ride.driver.firstName
               }}.</span>
@@ -282,7 +282,7 @@
 
       <q-separator spaced/>
 
-      <div v-if="ride.recurring && !ride.requested" class="notice-box">
+      <div v-if="ride.recurring && !requested" class="notice-box">
         <q-icon name="las la-calendar-week" size="lg"/>
         <span>
               {{ ride.driver.firstName }} drives to {{ ride.destination.Label ?? ride.destination.Address }} every
@@ -290,17 +290,17 @@
         </span>
       </div>
 
-      <div v-if="ride.requested && !ride.accepted" class="notice-box">
+      <div v-if="requested && !accepted" class="notice-box">
         <q-icon name="las la-stamp" size="sm"/>
-        <span>You requested this ride {{ FormatShortDate(ride.requested).toLowerCase() }}. <br/>
+        <span>You requested this ride {{ FormatShortDate(requested).toLowerCase() }}. <br/>
           {{ ride.driver.firstName }} has yet to accept it.</span>
       </div>
 
     </section>
 
     <footer>
-      <q-btn v-if="ride.accepted" class="filled-button" label="Cancel Ride" size="lg"/>
-      <q-btn v-else-if="ride.requested" class="filled-button" label="Cancel Request" size="lg"
+      <q-btn v-if="accepted" class="filled-button" label="Cancel Ride" size="lg"/>
+      <q-btn v-else-if="requested" class="filled-button" label="Cancel Request" size="lg"
              @click="CancelRequest()"/>
       <q-btn v-else class="filled-button" label="Request Ride" size="lg" @click="RequestRide()"/>
     </footer>
@@ -324,12 +324,11 @@ import { useRouter } from 'vue-router'
 const rs = useRideStore()
 const router = useRouter()
 
-const ride = computed<Ride>(() => {
-  if (rs.ride === undefined) {
-    throw new Error('Missing ride')
-  }
-  return rs.ride
-})
+const ride = computed<Ride>(() => rs.ride)
+
+const accepted = computed<Date | null>(() => rs.isAccepted((ride.value.id)))
+
+const requested = computed<Date | null>(() => rs.isRequested((ride.value.id)))
 
 function RequestRide (): void {
   rs.requestSelectedRide()

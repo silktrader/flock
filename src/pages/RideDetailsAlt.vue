@@ -7,6 +7,7 @@ import { Ride } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
 import RouteTimeline from 'components/RouteTimeline.vue'
 import { useUserStore } from 'stores/user-store'
+import { useQuasar } from 'quasar'
 
 enum DetailsView {
   Route,
@@ -18,6 +19,7 @@ enum DetailsView {
 const rs = useRideStore()
 const ns = useNavigationStore()
 const us = useUserStore()
+const $q = useQuasar()
 
 const ride = computed<Ride>(() => rs.ride)
 
@@ -58,9 +60,14 @@ function CancelRequest (): void {
   setTimeout(() => {
     rs.cancelSelectedRequest()
     loading.value = false
-    rs.requestSelectedRide()
     ns.goHome()
   }, 600)
+
+  // provide a snackbar notification
+  $q.notify({
+    message: `You cancelled your request to ${ride.value.driver.firstName}.`,
+    timeout: 3000
+  })
 }
 
 </script>
