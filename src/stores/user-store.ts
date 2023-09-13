@@ -128,11 +128,7 @@ export const useUserStore = defineStore('user', () => {
       avatarUrl: getRandomAvatar(isFemale, avoidAvatars),
       age: RandomInt(18, 39),
       degree: Degrees[RandomInt(0, Degrees.length - 1)].Label,
-      badges: [
-        RandomFloat(0, 1) > 0.5 ? Badges[0] : '',
-        RandomFloat(0, 1) > 0.7 ? Badges[1] : '',
-        RandomFloat(0, 1) > 0.6 ? Badges[2] : '']
-        .filter(i => i !== ''),
+      badges: Badges.sort(() => 0.5 - Math.random()).slice(0, 3),
       languages: randomLanguages(),
       onTime: randomOnTime()
     }

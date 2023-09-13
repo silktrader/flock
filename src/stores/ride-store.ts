@@ -18,7 +18,7 @@ import { Driver } from 'src/models/driver'
 import subtractFromDate = date.subtractFromDate
 import addToDate = date.addToDate
 
-export const Badges = ['punctual', 'veteran', 'cordial']
+export const Badges = ['punctual', 'veteran', 'cordial', 'smoker', 'A/C']
 
 export enum Transport {
   None = 'None',
