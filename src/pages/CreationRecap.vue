@@ -12,58 +12,60 @@
         </section>
       </header>
       <q-separator/>
-      <section class="row justify-center">
-        <div style="padding: 2em 1em 0 1em; width: 300px; height: 320px;font-size: large;">
+      <div class="centering">
+        <section class="row justify-center">
+          <div style="padding: 2em 1em 0 1em; width: 300px; height: 320px;font-size: large;">
 
-            <q-card-section>
-            <div class="text-h6">Confirm ?</div>
-            <q-separator spaced/>
-            </q-card-section>
+              <q-card-section>
+              <div class="text-h6">Confirm ?</div>
+              <q-separator spaced/>
+              </q-card-section>
 
-            <q-card-section class="q-pt-none">
-            <div>
-                <div style="text-align: center; padding-top: 0.5em;">
-                {{ ExtractDate(ds.temporaryDrive.Departure) }}
-                <!--{{ recurrentCheck ? everyWeekdayModel : date.slice(0, -5) }} -->
-                </div>
-                <div style="padding-bottom: 1.5em; text-align: center;">
-                {{ ExtractTime(ds.temporaryDrive.Departure) }}
-                </div>
-                <div style="min-width: 200px;">
-                <div class="row">
-                    <div style="font-weight: bold; padding-right: 2px; padding-bottom: 0.2em;">From:</div>
-                    <div style="font-style: italic;"> {{ds.temporaryDrive.Origin.Address}}</div>
-                </div>
+              <q-card-section class="q-pt-none">
+              <div>
+                  <div style="text-align: center; padding-top: 0.5em;">
+                  {{ ExtractDate(ds.temporaryDrive.Departure) }}
+                  <!--{{ recurrentCheck ? everyWeekdayModel : date.slice(0, -5) }} -->
+                  </div>
+                  <div style="padding-bottom: 1.5em; text-align: center;">
+                  {{ ExtractTime(ds.temporaryDrive.Departure) }}
+                  </div>
+                  <div style="min-width: 200px;">
+                  <div class="row">
+                      <div style="font-weight: bold; padding-right: 2px; padding-bottom: 0.2em;">From:</div>
+                      <div style="font-style: italic;"> {{ds.temporaryDrive.Origin.Address}}</div>
+                  </div>
 
-                <div class="row" style="padding-bottom: 2em">
-                    <div style="font-weight: bold; padding-right: 2px;">To:</div>
-                    <div style="font-style: italic;"> {{ds.temporaryDrive.Destination.Address}}</div>
-                </div>
+                  <div class="row" style="padding-bottom: 2em">
+                      <div style="font-weight: bold; padding-right: 2px;">To:</div>
+                      <div style="font-style: italic;"> {{ds.temporaryDrive.Destination.Address}}</div>
+                  </div>
 
-                <div class="row justify-around" style="padding-top: 0.5em; font-size: medium;">
-                    <div>
-                    <q-icon name="emoji_people" size="1.5em"/>
-                    : {{ ds.temporaryDrive.FreeSeats }}
-                    </div>
-                    <div style="padding: 0 0.6em 0 1.6em;">
-                    <q-icon name="savings" size="1.5em"/>
-                    : {{ ds.temporaryDrive.Earning + '$' }}
-                    </div>
-                    <div>
-                    <q-icon name="mode_of_travel" size="1.5em"/>
-                    : 40 min
-                    </div>
-                </div>
+                  <div class="row justify-around" style="padding-top: 0.5em; font-size: medium;">
+                      <div>
+                      <q-icon name="emoji_people" size="1.5em"/>
+                      : {{ ds.temporaryDrive.FreeSeats }}
+                      </div>
+                      <div style="padding: 0 1em 0 1.7em;">
+                      <q-icon name="savings" size="1.5em"/>
+                      : {{ ds.temporaryDrive.Earning + '$' }}
+                      </div>
+                      <div>
+                      <q-icon name="mode_of_travel" size="1.5em"/>
+                      : 40 min
+                      </div>
+                  </div>
 
-                </div>
-            </div>
-            </q-card-section>
-            <div class="row justify-center" style="padding-top: 1.5em;">
-            <q-btn rounded class="createButton pulsingButton" label="Create"
-                    style="font-size:smaller;" @click="confirmation()"/>
-            </div>
-        </div>
-        </section>
+                  </div>
+              </div>
+              </q-card-section>
+              <div class="row justify-center" style="padding-top: 1.5em;">
+              <q-btn rounded class="createButton pulsingButton" label="Create"
+                      style="font-size:smaller;" @click="confirmation()"/>
+              </div>
+          </div>
+          </section>
+      </div>
     </q-page>
 </template>
 
@@ -99,5 +101,11 @@ function abort (): void {
   width: 8em;
   height: 3em;
 }
+.centering{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  }
 
 </style>
