@@ -1,9 +1,9 @@
 <template>
   <q-page-sticky position="top-right">
     <div class="modal-header-spacer"/>
-      <section>
-        <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
-      </section>
+    <section>
+      <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
+    </section>
   </q-page-sticky>
 
   <div class="named-avatar">
@@ -11,31 +11,30 @@
       <img :src='user.avatarUrl'/>
     </q-avatar>
     <div class='text-h5' style="padding-top: 10px;"> {{ user.firstName }} {{ user.lastName }}</div>
-    <div class='text-caption'> {{ user.degree }} </div>
+    <div class='text-caption'> {{ user.degree }}</div>
   </div>
 
   <div class="row justify-center" style="padding-top: 10px;">
     <q-rating
       v-model="userRating"
-      size='7vw'
       color='secondary'
       readonly
-      />
+      size='7vw'
+    />
   </div>
 
   <div class="actions-container">
-    <q-btn outline label="Follow" class="action-button"/>
-      <q-btn outline label="Message" class="action-button"/>
+    <q-btn class="action-button" label="Follow" outline/>
+    <q-btn class="action-button" label="Message" outline/>
   </div>
 
-  <div v-if='user.languages.length' class='badge-container'>
-    <q-chip v-for='(badge, index) in user.languages' :key='index' class='lang' size='14px' :clickable="false" :ripple="false" outline>
+  <div class='badge-container'>
+
+    <q-chip v-for='(badge, index) in user.languages' :key='index' class="chip">
       {{ badge }}
     </q-chip>
-  </div>
 
-  <div v-if='user.badges.length' class='badge-container'>
-    <q-chip v-for='(badge, index) in user.badges' :key='index' class='badge' size='14px' :clickable="false" :ripple="false" outline>
+    <q-chip v-for='(badge, index) in user.badges' :key='index' class="chip">
       {{ badge }}
     </q-chip>
   </div>
@@ -44,7 +43,7 @@
     <div class="text-h5 text-weight-bolder" style="padding-bottom: 5px;">
       About
     </div>
-    <div class="text-body1 " >
+    <div class="text-body1 ">
       {{ lorem }}
     </div>
   </div>
@@ -52,51 +51,53 @@
   <div class="info-cards-container">
     <div v-if="isDriver">
       <q-card class="cert-driver-card">
-          <q-img :ratio="1" src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
-            <div class="absolute-bottom text-h6">
-              Certified Driver
-            </div>
-          </q-img>
-          <q-card-section class="row items-center justify-between">
-            <div class="text-h4">
-              {{ numDrives }}
-            </div>
-            <div class="test-body bold">
-              Rides Given
-            </div>
-          </q-card-section>
+        <q-img :ratio="1"
+               src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
+          <div class="absolute-bottom text-h6">
+            Certified Driver
+          </div>
+        </q-img>
+        <q-card-section class="row items-center justify-between">
+          <div class="text-h4">
+            {{ numDrives }}
+          </div>
+          <div class="test-body bold">
+            Rides Given
+          </div>
+        </q-card-section>
       </q-card>
     </div>
 
     <div v-if="isRider">
       <q-card class="usual-passenger-card">
-          <q-img ratio="1" src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
-            <div class="absolute-bottom text-h6">
-              Usual Passenger
-            </div>
-          </q-img>
-          <q-card-section class="row items-center justify-between">
-            <div class="text-h4">
-              {{ numRides }}
-            </div>
-            <div class="test-body bold">
-              Rides Taken
-            </div>
-          </q-card-section>
+        <q-img ratio="1"
+               src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
+          <div class="absolute-bottom text-h6">
+            Usual Passenger
+          </div>
+        </q-img>
+        <q-card-section class="row items-center justify-between">
+          <div class="text-h4">
+            {{ numRides }}
+          </div>
+          <div class="test-body bold">
+            Rides Taken
+          </div>
+        </q-card-section>
       </q-card>
     </div>
   </div>
 
   <div class="prefered-dest-container">
-    <q-card class="prefered-dest-card" >
-        <q-img :src='prefDest.Avatar' :ratio="1">
-          <div class="absolute-bottom text-h6">
-            {{ prefDest.Label }}
-          </div>
-        </q-img>
-        <q-card-section>
-          {{ prefDest.Address }}
-        </q-card-section>
+    <q-card class="prefered-dest-card">
+      <q-img :ratio="1" :src='prefDest.Avatar'>
+        <div class="absolute-bottom text-h6">
+          {{ prefDest.Label }}
+        </div>
+      </q-img>
+      <q-card-section>
+        {{ prefDest.Address }}
+      </q-card-section>
     </q-card>
   </div>
 
@@ -133,24 +134,24 @@
   align-items: center;
 }
 
-  .home-header {
-    display: flex;
-    width: 100vw;
-    padding: 8px 16px 0;
-    align-items: center;
-    justify-content: space-between;
-    color: $on-secondary-container;
-    background-color: $secondary-container;
-    font-size: large;
+.home-header {
+  display: flex;
+  width: 100vw;
+  padding: 8px 16px 0;
+  align-items: center;
+  justify-content: space-between;
+  color: $on-secondary-container;
+  background-color: $secondary-container;
+  font-size: large;
 
-    span {
-      font-weight: bold;
-    }
+  span {
+    font-weight: bold;
   }
+}
 
-  .home-header-actions {
-    display: flex;
-    justify-content: flex-end;
+.home-header-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .named-avatar {
@@ -162,9 +163,12 @@
 
 .badge-container {
   display: flex;
-  padding-top: 20px;
+  flex-direction: row;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 48px 24px 24px;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 .badge {
@@ -189,12 +193,12 @@
   flex-wrap: wrap;
 }
 
-.usual-passenger-card{
+.usual-passenger-card {
   width: 40vw;
   background-color: $secondary-container;
 }
 
-.cert-driver-card{
+.cert-driver-card {
   width: 40vw;
   background-color: $secondary-container;
 }
@@ -211,7 +215,7 @@
 }
 </style>
 
-<script setup lang='ts'>
+<script lang='ts' setup>
 import { ref } from 'vue'
 import { useUserStore } from 'stores/user-store'
 import { useLocationStore } from 'stores/location-store'
