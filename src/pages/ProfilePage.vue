@@ -1,15 +1,13 @@
 <template>
-  <header class="home-header">
-    <span>Flock</span>
-
-    <section class="home-header-actions">
-      <q-btn flat icon="chat" round></q-btn>
-      <q-btn flat icon="notifications" round></q-btn>
-    </section>
-  </header>
+  <q-page-sticky position="top-right">
+    <div class="modal-header-spacer"/>
+      <section>
+        <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
+      </section>
+  </q-page-sticky>
 
   <div class="named-avatar">
-    <q-avatar size='40vw'>
+    <q-avatar size='40vw' style="">
       <img :src='user.avatarUrl'/>
     </q-avatar>
     <div class='text-h5' style="padding-top: 10px;"> {{ user.firstName }} {{ user.lastName }}</div>
@@ -25,101 +23,134 @@
       />
   </div>
 
-  <div v-if='user.badges.length' class='badge-container'>
-    <q-chip v-for='(badge, index) in user.badges' :key='index' class='badge' size='14px' :clickable="false" :ripple="false">
-       {{ badge }}
+  <div class="actions-container">
+    <q-btn outline label="Follow" class="action-button"/>
+      <q-btn outline label="Message" class="action-button"/>
+  </div>
+
+  <div v-if='user.languages.length' class='badge-container'>
+    <q-chip v-for='(badge, index) in user.languages' :key='index' class='lang' size='14px' :clickable="false" :ripple="false" outline>
+      {{ badge }}
     </q-chip>
   </div>
 
-    <div class="text-center text-body1 desc-back" style="padding: 20px;">
+  <div v-if='user.badges.length' class='badge-container'>
+    <q-chip v-for='(badge, index) in user.badges' :key='index' class='badge' size='14px' :clickable="false" :ripple="false" outline>
+      {{ badge }}
+    </q-chip>
+  </div>
+
+  <div style="padding:20px">
+    <div class="text-h5 text-weight-bolder" style="padding-bottom: 5px;">
+      About
+    </div>
+    <div class="text-body1 " >
       {{ lorem }}
     </div>
+  </div>
 
-  <q-scroll-area style="height: 35vh; max-width: 200vw;">
-    <div class="info-cards-container">
-      <q-card class="prefered-dest-card">
-        <q-icon rounded name="las la-heart" size="20px"/>
-          <q-img :src='prefDest.Avatar' :ratio="1">
+  <div class="info-cards-container">
+    <div v-if="isDriver">
+      <q-card class="cert-driver-card">
+          <q-img :ratio="1" src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
             <div class="absolute-bottom text-h6">
-              {{ prefDest.Label }}
+              Certified Driver
             </div>
           </q-img>
-          <q-card-section>
-            {{ prefDest.Address }}
+          <q-card-section class="row items-center justify-between">
+            <div class="text-h4">
+              {{ numDrives }}
+            </div>
+            <div class="test-body bold">
+              Rides Given
+            </div>
           </q-card-section>
       </q-card>
-
-      <div v-if="isDriver">
-        <q-card class="prefered-dest-card">
-          <q-icon name="las la-car" size="20px" />
-            <q-img :ratio="1" src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
-              <div class="absolute-bottom text-h6">
-                Certified Driver
-              </div>
-            </q-img>
-            <q-card-section class="row items-center justify-between">
-              <div class="text-h4">
-                {{ numDrives }}
-              </div>
-              <div class="test-body bold">
-                Rides Given
-              </div>
-            </q-card-section>
-        </q-card>
-      </div>
-
-      <div v-if="isRider">
-        <q-card class="prefered-dest-card">
-          <q-icon name="las la-hiking" size="20px"/>
-            <q-img ratio="1" src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
-              <div class="absolute-bottom text-h6">
-                Usual Passenger
-              </div>
-            </q-img>
-            <q-card-section class="row items-center justify-between">
-              <div class="text-h4">
-                {{ numRides }}
-              </div>
-              <div class="test-body bold">
-                Rides Taken
-              </div>
-            </q-card-section>
-        </q-card>
-      </div>
     </div>
-  </q-scroll-area>
 
-  <q-page-sticky :offset="[18,18]" position="bottom-right">
-    <q-fab class="fab-button" direction="up" fab icon="add" vertical-actions-align="right">
-      <q-fab-action v-if="isDriver" color="secondary" icon='las la-calendar-plus' label="Book Ride" label-position="left"
-        text-color="black"/>
-      <q-fab-action color="secondary" icon='las la-phone' label="Call" label-position="left" text-color="black"/>
-      <q-fab-action color="secondary" icon='las la-star' label="Save in Favourites" label-position="left"
-        text-color="black"/>
-    </q-fab>
-  </q-page-sticky>
+    <div v-if="isRider">
+      <q-card class="usual-passenger-card">
+          <q-img ratio="1" src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
+            <div class="absolute-bottom text-h6">
+              Usual Passenger
+            </div>
+          </q-img>
+          <q-card-section class="row items-center justify-between">
+            <div class="text-h4">
+              {{ numRides }}
+            </div>
+            <div class="test-body bold">
+              Rides Taken
+            </div>
+          </q-card-section>
+      </q-card>
+    </div>
+  </div>
+
+  <div class="prefered-dest-container">
+    <q-card class="prefered-dest-card" >
+        <q-img :src='prefDest.Avatar' :ratio="1">
+          <div class="absolute-bottom text-h6">
+            {{ prefDest.Label }}
+          </div>
+        </q-img>
+        <q-card-section>
+          {{ prefDest.Address }}
+        </q-card-section>
+    </q-card>
+  </div>
 
 </template>
 
 <style lang="scss" scoped>
-.home-header {
-  display: flex;
-  width: 100vw;
-  padding: 8px 16px 0;
-  align-items: center;
-  justify-content: space-between;
-  color: $on-secondary-container;
-  background-color: $secondary-container;
-  font-size: large;
 
-  span {
-    font-weight: bold;
-  }
+.actions-container {
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 30px;
+
 }
 
-.home-header-actions {
+.action-button {
+  color: $primary;
+
+}
+
+.rides-drives-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-evenly;
+}
+
+.rides-given {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rides-taken {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+  .home-header {
+    display: flex;
+    width: 100vw;
+    padding: 8px 16px 0;
+    align-items: center;
+    justify-content: space-between;
+    color: $on-secondary-container;
+    background-color: $secondary-container;
+    font-size: large;
+
+    span {
+      font-weight: bold;
+    }
+  }
+
+  .home-header-actions {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .named-avatar {
@@ -134,12 +165,15 @@
   padding-top: 20px;
   align-items: center;
   justify-content: space-evenly;
-  padding-bottom: 20px;
 }
 
 .badge {
   background-color: $secondary-container;
   color: $on-secondary-container;
+}
+
+.lang {
+  color: $primary-container;
 }
 
 .desc-back {
@@ -152,11 +186,28 @@
   align-items: stretch;
   justify-content: space-evenly;
   column-gap: 20px;
+  flex-wrap: wrap;
+}
+
+.usual-passenger-card{
+  width: 40vw;
+  background-color: $secondary-container;
+}
+
+.cert-driver-card{
+  width: 40vw;
+  background-color: $secondary-container;
 }
 
 .prefered-dest-card {
-  width: 40vw;
+  width: 100vw;
   background-color: $secondary-container;
+}
+
+.prefered-dest-container {
+  display: flex;
+  width: 100%;
+  padding: 20px;
 }
 </style>
 
@@ -164,15 +215,16 @@
 import { ref } from 'vue'
 import { useUserStore } from 'stores/user-store'
 import { useLocationStore } from 'stores/location-store'
+import { useNavigationStore } from 'src/stores/navigation-store'
 import { User } from 'src/models/user'
 import { RandomFloat, RandomInt } from 'src/tools/random-tools'
 
 const us = useUserStore()
 const ls = useLocationStore()
+const ns = useNavigationStore()
 
-const lorem = "Lorem ipsum dolor sit a met, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-const user = ref<User>(us.generateUser(new Set(), false))
+const user = ref<User>(us.generateUser(new Set()))
+const lorem = `Greetings fellow travelers! I'm ${user.value.firstName}, your carpool companion on journeys through both books and roads. When I'm not engrossed in novels, you'll find me on the open road, always up for an adventure. I love to discover hidden gems and cozy coffee shops along the way. Join me for great conversations and unforgettable road trips.`
 const userRating = RandomFloat(2.4, 4.9)
 
 const prefDest = ls.sapienzaPlaces[RandomInt(0, ls.sapienzaPlaces.length)]
@@ -182,4 +234,5 @@ const isRider = true
 
 const numRides = RandomInt(8, 25)
 const numDrives = RandomInt(8, 25)
+
 </script>
