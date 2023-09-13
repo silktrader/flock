@@ -65,7 +65,6 @@ function abort (): void {
 <template>
   <q-page class="column">
     <header class="modal-header">
-      <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="abort()"/>
       <div class="modal-header-spacer"/>
       <section class="modal-header-title">
         <span style="padding-right: 1em; font-weight: bolder;">Date & Time</span>

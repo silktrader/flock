@@ -14,42 +14,24 @@
       <q-separator/>
       <div class="column general-container">
       <div class="instruction" style="text-align: center;">How many passengers are you willing to take? </div>
-        <div class="row justify-center" style="padding-top: 1em">
-          <div class="column justify-around">
-            <div style="padding-bottom: 1em;">
-              <q-icon name="directions_car" size="xs"/>
-              Select Vehicle:
-            </div>
-            <div style="padding-bottom: 1em;">
-              <q-icon name="airline_seat_recline_extra" size="xs"/>
-              Available seats:
-            </div>
-            <div>
-              <q-icon name="paid" size="xs"/>
-              Price per seat:
-            </div>
-          </div>
-          <div class="column">
-            <q-select v-model="selectCarString" :options="carsArray" filled
-                      style="padding-left: 1em; padding-bottom: 1em;"/>
-            <q-input v-model="seatsNumber" filled style="padding-left: 1em; max-width: 174px; padding-bottom: 1em;">
-              <template v-slot:prepend>
-                <q-btn round icon="remove" size="md" @click="decreaseSeats" style="margin-right: 0.7em; background-color: rgb(62, 81, 63);"/>
-              </template>
-              <template v-slot:append>
-                <q-btn round icon="add" size="md" @click="increaseSeats" style="background-color: rgb(62, 81, 63)"/>
-              </template>
-            </q-input>
-            <q-input v-model="priceString" filled style="padding-left: 1em; max-width: 174px;">
-              <template v-slot:prepend>
-                <q-btn round icon="remove" size="md" @click="decreasePrice"  style="background-color: rgb(62, 81, 63)"/>
-              </template>
-              <template v-slot:append>
-                <q-btn round icon="add" size="md" @click="increasePrice" style="background-color: rgb(62, 81, 63);"/>
-              </template>
-            </q-input>
-          </div>
+      <div class="row justify-evenly" style="padding-top: 1em;">
+        <q-btn icon="remove" glossy rounded flat class="operation-button" @click="decreaseSeats()"></q-btn>
+        <div style="min-width: 140px; text-align: center;">
+          <q-icon v-for="index in seatsNumber" :key="index" name="emoji_people" size="2.5em"></q-icon>
         </div>
+        <q-btn icon="add" glossy rounded flat class="operation-button" @click="increaseSeats()"></q-btn>
+      </div>
+      <div class="row justify-evenly" style="font-size: large;">{{ seatsNumber }}</div>
+      <div class="instruction" style="text-align: center;">How much will the pay? (Each) </div>
+      <div class="row justify-evenly" style="padding-top: 1em;">
+        <q-btn icon="remove" glossy rounded flat class="operation-button" @click="decreasePrice()"></q-btn>
+        <div style="min-width: 140px; text-align: center;">
+          <q-icon v-if="price === 0" name="block" size="2.5em"></q-icon>
+          <q-icon v-else v-for="ind in price" :key="ind" name="euro_symbol" size="2.5em"></q-icon>
+        </div>
+        <q-btn icon="add" glossy rounded flat class="operation-button" @click="increasePrice()"></q-btn>
+      </div>
+      <div class="row justify-evenly" style="font-size: large;">{{ price !== 0 ? priceString: 'free' }}</div>
       </div>
       <q-page-sticky :offset="[45, 210]" position="bottom-right">
           <q-btn class="pulsingButton fab-button" fab icon="arrow_forward" @click="lastStep()"/>
@@ -61,22 +43,12 @@
 import { useDriveStore } from 'src/stores/driveStore'
 import { useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
-import { cars, CarSpec } from 'src/models/car'
 
-const carsArray = ['Tesla Model', 'Nissan Leaf', 'Mazda 2']
-const selectedCar = ref<CarSpec>()
-const selectCarString = ref('Nissan Leaf')
 const ds = useDriveStore()
 const router = useRouter()
 const seatsNumber = ref<number>(1)
 const priceString = ref<string>('0$')
 const price = ref<number>(0)
-
-watch(selectCarString, (newVal) => {
-  if (newVal) {
-    selectedCar.value = cars.find((car) => car.model === newVal)
-  }
-})
 
 function abort (): void {
   ds.clearTemporaryDrive()
@@ -90,14 +62,14 @@ function increaseSeats (): void {
 }
 
 function decreaseSeats (): void {
-  if (seatsNumber.value > 0) {
+  if (seatsNumber.value > 1) {
     seatsNumber.value -= 1
   }
 }
 
 function increasePrice (): void {
-  if (price.value < 10) {
-    price.value += 0.50
+  if (price.value < 4) {
+    price.value += 1
     price.value = parseFloat(price.value.toFixed(2))
     priceString.value = price.value.toString() + '$'
   }
@@ -105,14 +77,13 @@ function increasePrice (): void {
 
 function decreasePrice (): void {
   if (price.value > 0) {
-    price.value -= 0.50
+    price.value -= 1
     price.value = parseFloat(price.value.toFixed(2))
     priceString.value = price.value.toString() + '$'
   }
 }
 
 function lastStep (): void {
-  ds.updateField('CarS', selectedCar.value)
   ds.updateField('Earning', price.value * seatsNumber.value)
   ds.updateField('FreeSeats', seatsNumber.value)
   router.push('/create-ride/recap')
@@ -123,5 +94,10 @@ function lastStep (): void {
 <style lang="scss" scoped>
 
 @import "src/css/quasar.variables.scss";
+
+.operation-button {
+  color: $on-tertiary-container;
+  background-color: $tertiary-container;
+}
 
 </style>
