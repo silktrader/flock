@@ -8,7 +8,7 @@ import { CarSpec } from 'src/models/car'
 import { Lecture } from 'src/models/lecture'
 
 export interface Drive {
-    Id: string,
+    Id: number,
     Origin: Place,
     Destination: Place,
     Arrival: Date,

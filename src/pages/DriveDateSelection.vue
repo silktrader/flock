@@ -14,7 +14,7 @@ const ds = useDriveStore()
 const router = useRouter()
 // const dateValue = ref<Date>(ds.temporaryDrive.Departure ? ds.temporaryDrive.Departure : new Date())
 const tempDrive : Drive = {
-  Id: '1',
+  Id: 0,
   Origin: {
     Label: '',
     Address: ''
@@ -97,10 +97,6 @@ function abort (): void {
                     {{
                     ExtractTime(lecture.date)
                     }} - {{ ExtractTime(date.addToDate(lecture.date, { minute: lecture.duration })) }}
-                </q-item-label>
-                <q-item-label caption lines="1">
-                    <q-icon name="map"/>
-                    {{ lecture.location.Label }}
                 </q-item-label>
                 </q-item-section>
             </q-item>

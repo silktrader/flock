@@ -23,7 +23,7 @@ export const useDriveStore = defineStore('driveStore', {
     },
 
     // Remove a drive from the main drives array (if needed)
-    removeDrive (driveId: string) {
+    removeDrive (driveId: number) {
       this.drives = this.drives.filter((drive) => drive.Id !== driveId)
     },
 

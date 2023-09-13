@@ -195,7 +195,7 @@ setTimeout(() => {
       </q-page-sticky>
 
       <q-page-sticky v-if="showDriverFab" :offset="[18, 18]" position="bottom-right">
-        <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()"/>
+        <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()" label="New" size="lg"/>
       </q-page-sticky>
 
     </template>
@@ -205,31 +205,6 @@ setTimeout(() => {
 
 <style lang="scss" scoped>
 @import "src/css/quasar.variables.scss";
-
-.pulsingButton {
-  box-shadow: 0 0 0 0 $primary-container;
-  animation: pulsing 2s infinite cubic-bezier(0.66, 0, 0, 0.8);
-  font-size: 22px;
-  font-weight: normal;
-  font-family: sans-serif;
-  text-decoration: none !important;
-  color: #ffffff;
-  transition: all 300ms ease-in-out;
-}
-
-/* Comment-out to have the button continue to pulse on mouseover */
-/* Animation */
-@keyframes pulsing {
-  0% {
-    box-shadow: 0 0 0 0 $primary-container;
-  }
-  80% {
-    box-shadow: 0 0 0 18px rgba(0, 0, 0, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 18px rgba(0, 0, 0, 0);
-  }
-}
 
 .introduction-carousel {
   color: $on-surface-variant;

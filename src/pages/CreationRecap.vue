@@ -75,10 +75,18 @@ import { ref } from 'vue'
 
 const ds = useDriveStore()
 const router = useRouter()
+const arrivalDate = new Date(ds.temporaryDrive.Departure)
 
 function confirmation (): void {
+  ds.updateField('Arrival', arrivalDate.setMinutes(arrivalDate.getMinutes() + 40))
+  ds.updateField('Id', ds.temporaryDrive.Id + 1)
   ds.addDrive(ds.temporaryDrive)
   router.push('/create-ride/confirm')
+}
+
+function abort (): void {
+  ds.clearTemporaryDrive()
+  router.push('/')
 }
 
 </script>

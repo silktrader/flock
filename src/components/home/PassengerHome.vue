@@ -80,7 +80,7 @@ const bookedRides = computed<ReadonlyArray<AcceptedRide>>(
 
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "src/css/quasar.variables.scss";
 
 .home__row {

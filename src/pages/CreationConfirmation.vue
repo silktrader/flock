@@ -1,7 +1,7 @@
 <template>
 
     <q-page>
-      <div class="container">
+      <div class="container" v-if="!isLoading">
 
         <header class="request-sent-header">
           <div class="close-button">
@@ -42,7 +42,9 @@
         </section>
 
       </div>
-
+      <div v-else class="loading-spinner">
+        <q-spinner-pie color="primary" size="100px"/>
+      </div>
     </q-page>
 
   </template>
@@ -51,9 +53,18 @@
 
 import { useRideStore } from 'stores/ride-store'
 import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 
 const rs = useRideStore()
 const router = useRouter()
+const isLoading = ref(true)
+
+// Simulate a 2-second loading delay
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false
+  }, 2500)
+})
 
 async function abort (): Promise<void> {
   await router.replace('/')
@@ -68,6 +79,13 @@ function CreateReturnRide (): void {
 
   <style lang="scss" scoped>
   @import "src/css/quasar.variables.scss";
+
+  .loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Make the container take up the entire viewport height */
+}
 
   .container {
     display: flex;

@@ -84,7 +84,7 @@ function abort (): void {
 }
 
 function increaseSeats (): void {
-  if (seatsNumber.value < 5) {
+  if (seatsNumber.value < 4) {
     seatsNumber.value += 1
   }
 }

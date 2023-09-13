@@ -178,11 +178,7 @@ $border-radius: 12px;
 .pulsingButton {
   box-shadow: 0 0 0 0 $primary-container;
   animation: pulsing 2s 2 cubic-bezier(0.66, 0, 0, 0.8) 2s;
-  font-size: 22px;
-  font-weight: normal;
-  font-family: sans-serif;
   text-decoration: none !important;
-  color: #ffffff;
   transition: all 300ms ease-in-out;
 }
 /* Comment-out to have the button continue to pulse on mouseover */
