@@ -12,7 +12,6 @@ import { useUserStore } from 'stores/user-store'
 import { computed } from 'vue'
 import { AcceptedRide } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
-import StatRideCount from 'components/stats/StatRideCount.vue'
 
 const rs = useRideStore()
 const us = useUserStore()
@@ -70,7 +69,6 @@ const bookedRides = computed<ReadonlyArray<AcceptedRide>>(
           <StatAggregates/>
           <StatPeopleMet/>
           <StatDistance/>
-          <StatRideCount/>
           <!--          <StatRideCount/>-->
         </div>
         <div class="home__stats__col">
