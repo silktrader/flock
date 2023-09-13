@@ -1,9 +1,9 @@
 <template>
   <q-page-sticky position="top-right">
     <div class="modal-header-spacer"/>
-    <section>
-      <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
-    </section>
+      <section>
+        <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
+      </section>
   </q-page-sticky>
 
   <div class="named-avatar">
@@ -14,18 +14,26 @@
     <div class='text-caption'> {{ user.degree }}</div>
   </div>
 
-  <div class="row justify-center" style="padding-top: 10px;">
+  <div class="row items-center justify-center" style="padding-top: 10px;">
+    <div class="text-h6 text-weight-bold">
+      {{ userRating.toFixed(1) }}
+    </div>
     <q-rating
       v-model="userRating"
       color='secondary'
+      max='1'
       readonly
       size='7vw'
-    />
+      />
+      <div class='text-body2'>
+        ({{ numReviews }})
+      </div>
+
   </div>
 
   <div class="actions-container">
     <q-btn class="action-button" label="Follow" outline/>
-    <q-btn class="action-button" label="Message" outline/>
+      <q-btn class="action-button" label="Message" outline/>
   </div>
 
   <div class='badge-container'>
@@ -52,7 +60,7 @@
     <div v-if="isDriver">
       <q-card class="cert-driver-card">
         <q-img :ratio="1"
-               src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
+          src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
           <div class="absolute-bottom text-h6">
             Certified Driver
           </div>
@@ -71,7 +79,7 @@
     <div v-if="isRider">
       <q-card class="usual-passenger-card">
         <q-img ratio="1"
-               src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
+          src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
           <div class="absolute-bottom text-h6">
             Usual Passenger
           </div>
@@ -238,5 +246,5 @@ const isRider = true
 
 const numRides = RandomInt(8, 25)
 const numDrives = RandomInt(8, 25)
-
+const numReviews = RandomInt(4, 99)
 </script>
