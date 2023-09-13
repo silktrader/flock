@@ -68,7 +68,7 @@ function abort (): void {
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="abort()"/>
       <div class="modal-header-spacer"/>
       <section class="modal-header-title">
-        <span style="padding-right: 1em; font-weight: bolder;">Drive Creation</span>
+        <span style="padding-right: 1em; font-weight: bolder;">Date & Time</span>
         <!--        <span class="modal-header-subtitle">Results</span>-->
       </section>
       <section>
