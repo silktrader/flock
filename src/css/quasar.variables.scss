@@ -85,6 +85,7 @@ $border-radius: 12px;
   min-height: 40px;
   padding: 0 24px;
   border-radius: 20px !important;
+  font-size: medium;
 }
 
 .tonal-button {
@@ -96,6 +97,7 @@ $border-radius: 12px;
   min-height: 40px;
   padding: 0 24px;
   border-radius: 20px !important;
+  font-size: medium;
 }
 
 .accent-button {
@@ -106,6 +108,7 @@ $border-radius: 12px;
   min-height: 40px;
   padding: 0 24px;
   border-radius: 20px !important;
+  font-size: medium;
 }
 
 .outline-button {
@@ -117,6 +120,7 @@ $border-radius: 12px;
   width: max-content;
   padding: 0 24px;
   border-radius: 20px !important;
+  font-size: medium;
 }
 
 .outline-button::before {
@@ -129,6 +133,7 @@ $border-radius: 12px;
   color: $secondary;
   min-height: 40px;
   padding: 0 24px;
+  font-size: medium;
 }
 
 .fab-button {
@@ -181,6 +186,7 @@ $border-radius: 12px;
   text-decoration: none !important;
   transition: all 300ms ease-in-out;
 }
+
 /* Comment-out to have the button continue to pulse on mouseover */
 /* Animation */
 @keyframes pulsing {
@@ -188,9 +194,9 @@ $border-radius: 12px;
     box-shadow: 0 0 0 0 $primary-container;
   }
   80% {
-    box-shadow: 0 0 0 18px rgba(0,0,0,0);
+    box-shadow: 0 0 0 18px rgba(0, 0, 0, 0);
   }
   100% {
-    box-shadow: 0 0 0 18px rgba(0,0,0,0);
+    box-shadow: 0 0 0 18px rgba(0, 0, 0, 0);
   }
 }

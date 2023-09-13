@@ -84,7 +84,7 @@
 
 .button-toggle-large {
   span {
-    font-size: medium;
+    font-size: large;
   }
 }
 
@@ -123,6 +123,11 @@
   padding: 12px;
   margin: 16px 24px 0;
   min-height: 30px;
+}
+
+.notice-box--clickable {
+  cursor: pointer;
+  position: relative;
 }
 
 .chip {

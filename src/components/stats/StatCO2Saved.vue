@@ -19,7 +19,7 @@ const co2Saved = computed<number>(() =>
 
     <div class="ride-count__stat">
       <q-icon color="secondary" name="las la-leaf" size="48px"/>
-      <span>CO<sup>2</sup> Kg Saved</span>
+      <span>CO<sub>2</sub> Kg Saved</span>
       <section class="co2__kgs">
         <span class="rc__stat__figure">{{ co2Saved.toFixed(0) }}</span>
       </section>
@@ -27,7 +27,7 @@ const co2Saved = computed<number>(() =>
 
     <div class="co2-saved__equivalence">
 
-      <div class="co2-saved__equivalence__header">CO<sup>2</sup> Footprint</div>
+      <div class="co2-saved__equivalence__header">CO<sub>2</sub> Footprint</div>
 
       <div class="co2-saved__equivalence__item">
         <span class="co2-saved__equivalence__sym">≈</span>

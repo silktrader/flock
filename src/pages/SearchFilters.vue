@@ -55,7 +55,7 @@ function closeModal (): void {
 
 <template>
 
-  <main class="container">
+  <main class="filters-container">
 
     <header class="secondary-header">
       <q-btn aria-label="Back" flat icon="arrow_back" size="lg" @click="closeModal()"/>
@@ -163,11 +163,12 @@ function closeModal (): void {
 
 <style lang="scss" scoped>
 
-.container {
+.filters-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
   align-items: center;
+  font-size: large;
 }
 
 .segmented-button-container {

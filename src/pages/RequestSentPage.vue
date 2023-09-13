@@ -94,8 +94,9 @@ async function abort (): Promise<void> {
         </transition>
       </template>
 
-      <q-dialog v-model="commentDialog" persistent>
-        <q-card class="card card--with-header" flat style="min-width: 300px">
+      <!--      When smartphone users trigger the visual keyboard in fullscreen the page can't be scrolled.-->
+      <q-dialog v-model="commentDialog" position="bottom">
+        <q-card class="card card--with-header rqs-dialog__container" flat>
           <q-card-section class="card-header">
             <span>Comment for {{ ride.driver.firstName }}</span>
           </q-card-section>
@@ -104,23 +105,22 @@ async function abort (): Promise<void> {
             <q-input
               v-model="commentText"
               autofocus
-              autogrow
               clearable
               counter
               filled
               maxlength="160"
-              rows="3"
+              rows="6"
               type="textarea"
               @keyup.enter="commentDialog = false"/>
           </q-card-section>
 
-          <q-card-actions align="between">
+          <q-card-actions align="between" class="rqs-buttons">
             <q-btn class="flat-button" flat label="Discard" @click="discardComment()"/>
             <q-btn
               :disable="commentText.length === 0"
               :loading="commentLoading"
               class="filled-button"
-              label="Leave Message"
+              label="Add"
               @click="leaveComment()"/>
           </q-card-actions>
         </q-card>
@@ -218,8 +218,22 @@ async function abort (): Promise<void> {
   justify-content: flex-start;
 }
 
+.rqs-dialog__container {
+  min-width: 300px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .rqs__dialog__input {
   padding: 24px;
+}
+
+.rqs-buttons {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 24px;
 }
 
 </style>

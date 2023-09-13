@@ -83,7 +83,7 @@ watch([selectedDate, selectedHour, selectedMinute], ([isoDate, hour, minute]) =>
   display: flex;
   flex-direction: row;
   color: $primary;
-  font-size: medium;
+  font-size: large;
   justify-content: center;
   width: min-content;
 }
@@ -104,7 +104,7 @@ watch([selectedDate, selectedHour, selectedMinute], ([isoDate, hour, minute]) =>
 .divisor {
   color: $on-primary-container;
   background-color: $primary-container;
-  height: 40px;
+  height: 43px;
   align-items: center;
   display: flex;
   margin: auto;

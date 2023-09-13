@@ -11,7 +11,7 @@ import { fakerIT as faker } from '@faker-js/faker'
 import { today } from 'src/tools/date-tools'
 import { Course } from 'src/models/course'
 import { SearchParameters } from 'src/models/search-parameters'
-import { ResultCards, RideDetails, SearchControls } from 'src/models/options'
+import { LectureHints, ResultCards, RideDetails, SearchControls } from 'src/models/options'
 import { Degrees } from 'src/models/degree'
 
 export const useUserStore = defineStore('user', () => {
@@ -59,7 +59,7 @@ export const useUserStore = defineStore('user', () => {
       days: ['tue', 'wed'],
       start: [9, 16],
       location: getRandomSapLocation(),
-      color: '#83781b'
+      color: '#B75652'
     },
     {
       id: RandomId(),
@@ -77,7 +77,7 @@ export const useUserStore = defineStore('user', () => {
       days: ['thu', 'fri'],
       start: [8, 8],
       location: getRandomSapLocation(),
-      color: '#ffd23f'
+      color: '#3A405A'
     },
     {
       id: RandomId(),
@@ -107,7 +107,8 @@ export const useUserStore = defineStore('user', () => {
       rideDetails: RideDetails.Views,
       fixedHeader: true,
       tabbedHome: false,
-      dateHints: false
+      dateHints: false,
+      lectureHints: LectureHints.Vertical
     }
   })
 
@@ -127,11 +128,7 @@ export const useUserStore = defineStore('user', () => {
       avatarUrl: getRandomAvatar(isFemale, avoidAvatars),
       age: RandomInt(18, 39),
       degree: Degrees[RandomInt(0, Degrees.length - 1)].Label,
-      badges: [
-        RandomFloat(0, 1) > 0.5 ? Badges[0] : '',
-        RandomFloat(0, 1) > 0.7 ? Badges[1] : '',
-        RandomFloat(0, 1) > 0.6 ? Badges[2] : '']
-        .filter(i => i !== ''),
+      badges: Badges.sort(() => 0.5 - Math.random()).slice(0, 3),
       languages: randomLanguages(),
       onTime: randomOnTime()
     }

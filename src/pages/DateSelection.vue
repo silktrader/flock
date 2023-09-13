@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 
 import { useRouter } from 'vue-router'
-import { DateMode, ExtractTime, FormatShortDate, today } from 'src/tools/date-tools'
+import { DateMode, ExtractTime, FormatLongDate, FormatShortDate, today } from 'src/tools/date-tools'
 import { date } from 'quasar'
 
 import { computed, ref } from 'vue'
 import { Lecture } from 'src/models/lecture'
 import { useUserStore } from 'stores/user-store'
-import DateSelector from 'components/DateSelector.vue'
+import DateSelector from 'components/date-selection/DateSelector.vue'
 import { useRideStore } from 'stores/ride-store'
+import LectureHintVertical from 'components/date-selection/LectureHintVertical.vue'
+import { LectureHints } from 'src/models/options'
+import LectureHintTable from 'components/date-selection/LectureHintTable.vue'
 
 const router = useRouter()
 const us = useUserStore()
@@ -30,9 +33,25 @@ const actionLabel = computed<string>(() => {
   return `${modeModifiers[0]} ${FormatShortDate(dateValue.value)} ${modeModifiers[1]} ${ExtractTime(dateValue.value)}`
 })
 
+// Lists all the lectures occurring on the selected day, sorted according to their start time.
 const dayLectures = computed<Array<Lecture>>(() => {
-  return us.lectures.filter(lecture => date.getDateDiff(dateValue.value, lecture.date) === 0)
+  return us.lectures
+    .filter(lecture => date.getDateDiff(dateValue.value, lecture.date) === 0)
+    .sort((a, b) => a.date > b.date ? 1 : -1)
 })
+
+const dateLabel = computed<string>(() => {
+  const formattedDate = FormatLongDate(dateValue.value)
+  return ['tomorrow', 'today'].includes(formattedDate.toLowerCase())
+    ? `Lectures ${formattedDate.toLowerCase()}`
+    : `Lectures on ${formattedDate}`
+})
+
+function getLectureDate (lecture: Lecture): Date {
+  return (dateMode.value === DateMode.Arrive)
+    ? lecture.date
+    : date.addToDate(lecture.date, { minutes: lecture.duration })
+}
 
 function updateDate (date: Date): void {
   dateValue.value = date
@@ -47,12 +66,6 @@ function selectDate (): void {
     DateMode: dateMode.value
   })
   closeModal()
-}
-
-function getLectureDate (lecture: Lecture): Date {
-  return (dateMode.value === DateMode.Arrive)
-    ? lecture.date
-    : date.addToDate(lecture.date, { minutes: lecture.duration })
 }
 
 const nextLectureToday = computed<Lecture | null>(
@@ -149,30 +162,22 @@ const lectureNextWeek = computed<Lecture | null>(
 
       <section class="ds-lectures">
         <q-list>
-          <q-item-label header>Lectures of the Day</q-item-label>
+          <q-item-label header>{{ dateLabel }}</q-item-label>
 
           <q-item v-if="dayLectures.length === 0">
             <span class="ds-no-lectures">No Lectures</span>
           </q-item>
 
-          <q-item v-for="lecture in dayLectures" v-else :key="lecture.courseId" clickable
-                  @click="updateDate(getLectureDate(lecture))">
-            <q-item-section class="ds-lecture__name">
-              <q-item-label lines="2">{{ us.getCourseById(lecture.courseId).name }}</q-item-label>
-            </q-item-section>
-            <q-item-section class="ds-lecture__details">
-              <q-item-label lines="1">
-                <q-icon name="schedule"/>
-                {{
-                  ExtractTime(lecture.date)
-                }} - {{ ExtractTime(date.addToDate(lecture.date, { minute: lecture.duration })) }}
-              </q-item-label>
-              <q-item-label caption class="ds-lecture__location" lines="1">
-                <q-icon name="map"/>
-                {{ lecture.location.Label }}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
+          <template v-if="us.options.debug.lectureHints === LectureHints.Vertical">
+            <LectureHintVertical v-for="lecture in dayLectures" :key="lecture.courseId" v-ripple
+                                 :date-mode="dateMode" :lecture="lecture" @click="updateDate(getLectureDate(lecture))"/>
+          </template>
+
+          <template v-else>
+            <LectureHintTable v-for="lecture in dayLectures" :key="lecture.courseId" v-ripple :lecture="lecture"
+                              @click="updateDate(getLectureDate(lecture))"/>
+          </template>
+
         </q-list>
       </section>
 
@@ -207,7 +212,7 @@ const lectureNextWeek = computed<Lecture | null>(
   display: flex;
   width: 100%;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 32px;
 }
 
 .ds-hints {
@@ -228,35 +233,14 @@ const lectureNextWeek = computed<Lecture | null>(
 }
 
 .ds-no-lectures {
+  font-size: large;
   font-style: italic;
   text-align: center;
   width: 100%;
 }
 
-.ds-lecture__name, .ds-lecture__details {
-  color: $on-background;
-  font-size: medium;
-}
-
-.ds-lecture__name {
-  flex-grow: 2;
-}
-
-.ds-lecture__details {
-  flex-grow: 3;
-}
-
-.ds-lecture__location {
-  color: $on-background;
-  font-size: small;
-}
-
 footer {
-  display: flex;
-  flex-direction: row;
-  margin-left: 24px;
-  margin-right: 24px;
-  margin-bottom: 16px;
+  margin: 24px;
 }
 
 .filled-button--full-width {

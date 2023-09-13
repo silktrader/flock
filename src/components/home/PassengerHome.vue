@@ -11,9 +11,11 @@ import { useRideStore } from 'stores/ride-store'
 import { useUserStore } from 'stores/user-store'
 import { computed } from 'vue'
 import { AcceptedRide } from 'src/models/ride'
+import { useNavigationStore } from 'stores/navigation-store'
 
 const rs = useRideStore()
 const us = useUserStore()
+const ns = useNavigationStore()
 
 const now = new Date() // possible issue in a long-running instance, may need to be outsourced to an external ticker
 
@@ -28,7 +30,8 @@ const bookedRides = computed<ReadonlyArray<AcceptedRide>>(
 
   <main class="tab-sections">
 
-    <section v-if="rs.requestedRides.length" class="notice-box">
+    <section v-if="rs.requestedRides.length" v-ripple class="notice-box notice-box--clickable"
+             @click="ns.goPendingRideRequests()">
 
       <q-icon name="las la-stamp" size="lg"/>
 
@@ -36,7 +39,7 @@ const bookedRides = computed<ReadonlyArray<AcceptedRide>>(
           rs.requestedRides.length
         }}</b> pending ride request{{ rs.requestedRides.length > 1 ? 's' : '' }} waiting to be approved.</span>
 
-      <q-btn dense flat icon="arrow_forward_ios" to="/rides/requests"/>
+      <q-btn dense flat icon="arrow_forward_ios"/>
 
     </section>
 

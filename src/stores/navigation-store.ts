@@ -15,6 +15,9 @@ export const useNavigationStore = defineStore('navigation', () => {
   const router = useRouter()
   const us = useUserStore()
 
+  // How long before route changes occur after a user interacts with navigation elements, to display animations mostly.
+  const defaultRoutWait = 250
+
   // Determines whether the user opens the application for the first time.
   const firstUse = ref<boolean>(true)
 
@@ -33,36 +36,49 @@ export const useNavigationStore = defineStore('navigation', () => {
     await $q.fullscreen.toggle()
   }
 
+  function delayRoutePush (path: string): void {
+    setTimeout(() => {
+      router.push(path)
+    }, defaultRoutWait
+    )
+  }
+
   function goHome (): void {
-    router.push('/')
+    delayRoutePush('/')
   }
 
   function goBack (): void {
-    router.go(-1)
+    setTimeout(() => {
+      router.go(-1)
+    }, defaultRoutWait)
   }
 
   function goDetailsPage (): void {
     if (us.options.debug.rideDetails === RideDetails.Scroll) {
-      router.push('/rides/details/')
+      delayRoutePush('/rides/details/')
     } else {
-      router.push('/rides/details-alt')
+      delayRoutePush('/rides/details-alt')
     }
   }
 
   function goRequestSent (): void {
-    router.push('/rides/search/request-sent')
+    delayRoutePush('/rides/search/request-sent')
   }
 
   function goDebugOptions (): void {
-    router.push('/settings/debug')
+    delayRoutePush('/settings/debug')
   }
 
   function goSearchRides (): void {
-    router.push(us.options.debug.searchControls === SearchControls.FullPage ? '/rides/search-full' : '/rides/search')
+    delayRoutePush(us.options.debug.searchControls === SearchControls.FullPage ? '/rides/search-full' : '/rides/search')
   }
 
   function goOldSearchResults (): void {
-    router.push('/rides/search')
+    delayRoutePush('/rides/search')
+  }
+
+  function goPendingRideRequests (): void {
+    delayRoutePush('/rides/requests')
   }
 
   return {
@@ -77,6 +93,7 @@ export const useNavigationStore = defineStore('navigation', () => {
     goRequestSent,
     goDebugOptions,
     goSearchRides,
-    goOldSearchResults
+    goOldSearchResults,
+    goPendingRideRequests
   }
 })
