@@ -3,6 +3,13 @@ import { readonly, ref } from 'vue'
 import { FavouritePlace, Place, sapienzaPlaces } from 'src/models/place'
 import { fakerIT as faker } from '@faker-js/faker'
 
+export enum LocationMode {
+  SearchOrigin,
+  SearchDestination,
+  CreateOrigin,
+  CreateDestination
+}
+
 export const useLocationStore = defineStore('location-store', () => {
   const favouritePlaces = ref<FavouritePlace[]>([{
     Label: 'Home',
@@ -24,14 +31,21 @@ export const useLocationStore = defineStore('location-store', () => {
 
   const prevSearches = new Map<string, string[]>()
 
-  // contains all previously generated addresses for quick lookups; might grow large
+  // Contains all previously generated addresses for quick lookups; might grow large
   const prevAddresses = new Set<string>()
 
-  // contains all previously selected places to populate a history list
+  // Contains all previously selected places to populate a history list
   const recentAddresses: Array<string> = []
+
+  // Allows to pass location selection mode without using routes.
+  const locationMode = ref<LocationMode>(LocationMode.SearchOrigin)
 
   // Checks if a location is among Sapienza's facilities
   const isSapLocation = (location: Place): boolean => sapienzaPlaces.some(l => l.Address === location.Address)
+
+  function setLocationMode (mode: LocationMode): void {
+    locationMode.value = mode
+  }
 
   // Generate unique address names, including prefixes, and memoize results for consistency
   function genAddresses (stem: string): ReadonlyArray<string> {
@@ -103,6 +117,8 @@ export const useLocationStore = defineStore('location-store', () => {
     sapienzaPlaces: readonly(sapienzaPlaces),
     favouritePlaces: readonly(favouritePlaces),
     recentAddresses: readonly(recentAddresses),
+    locationMode: readonly(locationMode),
+    setLocationMode,
     getDefaultSapienzaLocation,
     getDefaultHomeLocation,
     isSapLocation,

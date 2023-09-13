@@ -13,6 +13,7 @@ import { Course } from 'src/models/course'
 import { SearchParameters } from 'src/models/search-parameters'
 import { LectureHints, ResultCards, RideDetails, SearchControls } from 'src/models/options'
 import { Degrees } from 'src/models/degree'
+import { sapienzaPlaces } from 'src/models/place'
 
 export const useUserStore = defineStore('user', () => {
   const femaleAvatars: ReadonlyArray<string> =
@@ -49,7 +50,7 @@ export const useUserStore = defineStore('user', () => {
       acro: 'HCI',
       days: ['mon', 'thu'],
       start: [10, 14],
-      location: getRandomSapLocation(),
+      location: sapienzaPlaces[0],
       color: '#56282D'
     },
     {
@@ -58,7 +59,7 @@ export const useUserStore = defineStore('user', () => {
       acro: 'DBM',
       days: ['tue', 'wed'],
       start: [9, 16],
-      location: getRandomSapLocation(),
+      location: sapienzaPlaces[0],
       color: '#B75652'
     },
     {
@@ -67,7 +68,7 @@ export const useUserStore = defineStore('user', () => {
       acro: 'ARC',
       days: ['mon', 'wed'],
       start: [16, 8],
-      location: getRandomSapLocation(),
+      location: sapienzaPlaces[2],
       color: '#c4621c'
     },
     {
@@ -76,7 +77,7 @@ export const useUserStore = defineStore('user', () => {
       acro: 'STA',
       days: ['thu', 'fri'],
       start: [8, 8],
-      location: getRandomSapLocation(),
+      location: sapienzaPlaces[1],
       color: '#3A405A'
     },
     {
@@ -85,7 +86,7 @@ export const useUserStore = defineStore('user', () => {
       acro: 'CLC',
       days: ['tue', 'fri'],
       start: [15, 16],
-      location: getRandomSapLocation(),
+      location: sapienzaPlaces[2],
       color: '#52414c'
     }]
 
@@ -108,7 +109,8 @@ export const useUserStore = defineStore('user', () => {
       fixedHeader: true,
       tabbedHome: false,
       dateHints: false,
-      lectureHints: LectureHints.Vertical
+      lectureHints: LectureHints.Vertical,
+      combinedLocation: true
     }
   })
 
@@ -216,6 +218,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
+    courses: readonly(courses),
     lectures: readonly(lectures),
     upcomingLectures: readonly(upcomingLectures),
     rideNotifications: readonly(rideNotifications),

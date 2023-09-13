@@ -14,6 +14,10 @@ const routes: RouteRecordRaw[] = [
       props: { skipIntro: true }
     },
     {
+      path: '/rides/search/location',
+      component: () => import('pages/PlaceSelection.vue')
+    },
+    {
       path: '/rides/search-full',
       component: () => import('pages/RideSearchPage.vue')
     },

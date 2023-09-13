@@ -36,6 +36,7 @@ const ridesCount = computed<number>(() => rs.completedRides.length)
   flex-direction: column;
   padding: 16px;
   justify-content: space-between;
+  opacity: 0.5;
 
   img {
     width: 80px;

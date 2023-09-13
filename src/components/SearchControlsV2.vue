@@ -72,9 +72,13 @@ import { computed } from 'vue'
 import { DateMode, ExtractTime, FormatShortDate } from 'src/tools/date-tools'
 import { useRouter } from 'vue-router'
 import { isSapienzaPlace } from 'src/models/place'
+import { LocationMode, useLocationStore } from 'stores/location-store'
+import { useUserStore } from 'stores/user-store'
 
-const rs = useRideStore()
 const router = useRouter()
+const rs = useRideStore()
+const ls = useLocationStore()
+const us = useUserStore()
 
 const origin = computed(() => rs.searchParameters.Origin)
 const destination = computed(() => rs.searchParameters.Destination)
@@ -103,11 +107,21 @@ function editFilters (): void {
 }
 
 function selectDestination (): void {
-  router.push(`/rides/search/${isSapienzaPlace(destination.value) ? 'sap-location-select' : 'location-select'}/destination/ride`)
+  ls.setLocationMode(LocationMode.SearchDestination)
+  if (us.options.debug.combinedLocation) {
+    router.push('/rides/search/location')
+  } else {
+    router.push(`/rides/search/${isSapienzaPlace(destination.value) ? 'sap-location-select' : 'location-select'}/destination/ride`)
+  }
 }
 
 function selectOrigin (): void {
-  router.push(`/rides/search/${isSapienzaPlace(origin.value) ? 'sap-location-select' : 'location-select'}/origin/ride`)
+  ls.setLocationMode(LocationMode.SearchOrigin)
+  if (us.options.debug.combinedLocation) {
+    router.push('/rides/search/location')
+  } else {
+    router.push(`/rides/search/${isSapienzaPlace(origin.value) ? 'sap-location-select' : 'location-select'}/origin/ride`)
+  }
 }
 
 </script>
