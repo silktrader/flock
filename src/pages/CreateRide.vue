@@ -25,13 +25,7 @@
 <script lang="ts" setup>
 
 import { useDriveStore } from 'src/stores/driveStore'
-import { Drive } from 'src/models/drive'
-import { User } from 'src/models/user'
-import { computed } from 'vue'
-import { DateMode, ExtractTime, FormatShortDate } from 'src/tools/date-tools'
 import { useRouter } from 'vue-router'
-import { isSapienzaPlace } from 'src/models/place'
-import { fa } from '@faker-js/faker'
 
 const router = useRouter()
 const ds = useDriveStore()
