@@ -45,7 +45,7 @@
                     <q-icon name="emoji_people" size="1.5em"/>
                     : {{ ds.temporaryDrive.FreeSeats }}
                     </div>
-                    <div style="padding: 0 1.2em 0 1.6em;">
+                    <div style="padding: 0 0.6em 0 1.6em;">
                     <q-icon name="savings" size="1.5em"/>
                     : {{ ds.temporaryDrive.Earning + '$' }}
                     </div>
@@ -59,7 +59,7 @@
             </div>
             </q-card-section>
             <div class="row justify-center" style="padding-top: 1.5em;">
-            <q-btn rounded class="createButton" label="Create"
+            <q-btn rounded class="createButton pulsingButton" label="Create"
                     style="font-size:smaller;" @click="confirmation()"/>
             </div>
         </div>
@@ -91,6 +91,7 @@ function abort (): void {
 
 </script>
 <style lang="scss" scoped>
+@import "src/css/quasar.variables.scss";
 
 .createButton {
   background-color: $primary-container;
