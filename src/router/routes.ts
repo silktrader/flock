@@ -18,6 +18,10 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/PlaceSelection.vue')
     },
     {
+      path: '/create-ride/location',
+      component: () => import('pages/PlaceSelection.vue')
+    },
+    {
       path: '/rides/search-full',
       component: () => import('pages/RideSearchPage.vue')
     },
@@ -64,8 +68,9 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/DebugOptions.vue')
     },
     {
-      path: '/profile',
-      component: () => import('pages/ProfilePage.vue')
+      path: '/profile/:user',
+      component: () => import('pages/ProfilePage.vue'),
+      props: true
     },
     {
       path: '/create-ride/start',

@@ -13,8 +13,8 @@
     </header>
     <q-separator/>
     <div class="column general-container ">
-      <div class="instruction">Where do you leave from? </div>
-      <q-btn class="place-button" align="left" @click="selectOrigin()" icon="search">Choose your initial address</q-btn>
+      <div class="instruction">Where do you leave from?</div>
+      <q-btn align="left" class="place-button" icon="search" @click="selectOrigin()">Choose your initial address</q-btn>
     </div>
     <div style="text-align: center; padding-top:15px;">
       <q-img src="~/assets/start.png" style="max-width: 220px"/>
@@ -26,12 +26,15 @@
 
 import { useDriveStore } from 'src/stores/driveStore'
 import { useRouter } from 'vue-router'
+import { LocationMode, useLocationStore } from 'stores/location-store'
 
 const router = useRouter()
 const ds = useDriveStore()
+const ls = useLocationStore()
 
 function selectOrigin (): void {
-  router.push('/rides/search/location-select/origin/drive')
+  ls.setLocationMode(LocationMode.CreateOrigin)
+  router.push('/create-ride/location')
 }
 
 function abort (): void {
@@ -41,7 +44,7 @@ function abort (): void {
 
 </script>
 
-<style  lang="scss" scoped>
+<style lang="scss" scoped>
 @import "src/css/quasar.variables.scss";
 
 </style>

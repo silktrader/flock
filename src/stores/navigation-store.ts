@@ -81,6 +81,10 @@ export const useNavigationStore = defineStore('navigation', () => {
     delayRoutePush('/rides/requests')
   }
 
+  function goUserProfile (userName: string): void {
+    delayRoutePush(`/profile/${userName}`)
+  }
+
   return {
     firstUse: readonly(firstUse),
     userMode: readonly(userMode),
@@ -94,6 +98,7 @@ export const useNavigationStore = defineStore('navigation', () => {
     goDebugOptions,
     goSearchRides,
     goOldSearchResults,
-    goPendingRideRequests
+    goPendingRideRequests,
+    goUserProfile
   }
 })
