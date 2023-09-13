@@ -18,6 +18,10 @@ const routes: RouteRecordRaw[] = [
       component: () => import('pages/PlaceSelection.vue')
     },
     {
+      path: '/create-ride/location',
+      component: () => import('pages/PlaceSelection.vue')
+    },
+    {
       path: '/rides/search-full',
       component: () => import('pages/RideSearchPage.vue')
     },
