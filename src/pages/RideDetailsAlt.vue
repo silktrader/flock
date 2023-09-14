@@ -170,7 +170,7 @@ function viewUser (user: User): void {
                 </q-item-section>
 
                 <q-item-section side>
-                  <q-btn color="secondary" flat icon="arrow_forward_ios"/>
+                  <q-btn color="secondary" flat icon="arrow_forward_ios" @click="viewUser(ride.driver)"/>
                 </q-item-section>
 
               </q-item>
