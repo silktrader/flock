@@ -17,7 +17,7 @@ const kmsTravelled = computed<number>(() =>
 
   <div class="card stat-container">
 
-    <q-icon color="secondary" name="rocket_launch" size="44px"/>
+    <q-icon name="rocket_launch" size="44px"/>
     <div class="stat-main">
       <span>Km Travelled</span>
       <span class="stat-value">{{ kmsTravelled.toFixed(0) }}</span>

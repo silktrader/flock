@@ -18,7 +18,7 @@ const ridesMinutes = computed<number>(() =>
 
   <div class="card stat-container">
 
-    <q-icon color="secondary" name="svguse:icons/cars.svg#icon-1" size="48px"/>
+    <q-icon name="svguse:icons/cars.svg#icon-1" size="48px"/>
     <div class="stat-main">
       <span>Rides Taken</span>
       <span class="stat-value">{{ ridesCount }}</span>
@@ -49,7 +49,7 @@ const ridesMinutes = computed<number>(() =>
   justify-content: center;
   gap: 8px;
   display: flex;
-  color: $secondary;
+  color: $on-background;
 }
 
 .stat-value {

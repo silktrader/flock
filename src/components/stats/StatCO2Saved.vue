@@ -18,7 +18,7 @@ const co2Saved = computed<number>(() =>
   <div class="card co2-saved">
 
     <div class="ride-count__stat">
-      <q-icon color="secondary" name="las la-leaf" size="48px"/>
+      <q-icon name="las la-leaf" size="48px"/>
       <span>CO<sub>2</sub> Kg Saved</span>
       <section class="co2__kgs">
         <span class="rc__stat__figure">{{ co2Saved.toFixed(0) }}</span>
@@ -32,14 +32,14 @@ const co2Saved = computed<number>(() =>
       <div class="co2-saved__equivalence__item">
         <span class="co2-saved__equivalence__sym">≈</span>
         <span>{{ (co2Saved / 0.06).toFixed(0) }}</span>
-        <q-icon color="secondary" name="las la-apple-alt" size="32px"/>
+        <q-icon name="las la-apple-alt" size="32px"/>
       </div>
 
       <!--    https://www.co2everything.com/co2e-of/coffee-->
       <div class="co2-saved__equivalence__item">
         <span class="co2-saved__equivalence__sym">≈</span>
         <span>{{ (co2Saved / 0.4).toFixed(0) }}</span>
-        <q-icon color="secondary" name="las la-coffee" size="32px"/>
+        <q-icon name="las la-coffee" size="32px"/>
       </div>
     </div>
 
@@ -61,7 +61,7 @@ const co2Saved = computed<number>(() =>
   gap: 24px;
   justify-content: space-between;
   align-items: center;
-  color: $secondary;
+  color: $on-background !important;
 }
 
 .ride-count__stat {
@@ -106,7 +106,7 @@ const co2Saved = computed<number>(() =>
   justify-content: center;
   gap: 4px;
   display: flex;
-  color: $secondary;
+  color: $on-background;
   font-family: "Roboto Mono", monospace;
   font-size: medium;
 }

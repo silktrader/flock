@@ -24,7 +24,7 @@ const moneySaved = computed<number>(() => {
 
   <div class="card stat-container">
 
-    <q-icon color="secondary" name="las la-gas-pump" size="48px"/>
+    <q-icon name="las la-gas-pump" size="48px"/>
     <div class="stat-main">
       <span>Euro Saved</span>
       <span class="stat-value">{{ moneySaved.toFixed(0) }}</span>

@@ -17,7 +17,7 @@ const peopleMet = computed<number>(() =>
 
   <div class="card stat-container">
 
-    <q-icon color="secondary" name="las la-users" size="48px"/>
+    <q-icon name="las la-users" size="48px"/>
 
     <div class="stat-main">
       <span>People Met</span>
@@ -41,6 +41,7 @@ const peopleMet = computed<number>(() =>
   padding: 16px;
   justify-content: center;
   align-items: center;
+  color: $on-background;
 }
 
 .stat-main {
@@ -49,7 +50,7 @@ const peopleMet = computed<number>(() =>
   justify-content: center;
   gap: 8px;
   display: flex;
-  color: $secondary;
+  color: $on-background;
 }
 
 .stat-value {
@@ -60,6 +61,7 @@ const peopleMet = computed<number>(() =>
   justify-content: center;
   align-items: center;
   background-color: $secondary-container;
+  color: $on-background;
   font-family: "Roboto Mono", monospace;
 }
 
