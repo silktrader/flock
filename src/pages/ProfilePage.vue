@@ -1,113 +1,115 @@
 <template>
-  <q-page-sticky position="top-right">
-    <div class="modal-header-spacer"/>
-    <section>
-      <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
-    </section>
-  </q-page-sticky>
+  <q-page>
+    <q-page-sticky position="top-right">
+      <div class="modal-header-spacer"/>
+        <section>
+          <q-btn aria-label="Close" flat icon="close" size="lg" @click="ns.goBack()"/>
+        </section>
+    </q-page-sticky>
 
-  <div class="named-avatar">
-    <q-avatar size='40vw' style="">
-      <img :src='user.avatarUrl'/>
-    </q-avatar>
-    <div class='text-h5' style="padding-top: 10px;"> {{ user.firstName }} {{ user.lastName }}</div>
-    <div class='text-caption'> {{ user.degree }}</div>
-  </div>
-
-  <div class="row items-center justify-center" style="padding-top: 10px;">
-    <div class="text-h6 text-weight-bold">
-      {{ userRating.toFixed(1) }}
-    </div>
-    <q-rating
-      v-model="userRating"
-      color='secondary'
-      max='1'
-      readonly
-      size='7vw'
-    />
-    <div class='text-body2'>
-      ({{ numReviews }})
+    <div class="named-avatar">
+      <q-avatar size='40vw' style="">
+        <img :src='user.avatarUrl'/>
+      </q-avatar>
+      <div class='text-h5' style="padding-top: 10px;"> {{ user.firstName }} {{ user.lastName }}</div>
+      <div class='text-caption'> {{ user.degree }}</div>
     </div>
 
-  </div>
-
-  <div class="actions-container">
-    <q-btn class="action-button" label="Follow" outline/>
-    <q-btn class="action-button" label="Message" outline/>
-  </div>
-
-  <div class='badge-container'>
-
-    <q-chip v-for='(badge, index) in user.languages' :key='index' class="chip">
-      {{ badge }}
-    </q-chip>
-
-    <q-chip v-for='(badge, index) in user.badges' :key='index' class="chip">
-      {{ badge }}
-    </q-chip>
-  </div>
-
-  <div style="padding:20px">
-    <div class="text-h5 text-weight-bolder" style="padding-bottom: 5px;">
-      About
-    </div>
-    <div class="text-body1 ">
-      {{ lorem }}
-    </div>
-  </div>
-
-  <div class="info-cards-container">
-    <div v-if="isDriver">
-      <q-card class="cert-driver-card">
-        <q-img :ratio="1"
-               src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
-          <div class="absolute-bottom text-h6">
-            Certified Driver
-          </div>
-        </q-img>
-        <q-card-section class="row items-center justify-between">
-          <div class="text-h4">
-            {{ numDrives }}
-          </div>
-          <div class="test-body bold">
-            Rides Given
-          </div>
-        </q-card-section>
-      </q-card>
-    </div>
-
-    <div v-if="isRider">
-      <q-card class="usual-passenger-card">
-        <q-img ratio="1"
-               src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
-          <div class="absolute-bottom text-h6">
-            Usual Passenger
-          </div>
-        </q-img>
-        <q-card-section class="row items-center justify-between">
-          <div class="text-h4">
-            {{ numRides }}
-          </div>
-          <div class="test-body bold">
-            Rides Taken
-          </div>
-        </q-card-section>
-      </q-card>
-    </div>
-  </div>
-
-  <div class="prefered-dest-container">
-    <q-card class="prefered-dest-card">
-      <q-img :ratio="1" :src='prefDest.Avatar'>
-        <div class="absolute-bottom text-h6">
-          {{ prefDest.Label }}
+    <div class="row items-center justify-center" style="padding-top: 10px;">
+      <div class="text-h6 text-weight-bold">
+        {{ userRating.toFixed(1) }}
+      </div>
+      <q-rating
+        v-model="userRating"
+        color='secondary'
+        max='1'
+        readonly
+        size='7vw'
+        />
+        <div class='text-body2'>
+          ({{ numReviews }})
         </div>
-      </q-img>
-      <q-card-section>
-        {{ prefDest.Address }}
-      </q-card-section>
-    </q-card>
-  </div>
+
+    </div>
+
+    <div class="actions-container">
+      <q-btn class="action-button" label="Follow" outline/>
+        <q-btn class="action-button" label="Message" outline/>
+    </div>
+
+    <div class='badge-container'>
+
+      <q-chip v-for='(badge, index) in user.languages' :key='index' class="chip">
+        {{ badge }}
+      </q-chip>
+
+      <q-chip v-for='(badge, index) in user.badges' :key='index' class="chip">
+        {{ badge }}
+      </q-chip>
+    </div>
+
+    <div style="padding:20px">
+      <div class="text-h5 text-weight-bolder" style="padding-bottom: 5px;">
+        About
+      </div>
+      <div class="text-body1 ">
+        {{ lorem }}
+      </div>
+    </div>
+
+    <div class="info-cards-container">
+      <div v-if="isDriver">
+        <q-card class="cert-driver-card">
+          <q-img :ratio="1"
+            src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJpdmVyfGVufDB8fDB8fHww&w=1000&q=80">
+            <div class="absolute-bottom text-h6">
+              Certified Driver
+            </div>
+          </q-img>
+          <q-card-section class="row items-center justify-between">
+            <div class="text-h4">
+              {{ numDrives }}
+            </div>
+            <div class="test-body bold">
+              Rides Given
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+
+      <div v-if="isRider">
+        <q-card class="usual-passenger-card">
+          <q-img ratio="1"
+            src="https://static.vecteezy.com/system/resources/previews/000/238/596/non_2x/hitch-hiker-vector-illustration.jpg">
+            <div class="absolute-bottom text-h6">
+              Usual Passenger
+            </div>
+          </q-img>
+          <q-card-section class="row items-center justify-between">
+            <div class="text-h4">
+              {{ numRides }}
+            </div>
+            <div class="test-body bold">
+              Rides Taken
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+
+    <div class="prefered-dest-container">
+      <q-card class="prefered-dest-card">
+        <q-img :ratio="1" :src='prefDest.Avatar'>
+          <div class="absolute-bottom text-h6">
+            {{ prefDest.Label }}
+          </div>
+        </q-img>
+        <q-card-section>
+          {{ prefDest.Address }}
+        </q-card-section>
+      </q-card>
+    </div>
+  </q-page>
 
 </template>
 
