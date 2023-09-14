@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-import { ExtractTime, FormatLongDate } from '../tools/date-tools'
+import { ExtractTime, FormatLongDate } from '../../tools/date-tools'
 import { Ride } from 'src/models/ride'
 import { useRideStore } from 'stores/ride-store'
 import { computed } from 'vue'
@@ -34,8 +34,8 @@ function reviewRide (): void {
 <template>
 
   <transition
-    appear
-    enter-active-class="animated slideInRight"
+      appear
+      enter-active-class="animated slideInRight"
   >
 
     <q-card key="upcoming-ride-card" v-ripple class="ride-card card q-hoverable cursor-pointer" flat
@@ -90,7 +90,7 @@ function reviewRide (): void {
 </template>
 
 <style lang="scss" scoped>
-@import "src/css/quasar.variables.scss";
+@import "src/css/quasar.variables";
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
 .ride-card {
@@ -173,7 +173,7 @@ function reviewRide (): void {
 .lecture-course {
   height: 50px;
   width: 50px;
-  border-radius: 100%;
+  border-radius: 12px; // distinguish lectures from avatars with rounded corners
   display: flex;
   justify-content: center;
   align-items: center;

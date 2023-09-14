@@ -99,8 +99,8 @@ setTimeout(() => {
 
             <p>Have a look around. Then we'd like you to:</p>
             <ul class="carousel-tasks">
-              <li>Book a comfy ride from home to Sapienza, in time for Monday's "Human Computer Interaction" lecture
-                (HCI), at 10:00.
+              <li>Book a comfy ride from home to Sapienza, in time for Monday's "Human Computer Interaction" lecture, or
+                HCI for short.
               </li>
               <li>Arrange a ride to the Sport Center for the coming Sunday morning. Fingers crossed for a clear sky!
               </li>
@@ -195,7 +195,7 @@ setTimeout(() => {
       </q-page-sticky>
 
       <q-page-sticky v-if="showDriverFab" :offset="[18, 18]" position="bottom-right">
-        <q-btn class="pulsingButton fab-button" fab icon="add" @click="createRide()" label="New" size="lg"/>
+        <q-btn class="pulsingButton fab-button" fab icon="add" label="New" size="lg" @click="createRide()"/>
       </q-page-sticky>
 
     </template>
@@ -210,6 +210,10 @@ setTimeout(() => {
   color: $on-surface-variant;
   background-color: $surface-variant;
   font-size: medium;
+}
+
+.carousel-tasks {
+  text-align: left;
 }
 
 .carousel-tasks li {

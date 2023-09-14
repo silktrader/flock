@@ -56,6 +56,22 @@ const ns = useNavigationStore()
         </q-item-section>
       </q-item>
 
+      <q-item>
+        <q-item-section>
+          <q-item-label>Lectures List</q-item-label>
+          <q-item-label caption>Decide whether to list lectures in cards, featuring a ride count for that day, or in
+            a more sophisticated form with drivers` avatars.
+          </q-item-label>
+          <div class="segmented-button-container">
+            <q-btn-toggle
+              v-model="us.options.debug.lectureCards"
+              :options="[{label: 'Cards', value: true}, {label: 'Free Form', value: false}]"
+              class="button-toggle"
+            />
+          </div>
+        </q-item-section>
+      </q-item>
+
       <q-item-label header>Ride Search</q-item-label>
 
       <q-item>

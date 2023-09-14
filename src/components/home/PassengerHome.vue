@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 
 import StatMoney from 'components/stats/StatMoney.vue'
-import UpcomingLectureCard from 'components/UpcomingLectureCard.vue'
 import StatAggregates from 'components/stats/StatRides.vue'
-import UpcomingRideCard from 'components/UpcomingRideCard.vue'
+import UpcomingRideCard from 'components/home/UpcomingRideCard.vue'
 import StatCO2Saved from 'components/stats/StatCO2Saved.vue'
 import StatPeopleMet from 'components/stats/StatPeopleMet.vue'
 import StatDistance from 'components/stats/StatDistance.vue'
@@ -12,6 +11,8 @@ import { useUserStore } from 'stores/user-store'
 import { computed } from 'vue'
 import { AcceptedRide } from 'src/models/ride'
 import { useNavigationStore } from 'stores/navigation-store'
+import LectureCard from 'components/home/LectureCard.vue'
+import UpcomingLectureCard from 'components/home/UpcomingLectureCard.vue'
 
 const rs = useRideStore()
 const us = useUserStore()
@@ -56,7 +57,12 @@ const bookedRides = computed<ReadonlyArray<AcceptedRide>>(
       <span class="home__row__title">Your Next Lectures</span>
       <div class="upcoming-cards">
         <div class="card-spacer"/>
-        <UpcomingLectureCard v-for="lecture in us.upcomingLectures" :key="lecture.id" :lecture="lecture"/>
+        <template v-if="us.options.debug.lectureCards">
+          <UpcomingLectureCard v-for="lecture in us.upcomingLectures" :key="lecture.id" :lecture="lecture"/>
+        </template>
+        <template v-else>
+          <LectureCard v-for="lecture in us.upcomingLectures" :key="lecture.id" :lecture="lecture"/>
+        </template>
         <div class="card-spacer"/>
       </div>
     </section>

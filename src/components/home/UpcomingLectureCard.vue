@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 import { Lecture } from 'src/models/lecture'
-import { DateMode, ExtractTime, FormatShortDate } from '../tools/date-tools'
+import { DateMode, ExtractTime, FormatShortDate } from '../../tools/date-tools'
 import { computed } from 'vue'
 import { Course } from 'src/models/course'
 import { useUserStore } from 'stores/user-store'
@@ -35,8 +35,8 @@ function searchRides (): void {
 <template>
 
   <transition
-      appear
-      enter-active-class="animated slideInRight"
+    appear
+    enter-active-class="animated slideInRight"
   >
 
     <q-card key="upcoming-lecture-card" v-ripple class="lecture-card card cursor-pointer q-hoverable" flat
@@ -68,7 +68,7 @@ function searchRides (): void {
 
 <style lang="scss" scoped>
 
-@import "src/css/quasar.variables.scss";
+@import "src/css/quasar.variables";
 
 .lecture-card {
   min-width: 140px;
@@ -107,7 +107,8 @@ function searchRides (): void {
 .lecture-course {
   height: 50px;
   width: 50px;
-  border-radius: 100%;
+  border-radius: 12px;
+  //border-radius: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

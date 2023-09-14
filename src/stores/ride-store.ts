@@ -59,7 +59,8 @@ export const useRideStore = defineStore('ride',
       subwayAllowed: true,
       ladiesOnly: false,
       freeSeats: 1,
-      results: undefined
+      results: undefined,
+      drivers: undefined
     }
 
     const searchParameters = ref<SearchParameters>(defaultParameters)
@@ -247,8 +248,11 @@ export const useRideStore = defineStore('ride',
 
       const rides: Array<Ride> = []
 
+      console.log(searchParameters.value.drivers)
+      const maxRides = searchParameters.value.results === undefined ? RandomInt(0, 7) : searchParameters.value.results
+
       // create a random number of new rides
-      for (let results = searchParameters.value.results ?? RandomInt(0, 7); results > 0; results--) {
+      for (let rideIndex = maxRides; rideIndex > 0; rideIndex--) {
         let arrival: Date, departure: Date
         const tripDuration = RandomInt(25, maxDurationDistribution[RandomInt(0, maxDurationDistribution.length)])
 
@@ -269,7 +273,10 @@ export const useRideStore = defineStore('ride',
         const car = genCar()
         let driver: Driver
         let passengers: ReadonlyArray<User>
-        if (ladiesOnly) {
+        if (searchParameters.value.drivers?.[rideIndex - 1]) { // tk bad
+          driver = searchParameters.value.drivers[rideIndex - 1]
+          passengers = genPassengers(car.seats, driver)
+        } else if (ladiesOnly) {
           driver = us.generateFemaleDriver()
           passengers = genPassengers(car.seats, driver, { allFemale: true })
         } else {
@@ -441,7 +448,8 @@ export const useRideStore = defineStore('ride',
           Date: lecture.date,
           DateMode: DateMode.Arrive,
           Destination: lecture.location,
-          results: lecture.ridesAvailable
+          results: lecture.ridesAvailable,
+          drivers: lecture.drivers
         })
       }
 

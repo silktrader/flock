@@ -113,7 +113,8 @@ export const useUserStore = defineStore('user', () => {
       tabbedHome: false,
       dateHints: false,
       lectureHints: LectureHints.Vertical,
-      combinedLocation: true
+      combinedLocation: true,
+      lectureCards: false
     }
   })
 
@@ -183,7 +184,7 @@ export const useUserStore = defineStore('user', () => {
 
   function generateLectures (): Array<Lecture> {
     // decide on a random rides distribution
-    const lecturesRides = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3]
+    const lecturesRides = [0, 0, 0, 1, 1, 1, 1, 2, 2, 3]
 
     const lectures: Array<Lecture> = []
     // generate about three months worth of lectures for each followed course, going back a few days from today
@@ -197,13 +198,15 @@ export const useUserStore = defineStore('user', () => {
         if (index >= 0) {
           const actualDate = new Date(cursorDate)
           actualDate.setHours(course.start[index])
+          const ridesAvailable = lecturesRides[RandomInt(0, lecturesRides.length)]
           lectures.push({
             id: RandomId(),
             courseId: course.id,
             date: actualDate,
             duration: [120, 100, 90][RandomInt(0, 3)],
             location: course.location,
-            ridesAvailable: lecturesRides[RandomInt(0, lecturesRides.length)]
+            ridesAvailable,
+            drivers: (Array.from({ length: ridesAvailable }, (value, index) => index)).map(() => generateDriver())
           })
         }
       }
